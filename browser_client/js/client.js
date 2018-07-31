@@ -16,8 +16,8 @@ const KEY_DOWN = 40;
     };
 
     let playground = document.getElementById('playground');
-    playground.setAttribute('width', '' + screenWidth);
-    playground.setAttribute('height', '' + screenHeight);
+    playground.width = screenWidth;
+    playground.height = screenHeight;
 
     let context = playground.getContext('2d');
 
@@ -67,5 +67,12 @@ const KEY_DOWN = 40;
 
         requestAnimationFrame(gameLoop);
     })();
+
+    window.addEventListener('resize', resize);
+
+    function resize() {
+        screenWidth = playground.width = window.innerWidth;
+        screenHeight = playground.height = window.innerHeight - 4;
+    }
 
 })();
