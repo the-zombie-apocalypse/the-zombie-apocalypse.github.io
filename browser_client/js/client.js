@@ -163,7 +163,7 @@ const walkStepTime = 0;
         context.fillStyle = '#cdd0d6';
         context.fillRect(0, 0, screenWidth, screenHeight);
         context.beginPath();
-        context.arc(playerSettings.x, playerSettings.y, 12, 0, 2 * Math.PI);
+        context.arc(playerSettings.x, playerSettings.y, 10, 0, 2 * Math.PI);
         context.stroke();
 
         requestAnimationFrame(gameLoop);
