@@ -9,7 +9,7 @@ const walkStepTime = 0;
 
 (function () {
 
-    let screenHeight = window.innerHeight - 4; // extra 4px, prevents scroll bar, dunno why
+    let screenHeight = window.innerHeight;
     let screenWidth = window.innerWidth;
 
     let playerSettings = {
@@ -172,7 +172,7 @@ const walkStepTime = 0;
 
     function resize() {
         screenWidth = playground.width = window.innerWidth;
-        screenHeight = playground.height = window.innerHeight - 4;
+        screenHeight = playground.height = window.innerHeight;
     }
 
 })();
