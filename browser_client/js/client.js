@@ -146,7 +146,6 @@ const walkStepTime = 0;
 
     document.addEventListener('keydown', function (e) {
         let key = e.which || e.keyCode;
-        console.log(key);
         if (!movingKeysHolder.isMoveKey(key)) return;
         movingKeysHolder.getMove(key)();
     });
