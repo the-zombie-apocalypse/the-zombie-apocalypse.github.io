@@ -43,7 +43,7 @@ window.onload = function start() {
 
         let playground = renderer.domElement;
 
-        let geometry = new THREE.BoxGeometry(10, 10, 10);
+        let geometry = new THREE.BoxGeometry(30, 30, 30);
         let material = new THREE.MeshLambertMaterial({color: 0x00ff00});
 
         let cube = new THREE.Mesh(geometry, material);
