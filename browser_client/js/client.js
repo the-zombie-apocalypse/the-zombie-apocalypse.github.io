@@ -29,7 +29,7 @@ window.onload = function start() {
         let halfScreenWidth = getHalfScreenWidth();
         let halfScreenHeight = getHalfScreenHeight();
 
-        let renderer = new THREE.WebGLRenderer();
+        let renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(screenWidth, screenHeight);
 
         document.body.appendChild(renderer.domElement);
