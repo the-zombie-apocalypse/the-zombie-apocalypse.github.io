@@ -1,0 +1,19 @@
+{
+  "name": "zombies",
+  "version": "1.0.0",
+  "description": "browser zombie post-apocalyptic game",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Serg-Maximchuk/didactic-enigma.git"
+  },
+  "author": "Serhii Maksymchuk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Serg-Maximchuk/didactic-enigma/issues"
+  },
+  "homepage": "https://github.com/Serg-Maximchuk/didactic-enigma#readme"
+}
