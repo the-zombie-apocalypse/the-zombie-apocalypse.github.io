@@ -1,3 +1,8 @@
+import {AxesHelper, BoxGeometry, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
+
+let webGlDetector = require('./detector');
+let WS = require('./mock_server');
+
 window.onload = function start() {
     function main() {
 
@@ -28,11 +33,10 @@ window.onload = function start() {
         let halfScreenWidth = getHalfScreenWidth();
         let halfScreenHeight = getHalfScreenHeight();
 
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        const renderer = new WebGLRenderer({antialias: true});
         renderer.setClearColor(0xdddddd);
         renderer.setSize(screenWidth, screenHeight);
         renderer.shadowMap.enabled = true;
-        renderer.shadowMapSoft = true; //
 
         document.body.appendChild(renderer.domElement);
 
@@ -45,17 +49,17 @@ window.onload = function start() {
 
         let playground = renderer.domElement;
 
-        let geometry = new THREE.BoxGeometry(30, 30, 30);
-        let material = new THREE.MeshLambertMaterial({color: 0x00ff00});
+        let geometry = new BoxGeometry(30, 30, 30);
+        let material = new MeshLambertMaterial({color: 0x00ff00});
 
-        let cube = new THREE.Mesh(geometry, material);
-        let scene = new THREE.Scene();
+        let cube = new Mesh(geometry, material);
+        let scene = new Scene();
         scene.add(cube);
 
-        let axesHelper = new THREE.AxesHelper(150);
+        let axesHelper = new AxesHelper(150);
         scene.add(axesHelper);
 
-        let camera = new THREE.PerspectiveCamera(VIEW_ANGLE, screenWidth / screenHeight, NEAR, FAR);
+        let camera = new PerspectiveCamera(VIEW_ANGLE, screenWidth / screenHeight, NEAR, FAR);
         camera.position.z = 1500;
         camera.position.x = 150;
         camera.position.y = 50;
@@ -66,7 +70,7 @@ window.onload = function start() {
             return Math.min(max, Math.max(min, value));
         }
 
-        let ws = new WebSocket('ws://localhost:8080/ws');
+        const ws = new WS('ws://localhost:8080/ws');
 
         const topicToAction = {
             moveX: function (delta) {
@@ -220,11 +224,10 @@ window.onload = function start() {
         }
     }
 
-    if (Detector.webgl) {
-        // Initiate function or other initializations here
+    if (webGlDetector.webgl) {
         main();
     } else {
-        var warning = Detector.getWebGLErrorMessage();
+        let warning = webGlDetector.getWebGLErrorMessage();
         document.getElementById('container').appendChild(warning);
     }
 };

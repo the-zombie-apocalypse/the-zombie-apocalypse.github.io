@@ -76,3 +76,5 @@ WebSocket.prototype = {
         controlByteActions[data[0]](this);
     }
 };
+
+module.exports = WebSocket;
