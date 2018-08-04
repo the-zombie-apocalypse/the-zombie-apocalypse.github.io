@@ -28,8 +28,11 @@ window.onload = function start() {
         let halfScreenWidth = getHalfScreenWidth();
         let halfScreenHeight = getHalfScreenHeight();
 
-        let renderer = new THREE.WebGLRenderer({antialias: true});
+        const renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setClearColor(0xdddddd);
         renderer.setSize(screenWidth, screenHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMapSoft = true; //
 
         document.body.appendChild(renderer.domElement);
 
