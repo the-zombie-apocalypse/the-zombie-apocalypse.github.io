@@ -64,7 +64,7 @@ const controlByteActions = {
 };
 
 
-WebSocket = function (url) {
+export default WebSocket = function (url) {
     this.url = url;
 };
 
@@ -76,5 +76,3 @@ WebSocket.prototype = {
         controlByteActions[data[0]](this);
     }
 };
-
-module.exports = WebSocket;

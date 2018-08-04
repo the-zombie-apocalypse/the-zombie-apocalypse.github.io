@@ -1,7 +1,8 @@
 import {AxesHelper, BoxGeometry, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
 
-let webGlDetector = require('./detector');
-let WS = require('./mock_server');
+import Detector from './detector';
+import WebSocket from './mock_server';
+import './style.css';
 
 window.onload = function start() {
     function main() {
@@ -70,7 +71,7 @@ window.onload = function start() {
             return Math.min(max, Math.max(min, value));
         }
 
-        const ws = new WS('ws://localhost:8080/ws');
+        const ws = new WebSocket('ws://localhost:8080/ws');
 
         const topicToAction = {
             moveX: function (delta) {
@@ -224,10 +225,10 @@ window.onload = function start() {
         }
     }
 
-    if (webGlDetector.webgl) {
+    if (Detector.webgl) {
         main();
     } else {
-        let warning = webGlDetector.getWebGLErrorMessage();
+        let warning = Detector.getWebGLErrorMessage();
         document.getElementById('container').appendChild(warning);
     }
 };
