@@ -1,2 +1,3 @@
-.idea
+.idea/
 browser_client/browser_client.iml
+node_modules/

@@ -4,7 +4,8 @@
   "description": "browser zombie post-apocalyptic game",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/Serg-Maximchuk/didactic-enigma/issues"
   },
-  "homepage": "https://github.com/Serg-Maximchuk/didactic-enigma#readme"
+  "homepage": "https://github.com/Serg-Maximchuk/didactic-enigma#readme",
+  "dependencies": {
+    "three": "latest",
+    "webpack": "latest",
+    "webpack-cli": "latest"
+  }
 }
