@@ -1,15 +1,14 @@
 window.onload = function start() {
+    function main() {
 
-    const KEY_ESC = 27;
-    const KEY_ENTER = 13;
-    const KEY_LEFT = 37;
-    const KEY_UP = 38;
-    const KEY_RIGHT = 39;
-    const KEY_DOWN = 40;
+        const KEY_ESC = 27;
+        const KEY_ENTER = 13;
+        const KEY_LEFT = 37;
+        const KEY_UP = 38;
+        const KEY_RIGHT = 39;
+        const KEY_DOWN = 40;
 
-    const walkStepTime = 0; // move to player settings
-
-    new function () {
+        const walkStepTime = 0; // move to player settings
 
         const VIEW_ANGLE = 35;
         const NEAR = 0.1;
@@ -50,7 +49,7 @@ window.onload = function start() {
         let scene = new THREE.Scene();
         scene.add(cube);
 
-        var axesHelper = new THREE.AxesHelper(150);
+        let axesHelper = new THREE.AxesHelper(150);
         scene.add(axesHelper);
 
         let camera = new THREE.PerspectiveCamera(VIEW_ANGLE, screenWidth / screenHeight, NEAR, FAR);
@@ -216,6 +215,13 @@ window.onload = function start() {
             camera.aspect = screenWidth / screenHeight;
             camera.updateProjectionMatrix();
         }
+    }
 
-    }();
+    if (Detector.webgl) {
+        // Initiate function or other initializations here
+        main();
+    } else {
+        var warning = Detector.getWebGLErrorMessage();
+        document.getElementById('container').appendChild(warning);
+    }
 };
