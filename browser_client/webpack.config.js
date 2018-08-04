@@ -1,9 +1,9 @@
 const path = require('path');
-const LiveReloadPlugin = require('webpack-livereload-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
     entry: './src/client.js',
     output: {
         filename: 'main.js',
