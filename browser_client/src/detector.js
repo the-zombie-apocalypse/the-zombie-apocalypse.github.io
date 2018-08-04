@@ -2,30 +2,27 @@
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
  */
-
+// see https://github.com/mrdoob/three.js/blob/master/examples/js/Detector.js
 const Detector = {
-
     canvas: !!window.CanvasRenderingContext2D,
     webgl: (function () {
-
         try {
             let canvas = document.createElement('canvas');
             return !!(
                 window.WebGLRenderingContext
                 && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
             );
-
         } catch (e) {
             return false;
         }
-
     })(),
     webgl2: (function () {
-
         try {
             let canvas = document.createElement('canvas');
-            return !!(window.WebGL2RenderingContext && (canvas.getContext('webgl2')));
-
+            return !!(
+                window.WebGL2RenderingContext
+                && (canvas.getContext('webgl2'))
+            );
         } catch (e) {
             return false;
         }
