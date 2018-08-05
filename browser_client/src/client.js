@@ -2,7 +2,6 @@ import {AxesHelper} from 'three'
 import WebSocket from './mock_server'
 import './style.css'
 import Graphon from './graphics/graphon'
-import ScreenSizer from './components/screen_sizer'
 import Player from "./entities/player";
 import global from './entities/global'
 
@@ -12,8 +11,7 @@ export default function gameLoop() {
     const KEY_RIGHT = 39;
     const KEY_DOWN = 40;
 
-    const sizer = ScreenSizer.getInstance(window);
-    const graphon = new Graphon(window, sizer);
+    const graphon = new Graphon(window);
     graphon.initGraph();
 
     const player = new Player();

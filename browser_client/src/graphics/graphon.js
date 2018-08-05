@@ -1,5 +1,6 @@
 import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
 import global from '../entities/global'
+import ScreenSizer from "../components/screen_sizer";
 
 const VIEW_ANGLE = 35;
 const NEAR = 0.1;
@@ -7,26 +8,14 @@ const FAR = 5000;
 
 export default class Graphon {
 
-    constructor(window, sizer) {
+    constructor(window) {
         this.window = window;
-        this._sizer = sizer;
+        this._sizer = ScreenSizer.getInstance(window);
         this._updateCallbacks = [];
     }
 
     get playground() {
-        return this.renderer.domElement;
-    }
-
-    get renderer() {
-        return this._renderer
-    }
-
-    get sizer() {
-        return this._sizer
-    }
-
-    get camera() {
-        return this._camera
+        return this._renderer.domElement;
     }
 
     initGraph() {
