@@ -1,8 +1,9 @@
-import {AxesHelper, BoxGeometry, Mesh, MeshLambertMaterial} from 'three'
+import {AxesHelper} from 'three'
 import WebSocket from './mock_server'
 import './style.css'
 import Graphon from './graphics/graphon'
 import ScreenSizer from './components/screen_sizer'
+import Player from "./entities/player";
 
 export default function gameLoop() {
     const KEY_LEFT = 37;
@@ -10,24 +11,14 @@ export default function gameLoop() {
     const KEY_RIGHT = 39;
     const KEY_DOWN = 40;
 
-    const walkStepTime = 0; // move to player settings
-
     const sizer = ScreenSizer.getInstance(window);
     const graphon = new Graphon(window, sizer);
     graphon.initGraph();
 
-    let playerSettings = {
-        x: 0,
-        y: 0,
-        isMovingX: false,
-        isMovingY: false,
-    };
+    const player = new Player();
+    graphon.addToScene(player.sceneObject);
 
-    let geometry = new BoxGeometry(30, 30, 30);
-    let material = new MeshLambertMaterial({color: 0x00ff00});
-
-    let cube = new Mesh(geometry, material);
-    graphon.addToScene(cube);
+    const playerSettings = player.playerSettings;
 
     let axesHelper = new AxesHelper(150);
     graphon.addToScene(axesHelper);
@@ -47,9 +38,9 @@ export default function gameLoop() {
             setTimeout(function moveX() {
                 if (playerSettings.isMovingX) {
                     playerSettings.x = limit(-sizer.halfScreenWidth, sizer.halfScreenWidth, playerSettings.x + delta);
-                    setTimeout(moveX, walkStepTime);
+                    setTimeout(moveX, playerSettings.walkStepTime);
                 }
-            }, walkStepTime);
+            }, playerSettings.walkStepTime);
         },
         moveY: function (delta) {
             if (playerSettings.isMovingY) return;
@@ -59,9 +50,9 @@ export default function gameLoop() {
             setTimeout(function moveY() {
                 if (playerSettings.isMovingY) {
                     playerSettings.y = limit(-sizer.halfScreenHeight, sizer.halfScreenHeight, playerSettings.y - delta);
-                    setTimeout(moveY, walkStepTime);
+                    setTimeout(moveY, playerSettings.walkStepTime);
                 }
-            }, walkStepTime);
+            }, playerSettings.walkStepTime);
         },
         stopMoveX: function () {
             playerSettings.isMovingX = false;
@@ -166,11 +157,11 @@ export default function gameLoop() {
     (function gameLoop() {
         graphon.update();
 
-        cube.position.x = playerSettings.x;
-        cube.position.y = playerSettings.y;
+        player.position.x = playerSettings.x;
+        player.position.y = playerSettings.y;
 
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
+        player.rotation.x += 0.01;
+        player.rotation.y += 0.01;
 
         requestAnimationFrame(gameLoop);
     })();
