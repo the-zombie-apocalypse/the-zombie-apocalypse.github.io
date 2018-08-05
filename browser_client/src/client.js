@@ -23,10 +23,6 @@ export default function gameLoop() {
     let axesHelper = new AxesHelper(150);
     graphon.addToScene(axesHelper);
 
-    function limit(min, max, value) {
-        return Math.min(max, Math.max(min, value));
-    }
-
     const ws = new WebSocket('ws://localhost:8080/ws');
 
     const topicToAction = {
@@ -37,7 +33,7 @@ export default function gameLoop() {
 
             setTimeout(function moveX() {
                 if (playerSettings.isMovingX) {
-                    playerSettings.x = limit(-sizer.halfScreenWidth, sizer.halfScreenWidth, playerSettings.x + delta);
+                    playerSettings.x = playerSettings.x + delta;
                     setTimeout(moveX, playerSettings.walkStepTime);
                 }
             }, playerSettings.walkStepTime);
@@ -49,7 +45,7 @@ export default function gameLoop() {
 
             setTimeout(function moveY() {
                 if (playerSettings.isMovingY) {
-                    playerSettings.y = limit(-sizer.halfScreenHeight, sizer.halfScreenHeight, playerSettings.y - delta);
+                    playerSettings.y = playerSettings.y - delta;
                     setTimeout(moveY, playerSettings.walkStepTime);
                 }
             }, playerSettings.walkStepTime);
@@ -157,11 +153,8 @@ export default function gameLoop() {
     (function gameLoop() {
         graphon.update();
 
-        player.position.x = playerSettings.x;
-        player.position.y = playerSettings.y;
-
-        player.rotation.x += 0.01;
-        player.rotation.y += 0.01;
+        player.position.x = graphon.camera.position.x = playerSettings.x;
+        player.position.y = graphon.camera.position.y = playerSettings.y;
 
         requestAnimationFrame(gameLoop);
     })();
