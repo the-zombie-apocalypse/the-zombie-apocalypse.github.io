@@ -1,6 +1,8 @@
-import {AxesHelper, BoxGeometry, Mesh, MeshLambertMaterial, PerspectiveCamera, Scene, WebGLRenderer} from 'three';
-import WebSocket from './mock_server';
-import './style.css';
+import {AxesHelper, BoxGeometry, Mesh, MeshLambertMaterial} from 'three'
+import WebSocket from './mock_server'
+import './style.css'
+import Graphon from './graphics/graphon'
+import ScreenSizer from './components/screen_sizer'
 
 export default function gameLoop() {
     const KEY_LEFT = 37;
@@ -10,30 +12,9 @@ export default function gameLoop() {
 
     const walkStepTime = 0; // move to player settings
 
-    const VIEW_ANGLE = 35;
-    const NEAR = 0.1;
-    const FAR = 5000;
-
-    let screenWidth = window.innerWidth;
-    let screenHeight = window.innerHeight;
-
-    function getHalfScreenWidth() {
-        return screenWidth * 0.5;
-    }
-
-    function getHalfScreenHeight() {
-        return screenHeight * 0.5;
-    }
-
-    let halfScreenWidth = getHalfScreenWidth();
-    let halfScreenHeight = getHalfScreenHeight();
-
-    const renderer = new WebGLRenderer({antialias: true});
-    renderer.setClearColor(0xdddddd);
-    renderer.setSize(screenWidth, screenHeight);
-    renderer.shadowMap.enabled = true;
-
-    document.body.appendChild(renderer.domElement);
+    const sizer = ScreenSizer.getInstance(window);
+    const graphon = new Graphon(window, sizer);
+    graphon.initGraph();
 
     let playerSettings = {
         x: 0,
@@ -42,24 +23,14 @@ export default function gameLoop() {
         isMovingY: false,
     };
 
-    let playground = renderer.domElement;
-
     let geometry = new BoxGeometry(30, 30, 30);
     let material = new MeshLambertMaterial({color: 0x00ff00});
 
     let cube = new Mesh(geometry, material);
-    let scene = new Scene();
-    scene.add(cube);
+    graphon.addToScene(cube);
 
     let axesHelper = new AxesHelper(150);
-    scene.add(axesHelper);
-
-    let camera = new PerspectiveCamera(VIEW_ANGLE, screenWidth / screenHeight, NEAR, FAR);
-    camera.position.z = 1500;
-    camera.position.x = 150;
-    camera.position.y = 50;
-
-    renderer.setClearColor(0xdddddd, 1);
+    graphon.addToScene(axesHelper);
 
     function limit(min, max, value) {
         return Math.min(max, Math.max(min, value));
@@ -75,7 +46,7 @@ export default function gameLoop() {
 
             setTimeout(function moveX() {
                 if (playerSettings.isMovingX) {
-                    playerSettings.x = limit(-halfScreenWidth, halfScreenWidth, playerSettings.x + delta);
+                    playerSettings.x = limit(-sizer.halfScreenWidth, sizer.halfScreenWidth, playerSettings.x + delta);
                     setTimeout(moveX, walkStepTime);
                 }
             }, walkStepTime);
@@ -87,7 +58,7 @@ export default function gameLoop() {
 
             setTimeout(function moveY() {
                 if (playerSettings.isMovingY) {
-                    playerSettings.y = limit(-halfScreenHeight, halfScreenHeight, playerSettings.y + delta);
+                    playerSettings.y = limit(-sizer.halfScreenHeight, sizer.halfScreenHeight, playerSettings.y - delta);
                     setTimeout(moveY, walkStepTime);
                 }
             }, walkStepTime);
@@ -193,7 +164,7 @@ export default function gameLoop() {
     });
 
     (function gameLoop() {
-        renderer.render(scene, camera);
+        graphon.update();
 
         cube.position.x = playerSettings.x;
         cube.position.y = playerSettings.y;
@@ -204,17 +175,4 @@ export default function gameLoop() {
         requestAnimationFrame(gameLoop);
     })();
 
-    window.addEventListener('resize', resize);
-
-    function resize() {
-        screenWidth = playground.width = window.innerWidth;
-        screenHeight = playground.height = window.innerHeight;
-
-        halfScreenWidth = getHalfScreenWidth();
-        halfScreenHeight = getHalfScreenHeight();
-
-        renderer.setSize(screenWidth, screenHeight);
-        camera.aspect = screenWidth / screenHeight;
-        camera.updateProjectionMatrix();
-    }
 }
