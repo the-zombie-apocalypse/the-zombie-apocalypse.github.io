@@ -1,4 +1,4 @@
-import {AxesHelper} from 'three'
+import {AxesHelper, Mesh, MeshBasicMaterial, PlaneGeometry} from 'three'
 import './style.css'
 import Graphon from './graphics/graphon'
 import Player from './entities/player'
@@ -17,6 +17,13 @@ export default function gameLoop() {
 
     const axesHelper = new AxesHelper(150);
     graphon.addStatic(axesHelper);
+
+    const plane = new Mesh(
+        new PlaneGeometry(50, 50, 50, 50),
+        new MeshBasicMaterial({color: 0x393839, wireframe: true})
+    );
+    // plane.rotateX(Math.PI/2);
+    graphon.addStatic(plane);
 
     (function gameLoop() {
         graphon.update();
