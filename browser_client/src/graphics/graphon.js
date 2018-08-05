@@ -52,7 +52,7 @@ export default class Graphon {
 
     initCamera() {
         this._camera = new PerspectiveCamera(VIEW_ANGLE, this._sizer.screenWidth / this._sizer.screenHeight, NEAR, FAR);
-        this._camera.position.z = 1500;
+        this._camera.position.z = 100;
     }
 
     addDynamic(addMe) {

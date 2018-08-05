@@ -24,7 +24,7 @@ export default class Player extends SceneObject {
     }
 
     static buildSceneObject() {
-        let geometry = new BoxGeometry(30, 30, 30);
+        let geometry = new BoxGeometry(4, 4, 4);
         let material = new MeshLambertMaterial({color: 0x00ff00});
         return new Mesh(geometry, material);
     }
