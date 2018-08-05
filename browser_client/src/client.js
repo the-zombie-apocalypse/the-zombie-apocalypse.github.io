@@ -4,6 +4,7 @@ import './style.css'
 import Graphon from './graphics/graphon'
 import ScreenSizer from './components/screen_sizer'
 import Player from "./entities/player";
+import global from './entities/global'
 
 export default function gameLoop() {
     const KEY_LEFT = 37;
@@ -16,12 +17,12 @@ export default function gameLoop() {
     graphon.initGraph();
 
     const player = new Player();
-    graphon.addToScene(player.sceneObject);
+    graphon.addDynamic(player);
 
-    const playerSettings = player.playerSettings;
+    const playerSettings = global.playerSettings;
 
     let axesHelper = new AxesHelper(150);
-    graphon.addToScene(axesHelper);
+    graphon.addStatic(axesHelper);
 
     const ws = new WebSocket('ws://localhost:8080/ws');
 
@@ -152,10 +153,6 @@ export default function gameLoop() {
 
     (function gameLoop() {
         graphon.update();
-
-        player.position.x = graphon.camera.position.x = playerSettings.x;
-        player.position.y = graphon.camera.position.y = playerSettings.y;
-
         requestAnimationFrame(gameLoop);
     })();
 
