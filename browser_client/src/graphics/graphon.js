@@ -23,6 +23,10 @@ export default class Graphon {
         return this._sizer
     }
 
+    get camera() {
+        return this._camera
+    }
+
     initGraph() {
         this.initRenderer();
         this.initCamera();
