@@ -45,7 +45,7 @@ export default class Graphon {
 
     initRenderer() {
         this._renderer = new WebGLRenderer({antialias: true});
-        this._renderer.setClearColor(0xdddddd, 1);
+        this._renderer.setClearColor(0xfff6e6);
         this._renderer.setSize(this._sizer.screenWidth, this._sizer.screenHeight);
         this._renderer.shadowMap.enabled = true;
     }
