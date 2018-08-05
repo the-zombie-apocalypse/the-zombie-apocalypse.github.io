@@ -20,9 +20,8 @@ export default function gameLoop() {
 
     const plane = new Mesh(
         new PlaneGeometry(50, 50, 50, 50),
-        new MeshBasicMaterial({color: 0x393839, wireframe: true})
+        new MeshBasicMaterial({color: 0x848384, wireframe: true})
     );
-    // plane.rotateX(Math.PI/2);
     graphon.addStatic(plane);
 
     (function gameLoop() {
