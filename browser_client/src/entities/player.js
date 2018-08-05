@@ -1,25 +1,11 @@
-import {BoxGeometry, Mesh, MeshLambertMaterial} from "three";
+import {BoxGeometry, Mesh, MeshLambertMaterial} from "three"
+import SceneObject from './scene_object'
+import global from './global'
 
-export default class Player {
+export default class Player extends SceneObject {
 
     constructor() {
-        this._playerSettings = {
-            x: 0,
-            y: 0,
-            isMovingX: false,
-            isMovingY: false,
-            walkStepTime: 0
-        };
-
-        this._sceneObject = this.buildSceneObject();
-    }
-
-    get playerSettings() {
-        return this._playerSettings
-    }
-
-    get sceneObject() {
-        return this._sceneObject
+        super(Player.buildSceneObject());
     }
 
     get position() {
@@ -30,7 +16,14 @@ export default class Player {
         return this._sceneObject.rotation
     }
 
-    buildSceneObject() {
+    get onSceneUpdate() {
+        return () => {
+            this.position.x = global.playerSettings.x;
+            this.position.y = global.playerSettings.y;
+        }
+    }
+
+    static buildSceneObject() {
         let geometry = new BoxGeometry(30, 30, 30);
         let material = new MeshLambertMaterial({color: 0x00ff00});
         return new Mesh(geometry, material);

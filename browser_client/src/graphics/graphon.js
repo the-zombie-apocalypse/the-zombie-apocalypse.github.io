@@ -1,4 +1,5 @@
 import {PerspectiveCamera, Scene, WebGLRenderer} from "three";
+import global from '../entities/global'
 
 const VIEW_ANGLE = 35;
 const NEAR = 0.1;
@@ -9,6 +10,7 @@ export default class Graphon {
     constructor(window, sizer) {
         this.window = window;
         this._sizer = sizer;
+        this._updateCallbacks = [];
     }
 
     get playground() {
@@ -64,11 +66,21 @@ export default class Graphon {
         this._camera.position.z = 1500;
     }
 
-    addToScene(addMe) {
-        this._scene.add(addMe)
+    addDynamic(addMe) {
+        this._scene.add(addMe.sceneObject);
+        this._updateCallbacks.push(addMe.onSceneUpdate);
+    }
+
+    addStatic(addMe) {
+        this._scene.add(addMe);
     }
 
     update() {
+        this._camera.position.x = global.playerSettings.x;
+        this._camera.position.y = global.playerSettings.y;
+        this._updateCallbacks.forEach(function (callback) {
+            callback.call()
+        });
         this._renderer.render(this._scene, this._camera);
     }
 }
