@@ -39,10 +39,59 @@ public class GameSupervisor {
         final User user = command.getUser();
 
         if (user != null) {
+
             if (user.isMovingUp()) {
                 // todo: implement checking is move legal
                 final WorldChange worldChange = new WorldChange(new User(user.getId()));
                 worldChange.getUser().setMovingUp(true);
+
+                changes.onNext(worldChange);
+            }
+            if (user.isStopMovingUp()) {
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setStopMovingUp(true);
+
+                changes.onNext(worldChange);
+            }
+
+            if (user.isMovingDown()) {
+                // todo: implement checking is move legal
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setMovingDown(true);
+
+                changes.onNext(worldChange);
+            }
+            if (user.isStopMovingDown()) {
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setStopMovingDown(true);
+
+                changes.onNext(worldChange);
+            }
+
+            if (user.isMovingLeft()) {
+                // todo: implement checking is move legal
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setMovingLeft(true);
+
+                changes.onNext(worldChange);
+            }
+            if (user.isStopMovingLeft()) {
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setStopMovingLeft(true);
+
+                changes.onNext(worldChange);
+            }
+
+            if (user.isMovingRight()) {
+                // todo: implement checking is move legal
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setMovingRight(true);
+
+                changes.onNext(worldChange);
+            }
+            if (user.isStopMovingRight()) {
+                final WorldChange worldChange = new WorldChange(new User(user.getId()));
+                worldChange.getUser().setStopMovingRight(true);
 
                 changes.onNext(worldChange);
             }
@@ -52,7 +101,7 @@ public class GameSupervisor {
     class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
         final User user;
-        final ReplayProcessor<WorldChange> changes = ReplayProcessor.create(2);
+        final ReplayProcessor<WorldChange> changes = ReplayProcessor.create(256);
 
         GameActionsProcessor(User user) {
             this.user = user;
