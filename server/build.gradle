@@ -19,24 +19,32 @@ group = 'com.zorg'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
+springBoot {
+    mainClassName = "com.zorg.zombies.ZombiesApplication"
+}
+
 repositories {
     mavenCentral()
 }
 
+configurations {
+    compile.exclude module: 'spring-boot-starter-tomcat'
+}
+
 dependencies {
+    compileOnly('org.projectlombok:lombok')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('org.springframework.boot:spring-boot-starter-websocket')
+    compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.1', ext: 'pom'
+    compile group: 'javax.websocket', name: 'javax.websocket-client-api', version: '1.1', ext: 'pom'
+    compile('org.glassfish.tyrus.bundles:tyrus-standalone-client:1.8.3')
     runtime('org.springframework.boot:spring-boot-devtools')
-    compileOnly('org.projectlombok:lombok')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
-    testImplementation(
-            'org.junit.jupiter:junit-jupiter-api:5.1.0'
-    )
-    testRuntimeOnly(
-            'org.junit.jupiter:junit-jupiter-engine:5.1.0'
-    )
+    testImplementation('org.junit.jupiter:junit-jupiter-api')
+    testImplementation('org.mockito:mockito-junit-jupiter:2.21.0')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 }
 
 test {
