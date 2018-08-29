@@ -1,6 +1,10 @@
 package com.zorg.zombies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zorg.zombies.change.WorldChange;
+import com.zorg.zombies.command.Command;
+import com.zorg.zombies.command.factory.CommandFactory;
+import com.zorg.zombies.service.GameSupervisor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,11 +17,13 @@ import reactor.core.publisher.Mono;
 @Component
 public class GameWebSocketHandler implements WebSocketHandler {
 
+    private final CommandFactory commandFactory;
     private final GameSupervisor gameSupervisor;
     private ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    public GameWebSocketHandler(GameSupervisor gameSupervisor) {
+    public GameWebSocketHandler(CommandFactory commandFactory, GameSupervisor gameSupervisor) {
+        this.commandFactory = commandFactory;
         this.gameSupervisor = gameSupervisor;
     }
 
@@ -39,7 +45,8 @@ public class GameWebSocketHandler implements WebSocketHandler {
 
     @SneakyThrows
     private Command webSocketMessageToCommand(WebSocketMessage webSocketMessage) {
-        return mapper.readValue(webSocketMessage.getPayloadAsText(), Command.class);
+        final String payload = webSocketMessage.getPayloadAsText();
+        return commandFactory.fromJson(payload);
     }
 
     @SneakyThrows

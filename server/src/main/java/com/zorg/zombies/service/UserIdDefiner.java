@@ -1,4 +1,4 @@
-package com.zorg.zombies;
+package com.zorg.zombies.service;
 
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.zorg.zombies;
+package com.zorg.zombies.model;
 
 import lombok.Data;
 import lombok.val;

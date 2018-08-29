@@ -1,6 +1,11 @@
 package com.zorg.zombies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zorg.zombies.change.UserChange;
+import com.zorg.zombies.change.WorldChange;
+import com.zorg.zombies.change.WorldOnLoad;
+import com.zorg.zombies.model.User;
+import com.zorg.zombies.service.UserIdDefiner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,7 +49,7 @@ class GameWebSocketHandlerTest {
     void testGreeting() throws Exception {
         final String id = "session-id";
         final User user = new User(id);
-        final WorldOnLoad greetingCommand = new WorldOnLoad(user);
+        final WorldOnLoad greetingCommand = new WorldOnLoad(new UserChange(user));
         final Flux<String> producer = Flux.empty();//Flux.just(mapper.writeValueAsString(new Command()));
         final ReplayProcessor<String> output = ReplayProcessor.create(1);
 
