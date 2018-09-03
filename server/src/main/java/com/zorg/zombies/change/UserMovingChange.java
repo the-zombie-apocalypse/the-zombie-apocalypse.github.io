@@ -1,7 +1,6 @@
 package com.zorg.zombies.change;
 
 import com.zorg.zombies.model.MoveDirection;
-import com.zorg.zombies.model.User;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -16,8 +15,4 @@ public class UserMovingChange extends UserChange {
         this.moveDirection = moveDirection;
     }
 
-    public UserMovingChange(User user, MoveDirection moveDirection) {
-        super(user);
-        this.moveDirection = moveDirection;
-    }
 }

@@ -49,7 +49,7 @@ class GameWebSocketHandlerTest {
     void testGreeting() throws Exception {
         final String id = "session-id";
         final User user = new User(id);
-        final WorldOnLoad greetingCommand = new WorldOnLoad(new UserChange(user));
+        final WorldOnLoad greetingCommand = new WorldOnLoad(new UserChange(user.getId()));
         final Flux<String> producer = Flux.empty();//Flux.just(mapper.writeValueAsString(new Command()));
         final ReplayProcessor<String> output = ReplayProcessor.create(1);
 
@@ -66,6 +66,7 @@ class GameWebSocketHandlerTest {
 
         assertNotNull(received);
 
+        new WorldChange();
         final String greetingJson = received.get(0);
         final WorldChange worldOnLoad = mapper.readValue(greetingJson, WorldChange.class);
 
