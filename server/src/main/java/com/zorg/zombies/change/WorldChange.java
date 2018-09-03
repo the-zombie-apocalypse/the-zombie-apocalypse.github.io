@@ -1,9 +1,10 @@
 package com.zorg.zombies.change;
 
-import com.zorg.zombies.change.UserChange;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class WorldChange {
 
     private UserChange user;

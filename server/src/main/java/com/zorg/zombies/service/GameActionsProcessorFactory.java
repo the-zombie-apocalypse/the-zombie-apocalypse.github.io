@@ -1,10 +1,6 @@
 package com.zorg.zombies.service;
 
 import com.zorg.zombies.model.User;
-import com.zorg.zombies.service.ChangesNotifier;
-import com.zorg.zombies.service.GameActionsProcessor;
-import com.zorg.zombies.service.UserService;
-import com.zorg.zombies.service.UserUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +13,8 @@ public class GameActionsProcessorFactory {
 
     @Autowired
     public GameActionsProcessorFactory(UserService userService,
-                          UserUpdater userUpdater,
-                          ChangesNotifier changesNotifier) {
+                                       UserUpdater userUpdater,
+                                       ChangesNotifier changesNotifier) {
 
         this.userService = userService;
         this.userUpdater = userUpdater;

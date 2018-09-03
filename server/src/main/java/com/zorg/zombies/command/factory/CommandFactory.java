@@ -2,12 +2,12 @@ package com.zorg.zombies.command.factory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zorg.zombies.command.exception.CommandToJsonParseException;
-import com.zorg.zombies.model.MoveDirection;
-import com.zorg.zombies.model.factory.MoveDirectionFactory;
-import com.zorg.zombies.command.exception.WrongUserIdException;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
+import com.zorg.zombies.command.exception.CommandToJsonParseException;
+import com.zorg.zombies.command.exception.WrongUserIdException;
+import com.zorg.zombies.model.MoveDirection;
+import com.zorg.zombies.model.factory.MoveDirectionFactory;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,8 @@ public class CommandFactory {
 
     @SneakyThrows
     public Command fromJson(String jsonCommand) {
-        final Map<String, String> jsonAsMap = mapper.readValue(jsonCommand, new TypeReference<Map<String, String>>(){});
+        final Map<String, String> jsonAsMap = mapper.readValue(jsonCommand, new TypeReference<Map<String, String>>() {
+        });
 
         if ((jsonAsMap == null) || jsonAsMap.isEmpty()) throw new CommandToJsonParseException(jsonCommand);
 

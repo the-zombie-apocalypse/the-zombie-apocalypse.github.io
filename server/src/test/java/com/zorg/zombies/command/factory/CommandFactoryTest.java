@@ -1,10 +1,10 @@
-package com.zorg.zombies;
+package com.zorg.zombies.command.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.exception.WrongUserIdException;
-import com.zorg.zombies.command.factory.CommandFactory;
+import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.MoveDirectionX;
 import com.zorg.zombies.model.factory.MoveDirectionFactory;
 import com.zorg.zombies.model.factory.WrongMoveDirectionException;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.zorg.zombies.command.Command.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,6 +21,15 @@ class CommandFactoryTest {
 
     private final MoveDirectionFactory moveDirectionFactory = new MoveDirectionFactory();
     private final CommandFactory commandFactory = new CommandFactory(moveDirectionFactory);
+
+    @Test
+    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_Parsed() throws Exception {
+
+        final UserMoveCommand command = new UserMoveCommand("test", WrongMoveDirection.WRONG);
+        final String commandAsJson = mapper.writeValueAsString(command);
+
+        assertThrows(WrongMoveDirectionException.class, () -> commandFactory.fromJson(commandAsJson));
+    }
 
     @Test
     void commandParse_When_ValidMoveCommandSent_Expect_Parsed() throws Exception {
@@ -52,15 +60,7 @@ class CommandFactoryTest {
         assertThrows(WrongUserIdException.class, () -> commandFactory.fromJson(commandAsJson));
     }
 
-    @Test
-    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_Parsed() {
-
-        final String commandAsJson = "{" +
-                "\"userId\":\"test\"," +
-                "\"" + MOVE_COMMAND_FIELD + "\":\"true\"," +
-                "\"" + MOVE_DIRECTION_FIELD + "\":\"wrong\"" +
-                "}";
-
-        assertThrows(WrongMoveDirectionException.class, () -> commandFactory.fromJson(commandAsJson));
+    private enum WrongMoveDirection implements MoveDirection {
+        WRONG
     }
 }

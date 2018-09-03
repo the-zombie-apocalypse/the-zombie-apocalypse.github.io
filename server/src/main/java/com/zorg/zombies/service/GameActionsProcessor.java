@@ -7,9 +7,6 @@ import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.User;
-import com.zorg.zombies.service.ChangesNotifier;
-import com.zorg.zombies.service.UserService;
-import com.zorg.zombies.service.UserUpdater;
 import lombok.val;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -30,7 +27,7 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
         this.userUpdater = userUpdater;
         this.changesNotifier = changesNotifier;
         this.user = user;
-        this.subscriber.onNext(new WorldOnLoad(new UserChange(user)));
+        this.subscriber.onNext(new WorldOnLoad(new UserChange(user.getId())));
     }
 
     @Override
