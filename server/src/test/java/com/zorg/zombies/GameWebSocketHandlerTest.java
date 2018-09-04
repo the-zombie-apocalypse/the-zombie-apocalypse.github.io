@@ -50,7 +50,7 @@ class GameWebSocketHandlerTest {
         final String id = "session-id";
         final User user = new User(id);
         final WorldOnLoad greetingCommand = new WorldOnLoad(new UserChange(user.getId()));
-        final Flux<String> producer = Flux.empty();//Flux.just(mapper.writeValueAsString(new Command()));
+        final Flux<String> producer = Flux.empty();
         final ReplayProcessor<String> output = ReplayProcessor.create(1);
 
         given(userIdDefiner.getUserId(anyString())).willReturn(id);
