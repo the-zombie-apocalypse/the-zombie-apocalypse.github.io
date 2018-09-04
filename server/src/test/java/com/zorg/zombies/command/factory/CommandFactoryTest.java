@@ -3,7 +3,7 @@ package com.zorg.zombies.command.factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
-import com.zorg.zombies.command.exception.WrongUserIdException;
+import com.zorg.zombies.command.exception.UserIdIsRequired;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.MoveDirectionX;
 import com.zorg.zombies.model.factory.MoveDirectionFactory;
@@ -48,7 +48,7 @@ class CommandFactoryTest {
         final UserMoveCommand command = new UserMoveCommand(null, MoveDirectionX.WEST);
         final String commandAsJson = mapper.writeValueAsString(command);
 
-        assertThrows(WrongUserIdException.class, () -> commandFactory.fromJson(commandAsJson));
+        assertThrows(UserIdIsRequired.class, () -> commandFactory.fromJson(commandAsJson));
     }
 
     @Test
@@ -57,7 +57,7 @@ class CommandFactoryTest {
         final UserMoveCommand command = new UserMoveCommand("", MoveDirectionX.WEST);
         final String commandAsJson = mapper.writeValueAsString(command);
 
-        assertThrows(WrongUserIdException.class, () -> commandFactory.fromJson(commandAsJson));
+        assertThrows(UserIdIsRequired.class, () -> commandFactory.fromJson(commandAsJson));
     }
 
     private enum WrongMoveDirection implements MoveDirection {

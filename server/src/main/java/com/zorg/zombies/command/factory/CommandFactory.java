@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
-import com.zorg.zombies.command.exception.WrongUserIdException;
+import com.zorg.zombies.command.exception.UserIdIsRequired;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.factory.MoveDirectionFactory;
 import lombok.SneakyThrows;
@@ -35,7 +35,7 @@ public class CommandFactory {
 
         final String userId = jsonAsMap.get("userId");
 
-        if ((userId == null) || userId.isEmpty()) throw new WrongUserIdException(userId);
+        if ((userId == null) || userId.isEmpty()) throw new UserIdIsRequired(userId);
 
         final String isMoveCommand = jsonAsMap.get(MOVE_COMMAND_FIELD);
 
