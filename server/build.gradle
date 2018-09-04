@@ -32,7 +32,7 @@ configurations {
 }
 
 dependencies {
-    compileOnly('org.projectlombok:lombok')
+    compile('org.projectlombok:lombok')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('org.springframework.boot:spring-boot-starter-websocket')
