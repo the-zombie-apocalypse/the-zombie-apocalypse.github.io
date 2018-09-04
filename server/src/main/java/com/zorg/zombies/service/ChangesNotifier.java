@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ChangesNotifier {
 
-    private final Map<String, GameActionsProcessor> userIdToProcessor = new ConcurrentHashMap<>();
+    final Map<String, GameActionsProcessor> userIdToProcessor = new ConcurrentHashMap<>();
 
     public void register(String userId, GameActionsProcessor processor) {
         userIdToProcessor.put(userId, processor);
