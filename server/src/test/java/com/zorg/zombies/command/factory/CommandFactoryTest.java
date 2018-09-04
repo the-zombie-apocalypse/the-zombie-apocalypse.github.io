@@ -23,7 +23,7 @@ class CommandFactoryTest {
     private final CommandFactory commandFactory = new CommandFactory(moveDirectionFactory);
 
     @Test
-    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_Parsed() throws Exception {
+    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_WrongMoveDirectionThrown() throws Exception {
 
         final UserMoveCommand command = new UserMoveCommand("test", WrongMoveDirection.WRONG);
         final String commandAsJson = mapper.writeValueAsString(command);
@@ -43,7 +43,7 @@ class CommandFactoryTest {
     }
 
     @Test
-    void commandParse_When_NullUserIdInMoveCommandSent_Expect_Parsed() throws Exception {
+    void commandParse_When_NullUserIdInMoveCommandSent_Expect_UserIdIsRequiredThrown() throws Exception {
 
         final UserMoveCommand command = new UserMoveCommand(null, MoveDirectionX.WEST);
         final String commandAsJson = mapper.writeValueAsString(command);
@@ -52,7 +52,7 @@ class CommandFactoryTest {
     }
 
     @Test
-    void commandParse_When_EmptyUserIdInMoveCommandSent_Expect_Parsed() throws Exception {
+    void commandParse_When_EmptyUserIdInMoveCommandSent_Expect_UserIdIsRequiredThrown() throws Exception {
 
         final UserMoveCommand command = new UserMoveCommand("", MoveDirectionX.WEST);
         final String commandAsJson = mapper.writeValueAsString(command);
