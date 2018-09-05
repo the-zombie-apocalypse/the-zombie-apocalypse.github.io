@@ -6,16 +6,13 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UserStopMoveCommand extends Command {
-
-    private final MoveDirection stopMoveDirection;
+public class UserStopMoveCommand extends MoveDirectionCommand {
 
     {
-        stopMoveCommand = true;
+        moveStopCommand = true;
     }
 
-    public UserStopMoveCommand(String userId, MoveDirection stopMoveDirection) {
-        super(userId);
-        this.stopMoveDirection = stopMoveDirection;
+    public UserStopMoveCommand(String userId, MoveDirection moveStopDirection) {
+        super(userId, moveStopDirection);
     }
 }

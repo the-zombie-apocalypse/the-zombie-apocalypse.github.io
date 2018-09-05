@@ -4,8 +4,8 @@ import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.Command;
-import com.zorg.zombies.command.UserMoveCommand;
-import com.zorg.zombies.command.UserStopMoveCommand;
+import com.zorg.zombies.command.MoveDirectionCommand;
+import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.User;
 import lombok.val;
 import org.reactivestreams.Subscription;
@@ -13,20 +13,20 @@ import reactor.core.CoreSubscriber;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.ReplayProcessor;
 
+import java.util.function.BiFunction;
+
 public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
     private final UserService userService;
     private final UserUpdater userUpdater;
     private final ChangesNotifier changesNotifier;
 
-    private final User user;
     private final ReplayProcessor<WorldChange> subscriber = ReplayProcessor.create(256);
 
     GameActionsProcessor(UserService userService, UserUpdater userUpdater, ChangesNotifier changesNotifier, User user) {
         this.userService = userService;
         this.userUpdater = userUpdater;
         this.changesNotifier = changesNotifier;
-        this.user = user;
         this.subscriber.onNext(new WorldOnLoad(new UserChange(user.getId())));
     }
 
@@ -39,25 +39,21 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
     public void onNext(Command command) {
         System.out.println("onNext: " + command);
 
-        if (command.isMoveCommand()) {
-            final UserMoveCommand moveCommand = (UserMoveCommand) command;
+        if (command.isMoveChangeCommand()) {
+            val direction = ((MoveDirectionCommand) command).getDirection();
 
-            val userMoveDirection = moveCommand.getMoveDirection();
-            val userId = command.getUserId();
-            val user = userService.getUser(userId);
+            final BiFunction<User, MoveDirection, UserChange> updateAction;
 
-            val userChange = userUpdater.updateUserMove(user, userMoveDirection);
+            if (command.isMoveStartCommand()) {
+                updateAction = userUpdater::updateUserMove;
 
-            if (userChange.isUpdated()) {
-                changesNotifier.notifyUserUpdate(userChange);
-            }
-        } else if (command.isStopMoveCommand()) {
-            final UserStopMoveCommand stopMoveCommand = (UserStopMoveCommand) command;
-            val userStopMoveDirection = stopMoveCommand.getStopMoveDirection();
-            val userId = command.getUserId();
-            val user = userService.getUser(userId);
+            } else if (command.isMoveStopCommand()) {
+                updateAction = userUpdater::updateUserStopMove;
 
-            val userChange = userUpdater.updateUserStopMove(user, userStopMoveDirection);
+            } else return; // not sure about this 3rd possibility
+
+            val user = userService.getUser(command.getUserId());
+            val userChange = updateAction.apply(user, direction);
 
             if (userChange.isUpdated()) {
                 changesNotifier.notifyUserUpdate(userChange);
