@@ -54,7 +54,7 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
             if (userChange.isUpdated()) {
                 changesNotifier.notifyUserUpdate(userChange);
-                // todo: update other users!
+                // todo: notify other users!
             }
         }
     }
