@@ -8,6 +8,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class MoveDirectionCommand extends Command {
 
+    public static final String DIRECTION_FIELD = "direction";
+
     protected final MoveDirection direction;
 
     MoveDirectionCommand(String userId, MoveDirection direction) {
