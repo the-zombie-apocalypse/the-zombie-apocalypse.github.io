@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-import static com.zorg.zombies.command.Command.*;
+import static com.zorg.zombies.command.Command.MOVE_COMMAND_FIELD;
+import static com.zorg.zombies.command.MoveDirectionCommand.*;
 
 @Component
 public class CommandFactory {
@@ -41,7 +42,7 @@ public class CommandFactory {
 
         if ("true".equals(isMoveCommand)) {
 
-            final String moveDirection = jsonAsMap.get(MOVE_DIRECTION_FIELD);
+            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
             final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
 
             return new UserMoveCommand(userId, direction);

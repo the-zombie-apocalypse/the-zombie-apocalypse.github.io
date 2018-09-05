@@ -6,7 +6,6 @@ import lombok.Data;
 public class Command {
 
     public static final String MOVE_COMMAND_FIELD = "moveStartCommand";
-    public static final String MOVE_DIRECTION_FIELD = "moveDirection";
 
     protected boolean moveStartCommand;
     protected boolean moveStopCommand;

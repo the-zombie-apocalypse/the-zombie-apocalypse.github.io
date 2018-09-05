@@ -7,6 +7,7 @@ import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.MoveDirectionCommand;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.User;
+import com.zorg.zombies.service.exception.WrongMoveCommandException;
 import lombok.val;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -44,19 +45,16 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
             final BiFunction<User, MoveDirection, UserChange> updateAction;
 
-            if (command.isMoveStartCommand()) {
-                updateAction = userUpdater::updateUserMove;
-
-            } else if (command.isMoveStopCommand()) {
-                updateAction = userUpdater::updateUserStopMove;
-
-            } else return; // not sure about this 3rd possibility
+            if (command.isMoveStartCommand()) updateAction = userUpdater::updateUserMove;
+            else if (command.isMoveStopCommand()) updateAction = userUpdater::updateUserStopMove;
+            else throw new WrongMoveCommandException(command);
 
             val user = userService.getUser(command.getUserId());
             val userChange = updateAction.apply(user, direction);
 
             if (userChange.isUpdated()) {
                 changesNotifier.notifyUserUpdate(userChange);
+                // todo: update other users!
             }
         }
     }
