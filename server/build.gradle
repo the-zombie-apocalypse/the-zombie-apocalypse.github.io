@@ -38,7 +38,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.1', ext: 'pom'
     compile group: 'javax.websocket', name: 'javax.websocket-client-api', version: '1.1', ext: 'pom'
-    compile('org.glassfish.tyrus.bundles:tyrus-standalone-client:1.8.3')
+    testCompile('org.glassfish.tyrus.bundles:tyrus-standalone-client:1.8.3')
     runtime('org.springframework.boot:spring-boot-devtools')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
