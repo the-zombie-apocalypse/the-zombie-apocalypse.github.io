@@ -16,65 +16,43 @@ import static com.zorg.zombies.model.MoveDirectionZ.*;
 public class UserUpdater {
 
     public UserChange updateUserMove(User user, MoveDirection userMoveDirection) {
-        // todo: implement stopping user move in case of opposite moves
-
         final String userId = user.getId();
 
-        if (NORTH.equals(userMoveDirection)) {
-            if (user.isMovingNorth()) return new NoUserChange(userId);
-            user.setMovingNorth(true);
+        if (NORTH.equals(userMoveDirection)) return changeUserMove(user, NORTH, SOUTH);
+        else if (EAST.equals(userMoveDirection)) return changeUserMove(user, EAST, WEST);
+        else if (SOUTH.equals(userMoveDirection)) return changeUserMove(user, SOUTH, NORTH);
+        else if (WEST.equals(userMoveDirection)) return changeUserMove(user, WEST, EAST);
+        else if (UP.equals(userMoveDirection)) return changeUserMove(user, UP, DOWN);
+        else if (DOWN.equals(userMoveDirection)) return changeUserMove(user, DOWN, UP);
+        else return new NoUserChange(userId);
+    }
 
-        } else if (EAST.equals(userMoveDirection)) {
-            if (user.isMovingEast()) return new NoUserChange(userId);
-            user.setMovingEast(true);
+    private UserChange changeUserMove(User user, MoveDirection move, MoveDirection oppositeMove) {
+        final String userId = user.getId();
 
-        } else if (SOUTH.equals(userMoveDirection)) {
-            if (user.isMovingSouth()) return new NoUserChange(userId);
-            user.setMovingSouth(true);
-
-        } else if (WEST.equals(userMoveDirection)) {
-            if (user.isMovingWest()) return new NoUserChange(userId);
-            user.setMovingWest(true);
-
-        } else if (UP.equals(userMoveDirection)) {
-            if (user.isMovingUp()) return new NoUserChange(userId);
-            user.setMovingUp(true);
-
-        } else if (DOWN.equals(userMoveDirection)) {
-            if (user.isMovingDown()) return new NoUserChange(userId);
-            user.setMovingDown(true);
+        if (user.isMoving(move)) return new NoUserChange(userId);
+        if (user.isMoving(oppositeMove)) {
+            user.setStopMoving(oppositeMove);
+            return new UserStopMovingChange(userId, oppositeMove);
         }
 
-        return new UserMovingChange(userId, userMoveDirection);
+        user.setMoving(move);
+
+        return new UserMovingChange(userId, move);
     }
 
     public UserChange updateUserStopMove(User user, MoveDirection userStopMoveDirection) {
         final String userId = user.getId();
 
-        if (NORTH.equals(userStopMoveDirection)) {
-            if (!user.isMovingNorth()) return new NoUserChange(userId);
-            user.setMovingNorth(false);
+        if ((NORTH.equals(userStopMoveDirection) && !user.isMovingNorth())
+                || (EAST.equals(userStopMoveDirection) && !user.isMovingEast())
+                || (SOUTH.equals(userStopMoveDirection) && !user.isMovingSouth())
+                || (WEST.equals(userStopMoveDirection) && !user.isMovingWest())
+                || (UP.equals(userStopMoveDirection) && !user.isMovingUp())
+                || (DOWN.equals(userStopMoveDirection) && !user.isMovingDown()))
+            return new NoUserChange(userId);
 
-        } else if (EAST.equals(userStopMoveDirection)) {
-            if (!user.isMovingEast()) return new NoUserChange(userId);
-            user.setMovingEast(false);
-
-        } else if (SOUTH.equals(userStopMoveDirection)) {
-            if (!user.isMovingSouth()) return new NoUserChange(userId);
-            user.setMovingSouth(false);
-
-        } else if (WEST.equals(userStopMoveDirection)) {
-            if (!user.isMovingWest()) return new NoUserChange(userId);
-            user.setMovingWest(false);
-
-        } else if (UP.equals(userStopMoveDirection)) {
-            if (!user.isMovingUp()) return new NoUserChange(userId);
-            user.setMovingUp(false);
-
-        } else if (DOWN.equals(userStopMoveDirection)) {
-            if (!user.isMovingDown()) return new NoUserChange(userId);
-            user.setMovingDown(false);
-        }
+        user.setStopMoving(userStopMoveDirection);
 
         return new UserStopMovingChange(userId, userStopMoveDirection);
     }
