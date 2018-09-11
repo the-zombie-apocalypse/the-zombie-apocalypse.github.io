@@ -24,9 +24,9 @@ public class ChangesNotifier {
     public void notifyUserUpdate(UserChange userChange) {
         val processor = userIdToProcessor.get(userChange.getId());
 
-        if (processor != null) {
-            val change = new WorldChange(userChange);
-            processor.getSubscriber().onNext(change);
-        }
+        if (processor == null) return;
+
+        val change = new WorldChange(userChange);
+        processor.getSubscriber().onNext(change);
     }
 }
