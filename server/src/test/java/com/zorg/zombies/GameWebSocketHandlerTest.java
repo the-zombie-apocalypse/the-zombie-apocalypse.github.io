@@ -66,7 +66,6 @@ class GameWebSocketHandlerTest {
 
         assertNotNull(received);
 
-        new WorldChange();
         final String greetingJson = received.get(0);
         final WorldChange worldOnLoad = mapper.readValue(greetingJson, WorldChange.class);
 
