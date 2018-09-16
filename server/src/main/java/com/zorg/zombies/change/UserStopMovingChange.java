@@ -10,6 +10,10 @@ public class UserStopMovingChange extends UserChange {
 
     private final MoveDirection stopMoveDirection;
 
+    {
+        stopMovingChange = true;
+    }
+
     public UserStopMovingChange(String id, MoveDirection stopMoveDirection) {
         super(id);
         this.stopMoveDirection = stopMoveDirection;

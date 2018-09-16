@@ -6,13 +6,11 @@ import com.zorg.zombies.change.UserMovingChange;
 import com.zorg.zombies.change.UserStopMovingChange;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.User;
-import org.springframework.stereotype.Component;
 
 import static com.zorg.zombies.model.MoveDirectionX.*;
 import static com.zorg.zombies.model.MoveDirectionY.*;
 import static com.zorg.zombies.model.MoveDirectionZ.*;
 
-@Component
 public class UserUpdater {
 
     public UserChange updateUserMove(User user, MoveDirection userMoveDirection) {
