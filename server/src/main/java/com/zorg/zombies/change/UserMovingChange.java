@@ -10,6 +10,10 @@ public class UserMovingChange extends UserChange {
 
     private final MoveDirection moveDirection;
 
+    {
+        movingChange = true;
+    }
+
     public UserMovingChange(String id, MoveDirection moveDirection) {
         super(id);
         this.moveDirection = moveDirection;

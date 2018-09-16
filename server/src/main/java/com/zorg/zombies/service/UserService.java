@@ -1,32 +1,24 @@
 package com.zorg.zombies.service;
 
 import com.zorg.zombies.model.User;
+import com.zorg.zombies.model.UserData;
+import com.zorg.zombies.persistance.UserDataRepository;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class UserService {
 
-    private final static Map<String, User> USERS = new ConcurrentHashMap<>();
-
     private final UserIdDefiner userIdDefiner;
+    private final UserDataRepository userDataRepository;
 
-    public UserService(UserIdDefiner userIdDefiner) {
+    public UserService(UserIdDefiner userIdDefiner, UserDataRepository userDataRepository) {
         this.userIdDefiner = userIdDefiner;
+        this.userDataRepository = userDataRepository;
     }
 
     public User createUser(String sessionId) {
         final String id = userIdDefiner.getUserId(sessionId);
-        final User user = new User(id);
-
-        USERS.put(id, user);
-
-        return user;
-    }
-
-    public User getUser(String userId) {
-        return USERS.get(userId);
+        final UserData user = new UserData(id);
+        return new User(userDataRepository.save(user));
     }
 }

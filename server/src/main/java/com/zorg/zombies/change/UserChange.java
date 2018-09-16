@@ -8,14 +8,19 @@ public class UserChange {
 
     protected boolean updated = true;
 
+    protected boolean movingChange;
+    protected boolean stopMovingChange;
+    protected Coordinates coordinates;
     private String id;
-
-    private Coordinates coordinates;
 
     public UserChange(String id) {
         this.id = id;
     }
 
+    /**
+     * @deprecated this exist for jackson mapper only, don't use it!!!!1
+     */
+    @Deprecated
     public UserChange() {
     }
 }

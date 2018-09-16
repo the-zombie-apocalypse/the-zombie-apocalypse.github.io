@@ -9,10 +9,14 @@ import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.MoveDirectionY;
+import com.zorg.zombies.model.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.FluxProcessor;
 import reactor.test.StepVerifier;
@@ -31,8 +35,20 @@ class GameSupervisorTest {
     private static final Duration TIMEOUT = Duration.ofSeconds(5);
     private static final String SESSION_ID = "id";
 
+    @MockBean
+    private UserService userService;
+
     @Autowired
     private GameSupervisor gameSupervisor;
+
+    @BeforeEach
+    void setUp() {
+        BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(new User(SESSION_ID) {
+            {
+                movementNotifierEnabled = false;
+            }
+        });
+    }
 
     @Test
     void createGameActionsProcessor_When_SomeId_Expect_NotNullReturned() {

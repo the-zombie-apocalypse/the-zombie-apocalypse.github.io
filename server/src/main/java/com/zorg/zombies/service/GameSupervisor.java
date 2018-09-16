@@ -12,26 +12,20 @@ public class GameSupervisor {
 
     private final UserService userService;
     private final GameActionsProcessorFactory gameActionsProcessorFactory;
-    private final ChangesNotifier changesNotifier;
 
     @Autowired
     public GameSupervisor(UserService userService,
-                          GameActionsProcessorFactory gameActionsProcessorFactory,
-                          ChangesNotifier changesNotifier) {
+                          GameActionsProcessorFactory gameActionsProcessorFactory) {
 
         this.userService = userService;
         this.gameActionsProcessorFactory = gameActionsProcessorFactory;
-        this.changesNotifier = changesNotifier;
     }
 
     public FluxProcessor<Command, WorldChange> createGameActionsProcessor(String sessionId) {
         final User user = userService.createUser(sessionId);
-        final String userId = user.getId();
-
         final GameActionsProcessor processor = gameActionsProcessorFactory.createFor(user);
-        changesNotifier.register(userId, processor);
 
-        processor.doOnComplete(() -> changesNotifier.remove(userId)).subscribe();
+        processor.doOnComplete(user::onDestroy).subscribe();
 
         return processor;
     }
