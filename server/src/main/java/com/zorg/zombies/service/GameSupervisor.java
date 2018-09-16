@@ -11,19 +11,15 @@ import reactor.core.publisher.FluxProcessor;
 public class GameSupervisor {
 
     private final UserService userService;
-    private final GameActionsProcessorFactory gameActionsProcessorFactory;
 
     @Autowired
-    public GameSupervisor(UserService userService,
-                          GameActionsProcessorFactory gameActionsProcessorFactory) {
-
+    public GameSupervisor(UserService userService) {
         this.userService = userService;
-        this.gameActionsProcessorFactory = gameActionsProcessorFactory;
     }
 
     public FluxProcessor<Command, WorldChange> createGameActionsProcessor(String sessionId) {
         final User user = userService.createUser(sessionId);
-        final GameActionsProcessor processor = gameActionsProcessorFactory.createFor(user);
+        final GameActionsProcessor processor = new GameActionsProcessor(user);
 
         processor.doOnComplete(user::onDestroy).subscribe();
 
