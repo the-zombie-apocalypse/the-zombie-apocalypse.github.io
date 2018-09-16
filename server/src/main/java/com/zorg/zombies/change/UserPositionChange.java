@@ -10,8 +10,7 @@ import lombok.EqualsAndHashCode;
 public class UserPositionChange extends UserChange {
 
     public UserPositionChange(String id, Coordinates coordinates) {
-        super(id);
-        this.coordinates = coordinates;
+        super(id, coordinates);
     }
 
     public UserPositionChange(User user) {

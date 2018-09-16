@@ -23,4 +23,9 @@ public class UserChange {
     @Deprecated
     public UserChange() {
     }
+
+    public UserChange(String id, Coordinates coordinates) {
+        this(id);
+        this.coordinates = coordinates;
+    }
 }
