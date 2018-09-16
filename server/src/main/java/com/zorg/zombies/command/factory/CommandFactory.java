@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
+import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
 import com.zorg.zombies.command.exception.UserIdIsRequired;
 import com.zorg.zombies.model.MoveDirection;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 import static com.zorg.zombies.command.Command.MOVE_COMMAND_FIELD;
 import static com.zorg.zombies.command.MoveDirectionCommand.*;
+import static com.zorg.zombies.command.MoveDirectionCommand.MOVE_STOP_COMMAND_FIELD;
 
 @Component
 public class CommandFactory {
@@ -46,6 +48,16 @@ public class CommandFactory {
             final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
 
             return new UserMoveCommand(userId, direction);
+        }
+
+        final String isMoveStopCommand = jsonAsMap.get(MOVE_STOP_COMMAND_FIELD);
+
+        if ("true".equals(isMoveStopCommand)) {
+
+            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
+            final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
+
+            return new UserStopMoveCommand(userId, direction);
         }
 
         throw new RuntimeException("Continue implementation");
