@@ -1,8 +1,10 @@
 package com.zorg.zombies.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(of = "id")
 public class UserData {
 
     protected String id;

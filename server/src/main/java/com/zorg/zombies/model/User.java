@@ -1,15 +1,15 @@
 package com.zorg.zombies.model;
 
 import com.zorg.zombies.service.GameActionsProcessor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import static com.zorg.zombies.model.MoveDirectionX.*;
 import static com.zorg.zombies.model.MoveDirectionY.*;
 import static com.zorg.zombies.model.MoveDirectionZ.*;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class User extends UserData {
 
     private int visibleDistance = 50; // dummy value for now
@@ -20,6 +20,7 @@ public class User extends UserData {
     private volatile boolean isMovingEast;
     private volatile boolean isMovingUp;
     private volatile boolean isMovingDown;
+
     private GameActionsProcessor processor;
 
     public User(String id) {
@@ -64,4 +65,18 @@ public class User extends UserData {
         else if (DOWN.equals(stopMoving)) setMovingDown(false);
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 }
