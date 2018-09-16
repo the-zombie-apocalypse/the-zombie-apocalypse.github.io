@@ -4,6 +4,7 @@ import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.UserMovingChange;
 import com.zorg.zombies.change.UserStopMovingChange;
 import com.zorg.zombies.change.WorldChange;
+import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
@@ -71,6 +72,7 @@ class GameSupervisorTest {
     private Consumer<WorldChange> getGreetingAssertion(String id) {
         return worldChange -> {
             System.out.println("Greeting: " + worldChange);
+            assertTrue(worldChange instanceof WorldOnLoad);
             assertEquals(worldChange.getUser().getId(), id);
         };
     }

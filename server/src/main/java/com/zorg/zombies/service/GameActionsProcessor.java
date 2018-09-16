@@ -2,7 +2,6 @@ package com.zorg.zombies.service;
 
 import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.WorldChange;
-import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
@@ -16,11 +15,11 @@ import reactor.core.publisher.ReplayProcessor;
 public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
     private final User user;
-    private final ReplayProcessor<WorldChange> subscriber = ReplayProcessor.create(256);
+    private final ReplayProcessor<WorldChange> subscriber;
 
     GameActionsProcessor(User user) {
         this.user = user;
-        this.subscriber.onNext(new WorldOnLoad(new UserChange(user.getId())));
+        subscriber = user.getSubscriber();
     }
 
     @Override

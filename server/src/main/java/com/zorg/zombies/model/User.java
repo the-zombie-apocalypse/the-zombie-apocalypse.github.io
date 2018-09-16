@@ -3,13 +3,14 @@ package com.zorg.zombies.model;
 import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
+import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
-import com.zorg.zombies.service.GameActionsProcessor;
 import com.zorg.zombies.service.UserUpdater;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
+import reactor.core.publisher.ReplayProcessor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,14 +44,19 @@ public class User extends UserData {
     private volatile boolean isMovingUp;
     private volatile boolean isMovingDown;
 
-    private GameActionsProcessor processor;
+    private final ReplayProcessor<WorldChange> subscriber = ReplayProcessor.create(256);
 
     public User(String id) {
-        super(id, new Coordinates(0, 0)); // todo: receive actual coordinates from somewhere...
+        this(id, new Coordinates(0, 0)); // todo: receive actual coordinates from somewhere...
     }
 
     public User(UserData userData) {
-        super(userData.id, userData.coordinates);
+        this(userData.id, userData.coordinates);
+    }
+
+    public User(String id, Coordinates coordinates) {
+        super(id, coordinates);
+        subscriber.onNext(new WorldOnLoad(new UserChange(id)));
     }
 
     public boolean isMoving() {
@@ -111,7 +117,7 @@ public class User extends UserData {
 
         if (userChange.isUpdated()) {
             val change = new WorldChange(userChange);
-            processor.getSubscriber().onNext(change);
+            subscriber.onNext(change);
 
             if (movementNotifierEnabled) movementNotifier.start();
         }
@@ -124,7 +130,7 @@ public class User extends UserData {
 
         if (userChange.isUpdated()) {
             val change = new WorldChange(userChange);
-            processor.getSubscriber().onNext(change);
+            subscriber.onNext(change);
         }
 
         return userChange;
@@ -141,7 +147,7 @@ public class User extends UserData {
             coordinates.makeStep(direction);
         }
 
-        processor.getSubscriber().onNext(new WorldChange(new UserPositionChange(this)));
+        subscriber.onNext(new WorldChange(new UserPositionChange(this)));
     }
 
     protected List<MoveDirection> getMovingDirections() {
