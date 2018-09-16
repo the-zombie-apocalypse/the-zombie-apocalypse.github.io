@@ -113,7 +113,7 @@ public class User extends UserData {
             val change = new WorldChange(userChange);
             processor.getSubscriber().onNext(change);
 
-            if (movementNotifierEnabled && movementNotifier.isDone()) movementNotifier.start();
+            if (movementNotifierEnabled) movementNotifier.start();
         }
 
         return userChange;
@@ -167,19 +167,17 @@ public class User extends UserData {
             this.user = user;
         }
 
-        public boolean isDone() {
-            return movementFuture.isDone();
-        }
-
         private void movementCommand() {
             if (user.isMoving()) {
                 user.makeMove();
             } else {
-                movementFuture.cancel(true); // todo: check if it also works with false
+                movementFuture.cancel(false);
             }
         }
 
         public void start() {
+            if (!movementFuture.isDone()) return;
+
             movementFuture = scheduledExecutor.scheduleWithFixedDelay(
                     // todo: ensure the scheduleAtFixedRate isn't better
                     this::movementCommand,
