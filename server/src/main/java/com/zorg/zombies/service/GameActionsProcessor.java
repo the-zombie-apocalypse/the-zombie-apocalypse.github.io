@@ -3,6 +3,7 @@ package com.zorg.zombies.service;
 import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.command.Command;
+import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.User;
@@ -41,6 +42,9 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
             if (userChange.isUpdated()) {
                 // todo: notify other users!
             }
+        } else if (command.isErrorCommand()) {
+            ErrorCommand errorCommand = (ErrorCommand) command;
+            errorCommand.getError().printStackTrace(); // todo: log!
         }
     }
 

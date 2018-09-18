@@ -31,16 +31,25 @@ public class GameWebSocketHandler implements WebSocketHandler {
     public Mono<Void> handle(WebSocketSession session) {
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(session.getId());
 
-        final Mono<Void> webSocketMessage = session.receive().log()
+        final Mono<Void> webSocketMessage = session.receive()
                 .map(this::webSocketMessageToCommand)
+                .doOnError(this::onError) // can't make it work: .onErrorResume(throwable -> session.receive().map(this::webSocketMessageToCommand).log().doOnError(this::onError).doOnNext(processor::onNext))
                 .doOnNext(processor::onNext)
+                .doOnError(this::onError)
+                .doOnComplete(session::close)
+                .log()
                 .then();
 
         final Mono<Void> send = session.send(processor.map(
                 worldChange -> session.textMessage(toJson(worldChange))
         ));
 
-        return webSocketMessage.and(send).then();
+        return Mono.zip(webSocketMessage, send).then();
+    }
+
+    private void onError(Throwable throwable) {
+        System.out.println("Error : " + throwable);
+        throwable.printStackTrace();
     }
 
     @SneakyThrows
