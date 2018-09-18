@@ -10,6 +10,8 @@ public class Command {
 
     protected boolean moveStartCommand;
     protected boolean moveStopCommand;
+    protected boolean isErrorCommand;
+    protected Throwable error;
 
     private String userId;
 

@@ -3,6 +3,7 @@ package com.zorg.zombies.command.factory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
+import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
@@ -31,33 +32,38 @@ public class CommandFactory {
 
     @SneakyThrows
     public Command fromJson(String jsonCommand) {
-        final Map<String, String> jsonAsMap = mapper.readValue(jsonCommand, new TypeReference<Map<String, String>>() {
-        });
 
-        if ((jsonAsMap == null) || jsonAsMap.isEmpty()) throw new CommandToJsonParseException(jsonCommand);
+        try {
+            final Map<String, String> jsonAsMap = mapper.readValue(jsonCommand, new TypeReference<Map<String, String>>() {
+            });
 
-        final String userId = jsonAsMap.get("userId");
+            if ((jsonAsMap == null) || jsonAsMap.isEmpty()) throw new CommandToJsonParseException(jsonCommand);
 
-        if ((userId == null) || userId.isEmpty()) throw new UserIdIsRequired(userId);
+            final String userId = jsonAsMap.get("userId");
 
-        final String isMoveCommand = jsonAsMap.get(MOVE_COMMAND_FIELD);
+            if ((userId == null) || userId.isEmpty()) throw new UserIdIsRequired(userId);
 
-        if ("true".equals(isMoveCommand)) {
+            final String isMoveCommand = jsonAsMap.get(MOVE_COMMAND_FIELD);
 
-            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
-            final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
+            if ("true".equals(isMoveCommand)) {
 
-            return new UserMoveCommand(userId, direction);
-        }
+                final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
+                final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
 
-        final String isMoveStopCommand = jsonAsMap.get(MOVE_STOP_COMMAND_FIELD);
+                return new UserMoveCommand(userId, direction);
+            }
 
-        if ("true".equals(isMoveStopCommand)) {
+            final String isMoveStopCommand = jsonAsMap.get(MOVE_STOP_COMMAND_FIELD);
 
-            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
-            final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
+            if ("true".equals(isMoveStopCommand)) {
 
-            return new UserStopMoveCommand(userId, direction);
+                final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
+                final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
+
+                return new UserStopMoveCommand(userId, direction);
+            }
+        } catch (Exception e) {
+            return new ErrorCommand(e);
         }
 
         throw new RuntimeException("Continue implementation");
