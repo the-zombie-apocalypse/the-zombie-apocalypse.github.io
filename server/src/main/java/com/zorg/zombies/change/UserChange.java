@@ -1,11 +1,13 @@
 package com.zorg.zombies.change;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zorg.zombies.model.Coordinates;
 import lombok.Data;
 
 @Data
 public class UserChange {
 
+    @JsonIgnore
     protected boolean updated = true;
 
     protected boolean movingChange;
