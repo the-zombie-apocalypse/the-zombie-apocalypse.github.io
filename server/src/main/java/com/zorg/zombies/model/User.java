@@ -56,7 +56,7 @@ public class User extends UserData {
 
     public User(String id, Coordinates coordinates) {
         super(id, coordinates);
-        subscriber.onNext(new WorldOnLoad(id, coordinates));
+        subscriber.onNext(new WorldOnLoad(new UserChange(id, coordinates)));
     }
 
     public boolean isMoving() {
