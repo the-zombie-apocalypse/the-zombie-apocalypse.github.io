@@ -1,6 +1,15 @@
 package com.zorg.zombies.command;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class ErrorCommand extends Command {
+
+    @JsonIgnore
+    private transient Throwable error;
 
     {
         isErrorCommand = true;
@@ -8,6 +17,6 @@ public class ErrorCommand extends Command {
 
     public ErrorCommand(Exception e) {
         super("error " + e);
-        error = e;
+        this.error = e;
     }
 }
