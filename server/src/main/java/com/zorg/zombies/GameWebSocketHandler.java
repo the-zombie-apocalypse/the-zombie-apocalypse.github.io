@@ -55,6 +55,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
     @SneakyThrows
     private Command webSocketMessageToCommand(WebSocketMessage webSocketMessage) {
         final String payload = webSocketMessage.getPayloadAsText();
+        System.out.println(payload);
         return commandFactory.fromJson(payload);
     }
 

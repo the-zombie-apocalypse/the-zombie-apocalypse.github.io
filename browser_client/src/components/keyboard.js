@@ -11,19 +11,18 @@ function getKeyDownAction(key, server) {
     switch (key) {
         case ARROW_UP:
         case KEY_W:
-            return server.sendPlayerMoveUp;
+            return server.sendPlayerMoveNorth;
         case ARROW_DOWN:
         case KEY_S:
-            return server.sendPlayerMoveDown;
+            return server.sendPlayerMoveSouth;
         case ARROW_LEFT:
         case KEY_A:
-            return server.sendPlayerMoveLeft;
+            return server.sendPlayerMoveWest;
         case ARROW_RIGHT:
         case KEY_D:
-            return server.sendPlayerMoveRight;
+            return server.sendPlayerMoveEast;
         default:
-            return function () {
-            }
+            return new Function();
     }
 }
 
@@ -31,29 +30,27 @@ function getKeyUpAction(key, server) {
     switch (key) {
         case ARROW_UP:
         case KEY_W:
-            return server.sendPlayerStopMoveUp;
+            return server.sendPlayerStopMoveNorth;
         case ARROW_DOWN:
         case KEY_S:
-            return server.sendPlayerStopMoveDown;
+            return server.sendPlayerStopMoveSouth;
         case ARROW_LEFT:
         case KEY_A:
-            return server.sendPlayerStopMoveLeft;
+            return server.sendPlayerStopMoveWest;
         case ARROW_RIGHT:
         case KEY_D:
-            return server.sendPlayerStopMoveRight;
+            return server.sendPlayerStopMoveEast;
         default:
-            return function () {
-            }
+            return new Function();
     }
 }
 
 export default class KeyboardListener {
+
     constructor(document, server) {
         this._document = document;
         this._server = server;
-    }
 
-    init() {
         this.initKeyDown();
         this.initKeyUp();
     }

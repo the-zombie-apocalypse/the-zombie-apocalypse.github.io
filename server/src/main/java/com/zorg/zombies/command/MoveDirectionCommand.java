@@ -12,8 +12,7 @@ public class MoveDirectionCommand extends Command {
 
     protected final MoveDirection direction;
 
-    MoveDirectionCommand(String userId, MoveDirection direction) {
-        super(userId);
+    MoveDirectionCommand(MoveDirection direction) {
         this.direction = direction;
     }
 }

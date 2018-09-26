@@ -80,7 +80,7 @@ class GameSupervisorTest {
     @Test
     void reactionOnCommand_When_UserStartMovingUp_Expect_UserMovingUpResponse() {
         final MoveDirectionY direction = NORTH;
-        final Command userMovingNorthCommand = new UserMoveCommand(SESSION_ID, direction);
+        final Command userMovingNorthCommand = new UserMoveCommand(direction);
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
         processor.onComplete();
@@ -110,8 +110,8 @@ class GameSupervisorTest {
     @Test
     void reactionOnCommand_When_UserStartMovingUpAndStopMovingUp_Expect_UserMovingUpThenUserStopMovingUpResponse() {
         final MoveDirectionY direction = NORTH;
-        final Command userMovingNorthCommand = new UserMoveCommand(SESSION_ID, direction);
-        final Command userStopMovingNorthCommand = new UserStopMoveCommand(SESSION_ID, direction);
+        final Command userMovingNorthCommand = new UserMoveCommand(direction);
+        final Command userStopMovingNorthCommand = new UserStopMoveCommand(direction);
 
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
@@ -144,17 +144,17 @@ class GameSupervisorTest {
 
     @Test
     void reactionOnCommand_When_UserIsMovingAndStoppingManyTimes_Expect_CorrectWorldChanges() {
-        final Command userMovingNorthCommand = new UserMoveCommand(SESSION_ID, NORTH);
-        final Command userStopMovingNorthCommand = new UserStopMoveCommand(SESSION_ID, NORTH);
+        final Command userMovingNorthCommand = new UserMoveCommand(NORTH);
+        final Command userStopMovingNorthCommand = new UserStopMoveCommand(NORTH);
 
-        final Command userMovingSouthCommand = new UserMoveCommand(SESSION_ID, SOUTH);
-        final Command userStopMovingSouthCommand = new UserStopMoveCommand(SESSION_ID, SOUTH);
+        final Command userMovingSouthCommand = new UserMoveCommand(SOUTH);
+        final Command userStopMovingSouthCommand = new UserStopMoveCommand(SOUTH);
 
-        final Command userMovingWestCommand = new UserMoveCommand(SESSION_ID, WEST);
-        final Command userStopMovingWestCommand = new UserStopMoveCommand(SESSION_ID, WEST);
+        final Command userMovingWestCommand = new UserMoveCommand(WEST);
+        final Command userStopMovingWestCommand = new UserStopMoveCommand(WEST);
 
-        final Command userMovingEastCommand = new UserMoveCommand(SESSION_ID, EAST);
-        final Command userStopMovingEastCommand = new UserStopMoveCommand(SESSION_ID, EAST);
+        final Command userMovingEastCommand = new UserMoveCommand(EAST);
+        final Command userStopMovingEastCommand = new UserStopMoveCommand(EAST);
 
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);

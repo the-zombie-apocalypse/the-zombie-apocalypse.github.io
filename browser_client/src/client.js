@@ -6,8 +6,7 @@ import gameActions from './components/game_actions'
 
 export default function gameLoop() {
 
-    gameActions.connectToServer();
-    gameActions.initKeyboardListener(window.document);
+    gameActions.connectToServer(window.document);
 
     const graphon = new Graphon(window);
     graphon.initGraph();

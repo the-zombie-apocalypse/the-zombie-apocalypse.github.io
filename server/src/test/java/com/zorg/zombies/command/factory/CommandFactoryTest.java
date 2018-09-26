@@ -2,8 +2,8 @@ package com.zorg.zombies.command.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
+import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
-import com.zorg.zombies.command.exception.UserIdIsRequired;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.MoveDirectionX;
 import com.zorg.zombies.model.factory.MoveDirectionFactory;
@@ -25,39 +25,26 @@ class CommandFactoryTest {
     @Test
     void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_WrongMoveDirectionThrown() throws Exception {
 
-        final UserMoveCommand command = new UserMoveCommand("test", WrongMoveDirection.WRONG);
+        final UserMoveCommand command = new UserMoveCommand(WrongMoveDirection.WRONG);
         final String commandAsJson = mapper.writeValueAsString(command);
+        final Command parsed = commandFactory.fromJson(commandAsJson);
 
-        assertThrows(WrongMoveDirectionException.class, () -> commandFactory.fromJson(commandAsJson));
+        assertTrue(parsed instanceof ErrorCommand);
+
+        final ErrorCommand errorCommand = (ErrorCommand) parsed;
+
+        assertTrue(errorCommand.getError() instanceof WrongMoveDirectionException);
     }
 
     @Test
     void commandParse_When_ValidMoveCommandSent_Expect_Parsed() throws Exception {
 
-        final UserMoveCommand command = new UserMoveCommand("test-id", MoveDirectionX.WEST);
+        final UserMoveCommand command = new UserMoveCommand(MoveDirectionX.WEST);
         final String commandAsJson = mapper.writeValueAsString(command);
 
         final Command parsed = commandFactory.fromJson(commandAsJson);
 
         assertEquals(command, parsed);
-    }
-
-    @Test
-    void commandParse_When_NullUserIdInMoveCommandSent_Expect_UserIdIsRequiredThrown() throws Exception {
-
-        final UserMoveCommand command = new UserMoveCommand(null, MoveDirectionX.WEST);
-        final String commandAsJson = mapper.writeValueAsString(command);
-
-        assertThrows(UserIdIsRequired.class, () -> commandFactory.fromJson(commandAsJson));
-    }
-
-    @Test
-    void commandParse_When_EmptyUserIdInMoveCommandSent_Expect_UserIdIsRequiredThrown() throws Exception {
-
-        final UserMoveCommand command = new UserMoveCommand("", MoveDirectionX.WEST);
-        final String commandAsJson = mapper.writeValueAsString(command);
-
-        assertThrows(UserIdIsRequired.class, () -> commandFactory.fromJson(commandAsJson));
     }
 
     private enum WrongMoveDirection implements MoveDirection {

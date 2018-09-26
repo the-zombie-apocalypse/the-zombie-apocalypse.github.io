@@ -30,7 +30,7 @@ class MoveDirectionFactoryTest {
         ).forEach(
                 direction -> assertEquals(
                         direction,
-                        moveDirectionFactory.parseMoveDirection(direction.name().toLowerCase())
+                        moveDirectionFactory.parseMoveDirection(direction.name())
                 )
         );
     }

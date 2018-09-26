@@ -7,7 +7,6 @@ import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
-import com.zorg.zombies.command.exception.UserIdIsRequired;
 import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.factory.MoveDirectionFactory;
 import lombok.SneakyThrows;
@@ -39,28 +38,13 @@ public class CommandFactory {
 
             if ((jsonAsMap == null) || jsonAsMap.isEmpty()) throw new CommandToJsonParseException(jsonCommand);
 
-            final String userId = jsonAsMap.get("userId");
+            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
 
-            if ((userId == null) || userId.isEmpty()) throw new UserIdIsRequired(userId);
-
-            final String isMoveCommand = jsonAsMap.get(MOVE_COMMAND_FIELD);
-
-            if ("true".equals(isMoveCommand)) {
-
-                final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
+            if (moveDirection != null) {
                 final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
 
-                return new UserMoveCommand(userId, direction);
-            }
-
-            final String isMoveStopCommand = jsonAsMap.get(MOVE_STOP_COMMAND_FIELD);
-
-            if ("true".equals(isMoveStopCommand)) {
-
-                final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
-                final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
-
-                return new UserStopMoveCommand(userId, direction);
+                if ("true".equals(jsonAsMap.get(MOVE_COMMAND_FIELD))) return new UserMoveCommand(direction);
+                if ("true".equals(jsonAsMap.get(MOVE_STOP_COMMAND_FIELD))) return new UserStopMoveCommand(direction);
             }
         } catch (Exception e) {
             return new ErrorCommand(e);

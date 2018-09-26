@@ -12,10 +12,7 @@ public class Command {
     protected boolean moveStopCommand;
     protected boolean isErrorCommand;
 
-    private String userId;
-
-    public Command(String userId) {
-        this.userId = userId;
+    public Command() {
     }
 
     public boolean isMoveChangeCommand() {
