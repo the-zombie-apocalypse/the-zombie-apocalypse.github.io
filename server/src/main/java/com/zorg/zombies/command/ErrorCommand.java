@@ -16,7 +16,6 @@ public class ErrorCommand extends Command {
     }
 
     public ErrorCommand(Exception e) {
-        super("error " + e);
         this.error = e;
     }
 }

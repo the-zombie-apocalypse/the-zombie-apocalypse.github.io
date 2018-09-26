@@ -4,7 +4,6 @@ const global = {
         y: 0,
         isMovingX: false,
         isMovingY: false,
-        walkStepTime: 50
     }
 };
 

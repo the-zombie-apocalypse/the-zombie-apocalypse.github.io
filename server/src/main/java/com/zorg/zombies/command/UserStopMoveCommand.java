@@ -12,7 +12,7 @@ public class UserStopMoveCommand extends MoveDirectionCommand {
         moveStopCommand = true;
     }
 
-    public UserStopMoveCommand(String userId, MoveDirection moveStopDirection) {
-        super(userId, moveStopDirection);
+    public UserStopMoveCommand(MoveDirection moveStopDirection) {
+        super(moveStopDirection);
     }
 }

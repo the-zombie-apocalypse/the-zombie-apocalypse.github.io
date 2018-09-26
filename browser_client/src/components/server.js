@@ -1,59 +1,111 @@
-import WebSocket from "../mock_server";
-import global from "../entities/global";
+import directions from './directions'
+import UserMoveCommand from "../entities/commands/user-move-command";
+import UserStopMoveCommand from "../entities/commands/user-stop-move-command";
 
-const controlBytes = {
-    goUp: 1,
-    goDown: 2,
-    goLeft: 3,
-    goRight: 4,
-    stopUp: 5,
-    stopDown: 6,
-    stopLeft: 7,
-    stopRight: 8
+const serverCommands = {
+    goUp: new UserMoveCommand(directions.up).toString(),
+    goDown: new UserMoveCommand(directions.down).toString(),
+    goWest: new UserMoveCommand(directions.west).toString(),
+    goEast: new UserMoveCommand(directions.east).toString(),
+    goNorth: new UserMoveCommand(directions.north).toString(),
+    goSouth: new UserMoveCommand(directions.south).toString(),
+    stopUp: new UserStopMoveCommand(directions.up).toString(),
+    stopDown: new UserStopMoveCommand(directions.down).toString(),
+    stopWest: new UserStopMoveCommand(directions.west).toString(),
+    stopEast: new UserStopMoveCommand(directions.east).toString(),
+    stopNorth: new UserStopMoveCommand(directions.north).toString(),
+    stopSouth: new UserStopMoveCommand(directions.south).toString(),
 };
 
 export default class Server {
 
-    constructor(connectionURL, onMessage) {
-        this._socket = new WebSocket(connectionURL);
-        this._socket.onmessage = onMessage;
+    constructor(connectionURL) {
+        this.connectionURL = connectionURL;
     }
 
-    sendByte(value) {
-        const buffer = new ArrayBuffer(1);
-        buffer[0] = value;
-        this._socket.send(buffer);
+    onGreeting(onGreeting) {
+        this._onGreeting = onGreeting;
+        return this
+    }
+
+    onMessage(onMessage) {
+        this._onMessage = onMessage;
+        return this
+    }
+
+    handleMessage(message) {
+        this._onMessage(message)
+    }
+
+    connect() {
+
+        let handle = (message) => {
+            let data = JSON.parse(message.data);
+
+            if (data.greeting) {
+                this._onGreeting(data);
+                handle = this.handleMessage.bind(this);
+            } else {
+                console.error(data);
+                throw Error('There is no valid greeting from server');
+            }
+        };
+
+        function getHandler() {
+            return handle.apply(null, arguments);
+        }
+
+        this._socket = new WebSocket(this.connectionURL);
+        this._socket.onmessage = getHandler;
+
+        return this
     }
 
     sendPlayerMoveUp() {
-        global.playerSettings.isMovingY || this.sendByte(controlBytes.goUp);
+        this._socket.send(serverCommands.goUp);
     }
 
     sendPlayerMoveDown() {
-        global.playerSettings.isMovingY || this.sendByte(controlBytes.goDown);
+        this._socket.send(serverCommands.goDown);
     }
 
-    sendPlayerMoveLeft() {
-        global.playerSettings.isMovingX || this.sendByte(controlBytes.goLeft);
+    sendPlayerMoveNorth() {
+        this._socket.send(serverCommands.goNorth);
     }
 
-    sendPlayerMoveRight() {
-        global.playerSettings.isMovingX || this.sendByte(controlBytes.goRight);
+    sendPlayerMoveSouth() {
+        this._socket.send(serverCommands.goSouth);
+    }
+
+    sendPlayerMoveWest() {
+        this._socket.send(serverCommands.goWest);
+    }
+
+    sendPlayerMoveEast() {
+        this._socket.send(serverCommands.goEast);
     }
 
     sendPlayerStopMoveUp() {
-        this.sendByte(controlBytes.stopUp);
+        this._socket.send(serverCommands.stopUp);
     }
 
     sendPlayerStopMoveDown() {
-        this.sendByte(controlBytes.stopDown);
+        this._socket.send(serverCommands.stopDown);
     }
 
-    sendPlayerStopMoveLeft() {
-        this.sendByte(controlBytes.stopLeft);
+    sendPlayerStopMoveNorth() {
+        this._socket.send(serverCommands.stopNorth);
     }
 
-    sendPlayerStopMoveRight() {
-        this.sendByte(controlBytes.stopRight);
+    sendPlayerStopMoveSouth() {
+        this._socket.send(serverCommands.stopSouth);
+    }
+
+    sendPlayerStopMoveWest() {
+        this._socket.send(serverCommands.stopWest);
+    }
+
+    sendPlayerStopMoveEast() {
+        this._socket.send(serverCommands.stopEast);
     }
 }

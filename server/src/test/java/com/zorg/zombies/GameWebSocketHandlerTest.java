@@ -1,7 +1,6 @@
 package com.zorg.zombies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.UserIdDefiner;
@@ -66,7 +65,7 @@ class GameWebSocketHandlerTest {
         assertNotNull(received);
 
         final String greetingJson = received.get(0);
-        final WorldChange worldOnLoad = mapper.readValue(greetingJson, WorldChange.class);
+        final WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
 
         assertEquals(worldOnLoad, greetingCommand);
     }

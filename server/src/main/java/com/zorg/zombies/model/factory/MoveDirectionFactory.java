@@ -12,17 +12,17 @@ public class MoveDirectionFactory {
 
     public MoveDirection parseMoveDirection(String direction) {
         switch (direction) {
-            case "north":
+            case "NORTH":
                 return NORTH;
-            case "east":
+            case "EAST":
                 return EAST;
-            case "south":
+            case "SOUTH":
                 return SOUTH;
-            case "west":
+            case "WEST":
                 return WEST;
-            case "up":
+            case "UP":
                 return UP;
-            case "down":
+            case "DOWN":
                 return DOWN;
         }
 
