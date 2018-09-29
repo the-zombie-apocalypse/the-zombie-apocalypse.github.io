@@ -11,6 +11,7 @@ public class UserChange {
 
     protected boolean movingChange;
     protected boolean stopMovingChange;
+    protected boolean positionChange;
 
     private String id;
 
