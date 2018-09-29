@@ -5,58 +5,7 @@ import Greeting from '../entities/changes/greeting'
 
 const playerSettings = global.playerSettings;
 
-// function moveX(delta) {
-//     if (playerSettings.isMovingX) return;
-//
-//     playerSettings.isMovingX = true;
-//
-//     setTimeout(function moveX() {
-//         if (playerSettings.isMovingX) {
-//             playerSettings.x = playerSettings.x + delta;
-//             setTimeout(moveX, playerSettings.walkStepTime);
-//         }
-//     }, playerSettings.walkStepTime);
-// }
-//
-// function moveY(delta) {
-//     if (playerSettings.isMovingY) return;
-//
-//     playerSettings.isMovingY = true;
-//
-//     setTimeout(function moveY() {
-//         if (playerSettings.isMovingY) {
-//             playerSettings.y = playerSettings.y - delta;
-//             setTimeout(moveY, playerSettings.walkStepTime);
-//         }
-//     }, playerSettings.walkStepTime);
-// }
-//
-// function stopMoveX() {
-//     playerSettings.isMovingX = false;
-// }
-//
-// function stopMoveY() {
-//     playerSettings.isMovingY = false;
-// }
-//
-// function topicToAction(topic) {
-//     switch (topic) {
-//         case 'moveX':
-//             return moveX;
-//         case 'moveY':
-//             return moveY;
-//         case 'stopMoveX':
-//             return stopMoveX;
-//         case 'stopMoveY':
-//             return stopMoveY;
-//         default:
-//             return function () {
-//             };
-//     }
-// }
-
-function setPlayerCoords(userEnvironment) {
-    let coordinates = userEnvironment.user.coordinates;
+function setPlayerCoords(coordinates) {
     playerSettings.x = coordinates.x;
     playerSettings.y = coordinates.y;
 }
@@ -72,14 +21,16 @@ const gameActions = {
     },
     onGreeting(response) {
         const greeting = new Greeting(response);
-
         this.keyListener = new KeyboardListener(this._document, this._server);
 
-        console.log(greeting);
+        setPlayerCoords(greeting.coordinates);
     },
     onMessage: function (response) {
-        console.log(response);
-        // setPlayerCoords(data.userEnvironment);
+        let message = JSON.parse(response.data);
+
+        if (message.user.positionChange) {
+            setPlayerCoords(message.user.coordinates);
+        }
     }
 };
 

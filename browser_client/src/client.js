@@ -18,7 +18,7 @@ export default function gameLoop() {
     graphon.addStatic(axesHelper);
 
     const plane = new Mesh(
-        new PlaneGeometry(50, 50, 50, 50),
+        new PlaneGeometry(150, 150, 150, 150),
         new MeshBasicMaterial({color: 0x848384, wireframe: true})
     );
     graphon.addStatic(plane);

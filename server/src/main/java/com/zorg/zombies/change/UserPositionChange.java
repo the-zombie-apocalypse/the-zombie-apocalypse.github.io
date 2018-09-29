@@ -8,6 +8,9 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserPositionChange extends UserChange {
+    {
+        positionChange = true;
+    }
 
     private Coordinates coordinates;
 
