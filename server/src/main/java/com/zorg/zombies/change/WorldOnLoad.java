@@ -8,15 +8,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class WorldOnLoad extends WorldChange {
+public class WorldOnLoad extends WorldChange<UserPositionChange> {
 
     private boolean isGreeting = true;
 
-    public WorldOnLoad(UserChange user) {
+    public WorldOnLoad(UserPositionChange user) {
         super(user);
     }
 
     public WorldOnLoad(String id, Coordinates coordinates) {
-        super(new UserChange(id, coordinates));
+        super(new UserPositionChange(id, coordinates));
     }
 }

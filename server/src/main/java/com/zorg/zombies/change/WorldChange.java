@@ -5,11 +5,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WorldChange {
+public class WorldChange<T extends UserChange> {
 
-    private UserChange user;
+    private T user;
 
-    public WorldChange(UserChange user) {
+    public WorldChange(T user) {
         this.user = user;
     }
 }

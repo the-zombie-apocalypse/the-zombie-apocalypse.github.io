@@ -1,7 +1,6 @@
 package com.zorg.zombies.change;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zorg.zombies.model.Coordinates;
 import lombok.Data;
 
 @Data
@@ -12,7 +11,7 @@ public class UserChange {
 
     protected boolean movingChange;
     protected boolean stopMovingChange;
-    protected Coordinates coordinates;
+
     private String id;
 
     public UserChange(String id) {
@@ -26,8 +25,4 @@ public class UserChange {
     public UserChange() {
     }
 
-    public UserChange(String id, Coordinates coordinates) {
-        this(id);
-        this.coordinates = coordinates;
-    }
 }
