@@ -40,11 +40,14 @@ class GameSupervisorTest {
     private UserService userService;
 
     @Autowired
+    private UsersCommunicator usersCommunicator;
+
+    @Autowired
     private GameSupervisor gameSupervisor;
 
     @BeforeEach
     void setUp() {
-        BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(new User(SESSION_ID) {
+        BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(new User(SESSION_ID, usersCommunicator) {
             {
                 movementNotifierEnabled = false;
             }
