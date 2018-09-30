@@ -7,13 +7,13 @@ import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.service.UserUpdater;
+import com.zorg.zombies.service.UsersCommunicator;
+import com.zorg.zombies.util.MovementAndDirections;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import reactor.core.publisher.ReplayProcessor;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -22,16 +22,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.zorg.zombies.Constants.*;
-import static com.zorg.zombies.model.MoveDirectionX.*;
-import static com.zorg.zombies.model.MoveDirectionY.*;
-import static com.zorg.zombies.model.MoveDirectionZ.*;
 
 @Getter
 @Setter
 public class User extends UserData {
 
     private final UserUpdater updater = new UserUpdater();
-    private final UserMovementNotifier movementNotifier = new UserMovementNotifier(this);
+    private final UserMovementNotifier movementNotifier = new UserMovementNotifier();
+    private final UsersCommunicator usersCommunicator;
+
     // exists for test purposes
     protected boolean movementNotifierEnabled = true;
 
@@ -46,94 +45,75 @@ public class User extends UserData {
 
     private final ReplayProcessor<WorldChange> subscriber = ReplayProcessor.create(256);
 
-    public User(String id) {
-        this(id, new Coordinates(0, 0)); // todo: receive actual coordinates from somewhere...
+    public User(String id, UsersCommunicator usersCommunicator) {
+        this(id, new Coordinates(0, 0), usersCommunicator);
     }
 
-    public User(UserData userData) {
-        this(userData.id, userData.coordinates);
+    public User(UserData userData, UsersCommunicator usersCommunicator) {
+        this(userData.id, userData.coordinates, usersCommunicator);
     }
 
-    public User(String id, Coordinates coordinates) {
+    private User(String id, Coordinates coordinates, UsersCommunicator usersCommunicator) {
         super(id, coordinates);
-        subscriber.onNext(new WorldOnLoad(new UserPositionChange(id, coordinates)));
+        this.usersCommunicator = usersCommunicator;
+
+        final UserPositionChange userPositionChange = new UserPositionChange(id, coordinates);
+
+        subscriber.onNext(new WorldOnLoad(userPositionChange));
+        usersCommunicator.notifyUsers(new WorldChange<>(userPositionChange));
+        usersCommunicator.register(id, coordinates, subscriber);
+
+        subscriber.doOnTerminate(() -> usersCommunicator.unregister(id));
     }
 
     public boolean isMoving() {
-        return (isMovingNorth || isMovingSouth || isMovingWest || isMovingEast || isMovingUp || isMovingDown);
+        return MovementAndDirections.isMoving(this);
     }
 
     /**
      * Setting move without any checking!
      */
     public void setMoving(MoveDirection direction) {
-        if (NORTH.equals(direction)) setMovingNorth(true);
-        else if (EAST.equals(direction)) setMovingEast(true);
-        else if (SOUTH.equals(direction)) setMovingSouth(true);
-        else if (WEST.equals(direction)) setMovingWest(true);
-        else if (UP.equals(direction)) setMovingUp(true);
-        else if (DOWN.equals(direction)) setMovingDown(true);
+        MovementAndDirections.setMoving(direction, this);
     }
 
     public boolean isMoving(MoveDirection direction) {
-        if (NORTH.equals(direction)) return isMovingNorth;
-        else if (EAST.equals(direction)) return isMovingEast;
-        else if (SOUTH.equals(direction)) return isMovingSouth;
-        else if (WEST.equals(direction)) return isMovingWest;
-        else if (UP.equals(direction)) return isMovingUp;
-        else if (DOWN.equals(direction)) return isMovingDown;
-        else return false;
+        return MovementAndDirections.isMoving(direction, this);
     }
 
     /**
-     * Setting move without any checking!
+     * Setting move stop without any checking!
      */
     public void setStopMoving(MoveDirection stopMoving) {
-        if (NORTH.equals(stopMoving)) setMovingNorth(false);
-        else if (EAST.equals(stopMoving)) setMovingEast(false);
-        else if (SOUTH.equals(stopMoving)) setMovingSouth(false);
-        else if (WEST.equals(stopMoving)) setMovingWest(false);
-        else if (UP.equals(stopMoving)) setMovingUp(false);
-        else if (DOWN.equals(stopMoving)) setMovingDown(false);
+        MovementAndDirections.setStopMoving(stopMoving, this);
     }
 
-    @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    public UserChange act(UserMoveCommand command) {
+    public void act(UserMoveCommand command) {
         final UserChange userChange = updater.updateUserMove(this, command.getDirection());
 
         if (userChange.isUpdated()) {
-            val change = new WorldChange(userChange);
-            subscriber.onNext(change);
+            val change = new WorldChange<>(userChange);
+//            subscriber.onNext(change);
 
             if (movementNotifierEnabled) movementNotifier.start();
-        }
 
-        return userChange;
+            notifyUsers(change);
+        }
     }
 
-    public UserChange act(UserStopMoveCommand command) {
+    void notifyUsers(WorldChange userChange) {
+        usersCommunicator.notifyUsers(userChange);
+    }
+
+    public void act(UserStopMoveCommand command) {
         final UserChange userChange = updater.updateUserStopMove(this, command.getDirection());
 
         if (userChange.isUpdated()) {
-            val change = new WorldChange(userChange);
-            subscriber.onNext(change);
-        }
+            val change = new WorldChange<>(userChange);
+//            subscriber.onNext(change);
 
-        return userChange;
+            notifyUsers(change);
+        }
     }
 
     public void onDestroy() {
@@ -147,41 +127,25 @@ public class User extends UserData {
             coordinates.makeStep(direction);
         }
 
-        subscriber.onNext(new WorldChange(new UserPositionChange(this)));
+//        subscriber.onNext(new WorldChange<>(new UserPositionChange(this)));
+        notifyUsers(new WorldChange<>(new UserPositionChange(this)));
     }
 
     protected List<MoveDirection> getMovingDirections() {
-        List<MoveDirection> directions = new ArrayList<>();
-
-        if (isMovingNorth) directions.add(NORTH);
-        else if (isMovingSouth) directions.add(SOUTH);
-        if (isMovingWest) directions.add(WEST);
-        else if (isMovingEast) directions.add(EAST);
-        if (isMovingUp) directions.add(UP);
-        else if (isMovingDown) directions.add(DOWN);
-
-        return Collections.unmodifiableList(directions);
+        return MovementAndDirections.collectMovingDirections(this);
     }
 
-    public static class UserMovementNotifier {
+    class UserMovementNotifier {
 
         private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-        private final User user;
         private volatile Future<?> movementFuture = CompletableFuture.completedFuture(null);
 
-        public UserMovementNotifier(User user) {
-            this.user = user;
-        }
-
         private void movementCommand() {
-            if (user.isMoving()) {
-                user.makeMove();
-            } else {
-                movementFuture.cancel(false);
-            }
+            if (isMoving()) makeMove();
+            else movementFuture.cancel(false);
         }
 
-        public void start() {
+        void start() {
             if (!movementFuture.isDone()) return;
 
             movementFuture = scheduledExecutor.scheduleWithFixedDelay(

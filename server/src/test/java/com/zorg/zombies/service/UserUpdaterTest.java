@@ -20,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserUpdaterTest {
@@ -29,7 +30,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingNorth_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionY.NORTH;
 
         assertFalse(user.isMovingNorth());
@@ -47,7 +48,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingEast_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionX.EAST;
 
         assertFalse(user.isMovingEast());
@@ -65,7 +66,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingSouth_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionY.SOUTH;
 
         assertFalse(user.isMovingSouth());
@@ -83,7 +84,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingWest_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionX.WEST;
 
         assertFalse(user.isMovingWest());
@@ -101,7 +102,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingUp_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionZ.UP;
 
         assertFalse(user.isMovingUp());
@@ -119,7 +120,7 @@ class UserUpdaterTest {
 
     @Test
     void updateUserMove_When_UserNotMovingAndThenMovingDown_Expect_Updated() {
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         var moveDirection = MoveDirectionZ.DOWN;
 
         assertFalse(user.isMovingDown());
@@ -138,7 +139,7 @@ class UserUpdaterTest {
     @Test
     void updateUserMove_When_UserAlreadyMovingInThatDirection_Expect_NotUpdated() {
         var moveDirection = MoveDirectionY.SOUTH;
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         user.setMovingSouth(true);
 
         var userChange = userUpdater.updateUserMove(user, moveDirection);
@@ -150,7 +151,7 @@ class UserUpdaterTest {
     @Test
     void updateUserStopMove_When_UserAlreadyMovingInThatDirection_Expect_StoppedAndUpdated() {
         var moveDirection = MoveDirectionY.SOUTH;
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         user.setMovingSouth(true);
 
         var userChange = userUpdater.updateUserStopMove(user, moveDirection);
@@ -167,7 +168,7 @@ class UserUpdaterTest {
     @Test
     void updateUserStopMove_When_UserNotMovingInThatDirection_Expect_NotStoppedAndNotUpdated() {
         var moveDirection = MoveDirectionY.SOUTH;
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
 
         var userChange = userUpdater.updateUserStopMove(user, moveDirection);
 
@@ -180,7 +181,7 @@ class UserUpdaterTest {
         var userAlreadyMoves = MoveDirectionX.WEST;
         var userNextMove = MoveDirectionX.EAST;
 
-        var user = new User("id");
+        var user = new User("id", mock(UsersCommunicator.class));
         user.setMoving(userAlreadyMoves);
 
         var userChange = userUpdater.updateUserMove(user, userNextMove);
@@ -197,7 +198,7 @@ class UserUpdaterTest {
 
     @Test
     void moveScenario() {
-        val user = new User("id");
+        val user = new User("id", mock(UsersCommunicator.class));
 
         BiFunction<User, MoveDirection, UserChange> updateMove = userUpdater::updateUserMove;
         BiFunction<User, MoveDirection, UserChange> updateStopMove = userUpdater::updateUserStopMove;

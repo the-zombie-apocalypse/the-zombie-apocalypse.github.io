@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.UserIdDefiner;
+import com.zorg.zombies.service.UsersCommunicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,6 +40,9 @@ class GameWebSocketHandlerTest {
     @MockBean
     private UserIdDefiner userIdDefiner;
 
+    @MockBean
+    private UsersCommunicator usersCommunicator;
+
     private URI getUrl() throws URISyntaxException {
         return new URI("ws://localhost:" + this.port + ENTRY);
     }
@@ -46,7 +50,7 @@ class GameWebSocketHandlerTest {
     @Test
     void testGreeting() throws Exception {
         final String id = "session-id";
-        final User user = new User(id);
+        final User user = new User(id, usersCommunicator);
         final WorldOnLoad greetingCommand = new WorldOnLoad(user.getId(), user.getCoordinates());
         final Flux<String> producer = Flux.empty();
         final ReplayProcessor<String> output = ReplayProcessor.create(1);
