@@ -33,7 +33,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
 
         final Mono<Void> webSocketMessage = session.receive()
                 .map(this::webSocketMessageToCommand)
-                .doOnError(this::onError) // can't make it work: .onErrorResume(throwable -> session.receive().map(this::webSocketMessageToCommand).log().doOnError(this::onError).doOnNext(processor::onNext))
+                .doOnError(this::onError)
                 .doOnNext(processor::onNext)
                 .doOnError(this::onError)
                 .doOnComplete(session::close)
