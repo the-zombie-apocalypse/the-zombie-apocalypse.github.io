@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.4.RELEASE'
+        springBootVersion = '2.+'
     }
     repositories {
         mavenCentral()
@@ -43,7 +43,7 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
     testImplementation('org.junit.jupiter:junit-jupiter-api')
-    testImplementation('org.mockito:mockito-junit-jupiter:2.21.0')
+    testImplementation('org.mockito:mockito-junit-jupiter:2.+')
     testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 }
 
