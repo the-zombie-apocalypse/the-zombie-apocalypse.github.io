@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MapChunkSupervisor {
 
-    private final MapChunk temporaryChunk = new MapChunk();
+    private final MapChunk temporaryChunk = new DefaultMapChunk();
 
     public MapChunk getChunkFor(Coordinates coordinates) {
         return temporaryChunk;
