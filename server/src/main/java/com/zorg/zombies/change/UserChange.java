@@ -15,7 +15,7 @@ public class UserChange {
 
     private String id;
 
-    public UserChange(String id) {
+    protected UserChange(String id) {
         this.id = id;
     }
 
