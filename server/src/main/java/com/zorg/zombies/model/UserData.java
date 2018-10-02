@@ -7,8 +7,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of = "id")
 public class UserData {
 
-    protected String id;
-    protected Coordinates coordinates;
+    protected final String id;
+    protected final Coordinates coordinates;
 
     public UserData(String id) {
         this(id, new Coordinates(0, 0));
