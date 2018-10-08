@@ -1,7 +1,7 @@
 package com.zorg.zombies.change;
 
 import com.zorg.zombies.model.Coordinates;
-import com.zorg.zombies.model.User;
+import com.zorg.zombies.model.UserData;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -20,7 +20,7 @@ public class UserPositionChange extends UserChange {
         this.coordinates = coordinates;
     }
 
-    public UserPositionChange(User user) {
+    public UserPositionChange(UserData user) {
         this(user.getId(), user.getCoordinates());
     }
 }

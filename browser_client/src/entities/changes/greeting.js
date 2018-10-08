@@ -10,6 +10,7 @@ export default class Greeting {
 
         this.id = greetingData.user.id;
         this.coordinates = greetingData.user.coordinates;
+        this.users = greetingData.users;
     }
 
 }

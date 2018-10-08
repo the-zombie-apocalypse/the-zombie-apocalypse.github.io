@@ -1,17 +1,17 @@
 import {AxesHelper, Mesh, MeshBasicMaterial, PlaneGeometry} from 'three'
 import './style.css'
-import Graphon from './graphics/graphon'
-import Player from './entities/player'
+import graphon from './graphics/graphon'
 import gameActions from './components/game_actions'
+import MainPlayer from "./entities/main-player";
 
 export default function gameLoop() {
 
     gameActions.connectToServer(window.document);
 
-    const graphon = new Graphon(window);
     graphon.initGraph();
 
-    const player = new Player();
+    // todo: move player creation after greeting from server
+    const player = new MainPlayer();
     graphon.addDynamic(player);
 
     const axesHelper = new AxesHelper(150);

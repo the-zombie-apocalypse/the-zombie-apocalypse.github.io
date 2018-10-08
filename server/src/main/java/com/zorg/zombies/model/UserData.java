@@ -18,4 +18,8 @@ public class UserData {
         this.id = id;
         this.coordinates = coordinates;
     }
+
+    public UserData(UserData from) {
+        this(from.getId(), from.getCoordinates());
+    }
 }

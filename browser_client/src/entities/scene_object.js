@@ -1,3 +1,5 @@
+import graphon from '../graphics/graphon';
+
 export default class SceneObject {
 
     constructor(sceneObject) {
@@ -12,5 +14,9 @@ export default class SceneObject {
         return function () {
             // implementation in subclasses is optional
         }
+    }
+
+    destroy() {
+        graphon.remove(this._sceneObject)
     }
 }
