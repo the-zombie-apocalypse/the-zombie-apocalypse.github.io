@@ -17,7 +17,7 @@ const serverCommands = {
     stopSouth: new UserStopMoveCommand(directions.south).toString(),
 };
 
-export default class Server {
+export default class GameServer {
 
     constructor(connectionURL) {
         this.connectionURL = connectionURL;
@@ -31,6 +31,11 @@ export default class Server {
     onMessage(onMessage) {
         this._onMessage = onMessage;
         return this
+    }
+
+    onClose(onClose) {
+        this._onClose = onClose;
+        return this;
     }
 
     handleMessage(message) {
@@ -51,12 +56,19 @@ export default class Server {
             }
         };
 
-        function getHandler() {
-            return handle.apply(null, arguments);
+        function getHandler(message) {
+            return handle(message);
         }
 
         this._socket = new WebSocket(this.connectionURL);
+
+        window.onbeforeunload = () => {
+            this._socket.close();
+        };
+
         this._socket.onmessage = getHandler;
+        this._socket.onerror = console.log;
+        if (this._onClose) this._socket.onclose = this._onClose;
 
         return this
     }

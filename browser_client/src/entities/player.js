@@ -1,26 +1,33 @@
 import {BoxGeometry, Mesh, MeshLambertMaterial} from "three"
 import SceneObject from './scene_object'
-import global from './global'
 
 export default class Player extends SceneObject {
 
-    constructor() {
+    constructor(id, coordinates) {
         super(Player.buildSceneObject());
+        id && (this.id = id);
+        coordinates && (this.position = coordinates)
+    }
+
+    get id() {
+        return this._id
+    }
+
+    set id(id) {
+        this._id = id
     }
 
     get position() {
         return this._sceneObject.position
     }
 
-    get rotation() {
-        return this._sceneObject.rotation
+    set position(coordinates) {
+        this._sceneObject.position.x = coordinates.x;
+        this._sceneObject.position.y = coordinates.y;
     }
 
-    get onSceneUpdate() {
-        return () => {
-            this.position.x = global.playerSettings.x;
-            this.position.y = global.playerSettings.y;
-        }
+    get rotation() {
+        return this._sceneObject.rotation
     }
 
     static buildSceneObject() {

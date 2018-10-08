@@ -5,15 +5,18 @@ import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.Coordinates;
+import com.zorg.zombies.model.UserSubscriber;
+import com.zorg.zombies.service.UsersCommunicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.ReplayProcessor;
+import reactor.core.publisher.FluxProcessor;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMapChunkTest {
@@ -24,24 +27,25 @@ class DefaultMapChunkTest {
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {
         final DefaultMapChunk chunk = new DefaultMapChunk();
 
-        chunk.notifyUsers(new WorldOnLoad(new UserPositionChange("id", new Coordinates())));
+        chunk.notifyUsers(WorldOnLoad.forTest("id", new Coordinates()));
     }
 
     @Test
     void publishCheck_When_OneSubscriberAndOneChangePublished_Expect_Received() {
         final DefaultMapChunk chunk = new DefaultMapChunk();
         final String id0 = "id-0";
-        final int dummyHistorySize = 10;
 
-        final ReplayProcessor<WorldChange> processor0 = ReplayProcessor.create(dummyHistorySize);
+        final UsersCommunicator usersCommunicator = mock(UsersCommunicator.class);
+        final UserSubscriber user = new UserSubscriber(id0, new Coordinates(), usersCommunicator);
 
-        chunk.addObject(id0, new Coordinates(), processor0);
+        chunk.addObject(user);
 
         final Coordinates newCoordinates = new Coordinates(42, 24);
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, newCoordinates)));
 
         chunk.unregister(id0);
 
+        final FluxProcessor<WorldChange, WorldChange> processor0 = user.getSubscriber();
         processor0.onComplete();
 
         StepVerifier.create(processor0).as("proc-0 connection...")
@@ -58,13 +62,10 @@ class DefaultMapChunkTest {
         final String id0 = "id-0";
         final String id1 = "id-1";
         final String id2 = "id-2";
-        final int dummyHistorySize = 10;
 
-        final ReplayProcessor<WorldChange> processor0 = ReplayProcessor.create(dummyHistorySize);
-        final ReplayProcessor<WorldChange> processor1 = ReplayProcessor.create(dummyHistorySize);
-        final ReplayProcessor<WorldChange> processor2 = ReplayProcessor.create(dummyHistorySize);
-
-        chunk.addObject(id0, new Coordinates(), processor0);
+        final UsersCommunicator usersCommunicator = mock(UsersCommunicator.class);
+        final UserSubscriber user0 = new UserSubscriber(id0, new Coordinates(), usersCommunicator);
+        chunk.addObject(user0);
 
         final Coordinates coordinates0 = new Coordinates(42, 24);
         final Coordinates coordinates1 = new Coordinates(43, 23);
@@ -78,12 +79,14 @@ class DefaultMapChunkTest {
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates0)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates2)));
 
-        chunk.addObject(id1, new Coordinates(), processor1);
+        final UserSubscriber user1 = new UserSubscriber(id1, new Coordinates(), usersCommunicator);
+        chunk.addObject(user1);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates1)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates4)));
 
-        chunk.addObject(id2, new Coordinates(), processor2);
+        final UserSubscriber user2 = new UserSubscriber(id2, new Coordinates(), usersCommunicator);
+        chunk.addObject(user2);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id2, coordinates3)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates5)));
@@ -93,6 +96,10 @@ class DefaultMapChunkTest {
         chunk.unregister(id0);
         chunk.unregister(id1);
         chunk.unregister(id2);
+
+        final FluxProcessor<WorldChange, WorldChange> processor0 = user0.getSubscriber();
+        final FluxProcessor<WorldChange, WorldChange> processor1 = user1.getSubscriber();
+        final FluxProcessor<WorldChange, WorldChange> processor2 = user2.getSubscriber();
 
         processor0.onComplete();
         processor1.onComplete();

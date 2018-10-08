@@ -10,12 +10,11 @@ import com.zorg.zombies.service.exception.WrongMoveCommandException;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
 import reactor.core.publisher.FluxProcessor;
-import reactor.core.publisher.ReplayProcessor;
 
 public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
 
     private final User user;
-    private final ReplayProcessor<WorldChange> subscriber;
+    private final FluxProcessor<WorldChange, WorldChange> subscriber;
 
     GameActionsProcessor(User user) {
         this.user = user;
@@ -59,7 +58,4 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
         subscriber.subscribe(actual);
     }
 
-    public ReplayProcessor<WorldChange> getSubscriber() {
-        return subscriber;
-    }
 }

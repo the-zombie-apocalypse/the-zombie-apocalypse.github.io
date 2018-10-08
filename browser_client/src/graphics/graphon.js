@@ -6,7 +6,7 @@ const VIEW_ANGLE = 35;
 const NEAR = 0.1;
 const FAR = 5000;
 
-export default class Graphon {
+class Graphon {
 
     constructor(window) {
         this.window = window;
@@ -72,4 +72,11 @@ export default class Graphon {
         });
         this._renderer.render(this._scene, this._camera);
     }
+
+    remove(removeMe) {
+        this._scene.remove(removeMe)
+    }
 }
+
+export default new Graphon(window)
+

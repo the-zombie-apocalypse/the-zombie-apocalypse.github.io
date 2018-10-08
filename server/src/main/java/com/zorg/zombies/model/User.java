@@ -3,7 +3,6 @@ package com.zorg.zombies.model;
 import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
-import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.service.UserUpdater;
@@ -12,7 +11,6 @@ import com.zorg.zombies.util.MovementAndDirections;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
-import reactor.core.publisher.ReplayProcessor;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -25,11 +23,10 @@ import static com.zorg.zombies.Constants.*;
 
 @Getter
 @Setter
-public class User extends UserData {
+public class User extends UserSubscriber {
 
     private final UserUpdater updater = new UserUpdater();
     private final UserMovementNotifier movementNotifier = new UserMovementNotifier();
-    private final UsersCommunicator usersCommunicator;
 
     // exists for test purposes
     protected boolean movementNotifierEnabled = true;
@@ -43,27 +40,16 @@ public class User extends UserData {
     private volatile boolean isMovingUp;
     private volatile boolean isMovingDown;
 
-    private final ReplayProcessor<WorldChange> subscriber = ReplayProcessor.create(256);
-
     public User(String id, UsersCommunicator usersCommunicator) {
-        this(id, new Coordinates(0, 0), usersCommunicator);
+        super(id, new Coordinates(0, 0), usersCommunicator);
     }
 
     public User(UserData userData, UsersCommunicator usersCommunicator) {
-        this(userData.id, userData.coordinates, usersCommunicator);
+        super(userData.id, userData.coordinates, usersCommunicator);
     }
 
-    private User(String id, Coordinates coordinates, UsersCommunicator usersCommunicator) {
-        super(id, coordinates);
-        this.usersCommunicator = usersCommunicator;
-
-        final UserPositionChange userPositionChange = new UserPositionChange(id, coordinates);
-
-        subscriber.onNext(new WorldOnLoad(userPositionChange));
-        usersCommunicator.notifyUsers(new WorldChange<>(userPositionChange));
-        usersCommunicator.register(id, coordinates, subscriber);
-
-        subscriber.doOnTerminate(() -> usersCommunicator.unregister(id));
+    public void notifyJoining() {
+        usersCommunicator.register(this);
     }
 
     public boolean isMoving() {
@@ -93,7 +79,6 @@ public class User extends UserData {
 
         if (userChange.isUpdated()) {
             val change = new WorldChange<>(userChange);
-//            subscriber.onNext(change);
 
             if (movementNotifierEnabled) movementNotifier.start();
 
@@ -110,8 +95,6 @@ public class User extends UserData {
 
         if (userChange.isUpdated()) {
             val change = new WorldChange<>(userChange);
-//            subscriber.onNext(change);
-
             notifyUsers(change);
         }
     }
@@ -127,7 +110,6 @@ public class User extends UserData {
             coordinates.makeStep(direction);
         }
 
-//        subscriber.onNext(new WorldChange<>(new UserPositionChange(this)));
         notifyUsers(new WorldChange<>(new UserPositionChange(this)));
     }
 

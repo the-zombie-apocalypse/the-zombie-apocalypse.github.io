@@ -36,7 +36,10 @@ public class GameWebSocketHandler implements WebSocketHandler {
                 .doOnError(this::onError)
                 .doOnNext(processor::onNext)
                 .doOnError(this::onError)
-                .doOnComplete(session::close)
+                .doOnComplete(() -> {
+                    session.close();
+                    processor.onComplete();
+                })
                 .log()
                 .then();
 

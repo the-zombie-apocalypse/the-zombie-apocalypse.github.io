@@ -51,11 +51,12 @@ class GameWebSocketHandlerTest {
     void testGreeting() throws Exception {
         final String id = "session-id";
         final User user = new User(id, usersCommunicator);
-        final WorldOnLoad greetingCommand = new WorldOnLoad(user.getId(), user.getCoordinates());
         final Flux<String> producer = Flux.empty();
         final ReplayProcessor<String> output = ReplayProcessor.create(1);
 
         given(userIdDefiner.getUserId(anyString())).willReturn(id);
+
+        user.notifyJoining();
 
         client.execute(getUrl(), session -> session
                 .send(producer.map(session::textMessage))
@@ -71,6 +72,7 @@ class GameWebSocketHandlerTest {
         final String greetingJson = received.get(0);
         final WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
 
+        final WorldOnLoad greetingCommand = WorldOnLoad.forTest(user.getId(), user.getCoordinates());
         assertEquals(worldOnLoad, greetingCommand);
     }
 }

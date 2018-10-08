@@ -1,13 +1,11 @@
 package com.zorg.zombies.change;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class UserChange {
-
-    @JsonIgnore
-    protected boolean updated = true;
+@EqualsAndHashCode(callSuper = true)
+public class UserChange extends Change {
 
     protected boolean movingChange;
     protected boolean stopMovingChange;
