@@ -8,10 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class UserPositionChange extends UserChange {
-    {
-        positionChange = true;
-    }
 
+    private boolean positionChange = true;
     private Coordinates coordinates;
 
     @java.beans.ConstructorProperties({"id", "coordinates"})

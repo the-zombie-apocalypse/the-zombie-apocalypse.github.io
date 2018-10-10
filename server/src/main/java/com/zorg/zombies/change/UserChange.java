@@ -7,10 +7,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserChange extends Change {
 
-    protected boolean movingChange;
-    protected boolean stopMovingChange;
-    protected boolean positionChange;
-
     private String id;
 
     protected UserChange(String id) {
