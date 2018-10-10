@@ -23,9 +23,9 @@ public class WorldOnLoad extends WorldChange<UserPositionChange> {
         this.users = Collections.emptySet();
     }
 
-    public WorldOnLoad(UserPositionChange user, Collection<UserSubscriber> otherUsers) {
+    public WorldOnLoad(UserPositionChange user, Collection<UserSubscriber> users) {
         super(user);
-        this.users = otherUsers.stream().map(UserData::new).collect(Collectors.toList());
+        this.users = users.stream().map(UserData::new).collect(Collectors.toList());
     }
 
     public static WorldOnLoad forTest(String id, Coordinates coordinates) {
