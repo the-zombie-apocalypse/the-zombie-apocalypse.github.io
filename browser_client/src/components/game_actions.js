@@ -14,6 +14,10 @@ function processUserChange(userChange) {
     objectsWarehouse.setPosition(userChange.id, userChange.coordinates);
 }
 
+function dismissUser(userId) {
+    objectsWarehouse.dismissUser(userId);
+}
+
 const gameActions = {
     connectToServer: function (document) {
         this._document = document;
@@ -34,13 +38,14 @@ const gameActions = {
         greeting.users.forEach(spawnNewUser);
     },
     onMessage: function (response) {
-        let message = JSON.parse(response.data);
+        const message = JSON.parse(response.data);
         console.log(message);
         const userChange = message.user;
 
         if (userChange) {
             if (message.greeting) spawnNewUser(userChange);
             if (userChange.positionChange) processUserChange(userChange);
+            if (userChange.leavingGameEvent) dismissUser(userChange.id);
         }
     },
     onClose() {
