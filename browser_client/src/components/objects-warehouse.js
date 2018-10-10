@@ -29,5 +29,9 @@ export default {
         visibleArea[id] = player;
 
         graphon.addDynamic(player);
-    }
+    },
+
+    dismissUser(id) {
+        delete visibleArea[id];
+    },
 }
