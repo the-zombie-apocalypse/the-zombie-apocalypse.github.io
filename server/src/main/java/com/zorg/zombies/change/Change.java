@@ -9,4 +9,6 @@ public class Change {
     @JsonIgnore
     protected boolean updated = true;
 
+    protected String name;
+
 }

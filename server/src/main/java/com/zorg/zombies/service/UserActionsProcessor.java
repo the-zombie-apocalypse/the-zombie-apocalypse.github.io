@@ -34,7 +34,6 @@ public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Comm
 
     @Override
     public void onComplete() {
-        super.onComplete();
         user.destroy();
     }
 

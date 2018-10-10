@@ -20,6 +20,6 @@ public class UserSubscriber extends UserData implements Destroyable {
 
     @Override
     public void destroy() {
-        subscriber.onComplete();
+//        subscriber.onComplete();
     }
 }
