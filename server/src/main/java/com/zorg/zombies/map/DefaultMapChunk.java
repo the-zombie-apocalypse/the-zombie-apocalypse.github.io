@@ -1,5 +1,6 @@
 package com.zorg.zombies.map;
 
+import com.zorg.zombies.change.UserLeftGameEvent;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.model.UserSubscriber;
 
@@ -22,6 +23,9 @@ public class DefaultMapChunk implements MapChunk {
     @Override
     public void unregister(String id) {
         userIdToUser.remove(id);
+
+        var change = new WorldChange<>(new UserLeftGameEvent(id));
+        userIdToUser.values().forEach(user -> user.getSubscriber().onNext(change));
     }
 
     @Override
