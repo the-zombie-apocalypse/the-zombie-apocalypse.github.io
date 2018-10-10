@@ -24,7 +24,7 @@ import static com.zorg.zombies.util.MovementAndDirections.*;
 
 @Getter
 @Setter
-public class User extends UserSubscriber {
+public class User extends UserSubscriber implements Destroyable {
 
     private final UserUpdater updater = new UserUpdater();
     private final UserMovement movementNotifier = new UserMovement();
@@ -86,7 +86,6 @@ public class User extends UserSubscriber {
 
     @Override
     public void destroy() {
-        super.destroy();
         movementNotifier.destroy();
         usersCommunicator.unregister(id);
     }
