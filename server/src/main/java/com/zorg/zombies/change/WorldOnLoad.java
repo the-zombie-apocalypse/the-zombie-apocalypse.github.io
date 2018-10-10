@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Data
@@ -16,6 +17,11 @@ public class WorldOnLoad extends WorldChange<UserPositionChange> {
 
     private boolean isGreeting = true;
     private final Collection<UserData> users;
+
+    @SuppressWarnings("unused") // it is used by json (de)serializer
+    public WorldOnLoad() {
+        this.users = Collections.emptySet();
+    }
 
     public WorldOnLoad(UserPositionChange user, Collection<UserSubscriber> otherUsers) {
         super(user);

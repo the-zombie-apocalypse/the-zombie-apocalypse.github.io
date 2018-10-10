@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+import static com.zorg.zombies.util.MovementAndDirections.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -180,14 +181,14 @@ class UserUpdaterTest {
     void updateUserMove_When_UserAlreadyMovesWestAndThenMovingEast_Expect_UserStopMovingWestAndNotMovingEast() {
         var userAlreadyMoves = MoveDirectionX.WEST;
         var userNextMove = MoveDirectionX.EAST;
-
         var user = new User("id", mock(UsersCommunicator.class));
-        user.setMoving(userAlreadyMoves);
+
+        setMoving(userAlreadyMoves, user);
 
         var userChange = userUpdater.updateUserMove(user, userNextMove);
 
-        assertFalse(user.isMoving(userNextMove));
-        assertFalse(user.isMoving(userAlreadyMoves));
+        assertFalse(isMoving(userNextMove, user));
+        assertFalse(isMoving(userAlreadyMoves, user));
         assertTrue(userChange.isUpdated());
         assertTrue(userChange instanceof UserStopMovingChange);
 
@@ -215,7 +216,7 @@ class UserUpdaterTest {
         );
 
         final BiConsumer<UserChange, MoveDirection> checkUserMoveChange = (userChange, moveDirection) -> {
-            assertTrue(user.isMoving(moveDirection));
+            assertTrue(isMoving(moveDirection, user));
             assertTrue(userChange.isUpdated());
             assertTrue(userChange instanceof UserMovingChange);
 
@@ -225,7 +226,7 @@ class UserUpdaterTest {
         };
 
         final BiConsumer<UserChange, MoveDirection> checkUserStopMoveChange = (userChange, moveDirection) -> {
-            assertFalse(user.isMoving(moveDirection));
+            assertFalse(isMoving(moveDirection, user));
             assertTrue(userChange.isUpdated());
             assertTrue(userChange instanceof UserStopMovingChange);
 

@@ -10,6 +10,7 @@ import com.zorg.zombies.model.User;
 import static com.zorg.zombies.model.MoveDirectionX.*;
 import static com.zorg.zombies.model.MoveDirectionY.*;
 import static com.zorg.zombies.model.MoveDirectionZ.*;
+import static com.zorg.zombies.util.MovementAndDirections.*;
 
 public class UserUpdater {
 
@@ -28,13 +29,13 @@ public class UserUpdater {
     private UserChange changeUserMove(User user, MoveDirection move, MoveDirection oppositeMove) {
         final String userId = user.getId();
 
-        if (user.isMoving(move)) return new NoUserChange(userId);
-        if (user.isMoving(oppositeMove)) {
-            user.setStopMoving(oppositeMove);
+        if (isMoving(move, user)) return new NoUserChange(userId);
+        if (isMoving(oppositeMove, user)) {
+            setStopMoving(oppositeMove, user);
             return new UserStopMovingChange(userId, oppositeMove);
         }
 
-        user.setMoving(move);
+        setMoving(move, user);
 
         return new UserMovingChange(userId, move);
     }
@@ -50,7 +51,7 @@ public class UserUpdater {
                 || (DOWN.equals(userStopMoveDirection) && !user.isMovingDown()))
             return new NoUserChange(userId);
 
-        user.setStopMoving(userStopMoveDirection);
+        setStopMoving(userStopMoveDirection, user);
 
         return new UserStopMovingChange(userId, userStopMoveDirection);
     }

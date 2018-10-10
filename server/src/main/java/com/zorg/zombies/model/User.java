@@ -7,11 +7,11 @@ import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.service.UserUpdater;
 import com.zorg.zombies.service.UsersCommunicator;
-import com.zorg.zombies.util.MovementAndDirections;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
+import javax.security.auth.Destroyable;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -20,13 +20,15 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static com.zorg.zombies.Constants.*;
+import static com.zorg.zombies.util.MovementAndDirections.*;
 
 @Getter
 @Setter
 public class User extends UserSubscriber {
 
     private final UserUpdater updater = new UserUpdater();
-    private final UserMovementNotifier movementNotifier = new UserMovementNotifier();
+    private final UserMovement movementNotifier = new UserMovement();
+    private final UsersCommunicator usersCommunicator;
 
     // exists for test purposes
     protected boolean movementNotifierEnabled = true;
@@ -40,38 +42,21 @@ public class User extends UserSubscriber {
     private volatile boolean isMovingUp;
     private volatile boolean isMovingDown;
 
+    public User(String id, Coordinates coordinates, UsersCommunicator usersCommunicator) {
+        super(id, coordinates);
+        this.usersCommunicator = usersCommunicator;
+    }
+
     public User(String id, UsersCommunicator usersCommunicator) {
-        super(id, new Coordinates(0, 0), usersCommunicator);
+        this(id, new Coordinates(0, 0), usersCommunicator);
     }
 
     public User(UserData userData, UsersCommunicator usersCommunicator) {
-        super(userData.id, userData.coordinates, usersCommunicator);
+        this(userData.id, userData.coordinates, usersCommunicator);
     }
 
     public void notifyJoining() {
         usersCommunicator.register(this);
-    }
-
-    public boolean isMoving() {
-        return MovementAndDirections.isMoving(this);
-    }
-
-    /**
-     * Setting move without any checking!
-     */
-    public void setMoving(MoveDirection direction) {
-        MovementAndDirections.setMoving(direction, this);
-    }
-
-    public boolean isMoving(MoveDirection direction) {
-        return MovementAndDirections.isMoving(direction, this);
-    }
-
-    /**
-     * Setting move stop without any checking!
-     */
-    public void setStopMoving(MoveDirection stopMoving) {
-        MovementAndDirections.setStopMoving(stopMoving, this);
     }
 
     public void act(UserMoveCommand command) {
@@ -86,7 +71,7 @@ public class User extends UserSubscriber {
         }
     }
 
-    void notifyUsers(WorldChange userChange) {
+    private void notifyUsers(WorldChange userChange) {
         usersCommunicator.notifyUsers(userChange);
     }
 
@@ -99,12 +84,15 @@ public class User extends UserSubscriber {
         }
     }
 
-    public void onDestroy() {
-        movementNotifier.scheduledExecutor.shutdownNow();
+    @Override
+    public void destroy() {
+        super.destroy();
+        movementNotifier.destroy();
+        usersCommunicator.unregister(id);
     }
 
-    public void makeMove() {
-        final List<MoveDirection> moveDirections = getMovingDirections();
+    private void makeMove() {
+        final List<MoveDirection> moveDirections = collectMovingDirections(this);
 
         for (MoveDirection direction : moveDirections) {
             coordinates.makeStep(direction);
@@ -113,17 +101,13 @@ public class User extends UserSubscriber {
         notifyUsers(new WorldChange<>(new UserPositionChange(this)));
     }
 
-    protected List<MoveDirection> getMovingDirections() {
-        return MovementAndDirections.collectMovingDirections(this);
-    }
-
-    class UserMovementNotifier {
+    class UserMovement implements Destroyable {
 
         private final ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
         private volatile Future<?> movementFuture = CompletableFuture.completedFuture(null);
 
         private void movementCommand() {
-            if (isMoving()) makeMove();
+            if (isMoving(User.this)) makeMove();
             else movementFuture.cancel(false);
         }
 
@@ -137,6 +121,12 @@ public class User extends UserSubscriber {
                     HUMAN_WALK_DELAY_MS,
                     TimeUnit.MILLISECONDS
             );
+        }
+
+        @Override
+        public void destroy() {
+            movementFuture.cancel(true);
+            scheduledExecutor.shutdownNow();
         }
     }
 

@@ -7,6 +7,7 @@ import com.zorg.zombies.service.UserIdDefiner;
 import com.zorg.zombies.service.UsersCommunicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -40,7 +41,7 @@ class GameWebSocketHandlerTest {
     @MockBean
     private UserIdDefiner userIdDefiner;
 
-    @MockBean
+    @Autowired
     private UsersCommunicator usersCommunicator;
 
     private URI getUrl() throws URISyntaxException {
@@ -56,8 +57,6 @@ class GameWebSocketHandlerTest {
 
         given(userIdDefiner.getUserId(anyString())).willReturn(id);
 
-        user.notifyJoining();
-
         client.execute(getUrl(), session -> session
                 .send(producer.map(session::textMessage))
                 .thenMany(session.receive().take(1).map(WebSocketMessage::getPayloadAsText))
@@ -68,6 +67,7 @@ class GameWebSocketHandlerTest {
         final List<String> received = output.collectList().log().block(TIMEOUT);
 
         assertNotNull(received);
+        assertEquals(received.size(), 1);
 
         final String greetingJson = received.get(0);
         final WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
