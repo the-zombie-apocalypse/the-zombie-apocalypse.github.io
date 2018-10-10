@@ -20,10 +20,10 @@ public class GameSupervisor {
 
     public FluxProcessor<Command, WorldChange> createGameActionsProcessor(String sessionId) {
         final User user = userService.createUser(sessionId);
-        final GameActionsProcessor processor = new GameActionsProcessor(user);
+        final UserActionsProcessor processor = new UserActionsProcessor(user);
         user.notifyJoining();
 
-        final Flux<WorldChange> onTerminate = processor.doOnTerminate(user::onDestroy);
+        final Flux<WorldChange> onTerminate = processor.doOnTerminate(user::destroy);
 
         return FluxProcessor.wrap(processor, onTerminate);
     }

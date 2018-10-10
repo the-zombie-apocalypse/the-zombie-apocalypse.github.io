@@ -6,7 +6,6 @@ import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.Coordinates;
 import com.zorg.zombies.model.UserSubscriber;
-import com.zorg.zombies.service.UsersCommunicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +15,6 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMapChunkTest {
@@ -35,8 +33,7 @@ class DefaultMapChunkTest {
         final DefaultMapChunk chunk = new DefaultMapChunk();
         final String id0 = "id-0";
 
-        final UsersCommunicator usersCommunicator = mock(UsersCommunicator.class);
-        final UserSubscriber user = new UserSubscriber(id0, new Coordinates(), usersCommunicator);
+        final UserSubscriber user = new UserSubscriber(id0, new Coordinates());
 
         chunk.addObject(user);
 
@@ -63,8 +60,7 @@ class DefaultMapChunkTest {
         final String id1 = "id-1";
         final String id2 = "id-2";
 
-        final UsersCommunicator usersCommunicator = mock(UsersCommunicator.class);
-        final UserSubscriber user0 = new UserSubscriber(id0, new Coordinates(), usersCommunicator);
+        final UserSubscriber user0 = new UserSubscriber(id0, new Coordinates());
         chunk.addObject(user0);
 
         final Coordinates coordinates0 = new Coordinates(42, 24);
@@ -79,13 +75,13 @@ class DefaultMapChunkTest {
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates0)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates2)));
 
-        final UserSubscriber user1 = new UserSubscriber(id1, new Coordinates(), usersCommunicator);
+        final UserSubscriber user1 = new UserSubscriber(id1, new Coordinates());
         chunk.addObject(user1);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates1)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates4)));
 
-        final UserSubscriber user2 = new UserSubscriber(id2, new Coordinates(), usersCommunicator);
+        final UserSubscriber user2 = new UserSubscriber(id2, new Coordinates());
         chunk.addObject(user2);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id2, coordinates3)));

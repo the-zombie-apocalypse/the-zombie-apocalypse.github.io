@@ -33,7 +33,7 @@ public class UsersCommunicator {
 //        if (userChange.isPositionChange()) {
 //            final UserPositionChange userPositionChange = (UserPositionChange) userChange;
 //            final Coordinates changeCoordinates = userPositionChange.getCoordinates();
-// todo: implement reaction on user's step
+//            // todo: implement reaction on user's step
 //        }
 
         chunk.notifyUsers(change);

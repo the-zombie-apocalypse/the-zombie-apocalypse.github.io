@@ -7,23 +7,14 @@ import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.exception.WrongMoveCommandException;
-import org.reactivestreams.Subscription;
-import reactor.core.CoreSubscriber;
-import reactor.core.publisher.FluxProcessor;
 
-public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
+public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Command, WorldChange> {
 
     private final User user;
-    private final FluxProcessor<WorldChange, WorldChange> subscriber;
 
-    GameActionsProcessor(User user) {
+    UserActionsProcessor(User user) {
+        super(user.getSubscriber());
         this.user = user;
-        subscriber = user.getSubscriber();
-    }
-
-    @Override
-    public void onSubscribe(Subscription s) {
-        System.out.println("onSubscribe: " + s);
     }
 
     @Override
@@ -42,20 +33,9 @@ public class GameActionsProcessor extends FluxProcessor<Command, WorldChange> {
     }
 
     @Override
-    public void onError(Throwable t) {
-        System.out.println("onError: " + t);
-    }
-
-    @Override
     public void onComplete() {
-        System.out.println("onComplete");
-        subscriber.onComplete();
-    }
-
-    @Override
-    public void subscribe(CoreSubscriber<? super WorldChange> actual) {
-        System.out.println("subscribe: " + actual);
-        subscriber.subscribe(actual);
+        super.onComplete();
+        user.destroy();
     }
 
 }
