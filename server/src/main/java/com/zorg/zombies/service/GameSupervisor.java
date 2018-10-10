@@ -5,7 +5,6 @@ import com.zorg.zombies.command.Command;
 import com.zorg.zombies.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxProcessor;
 
 @Component
@@ -23,9 +22,7 @@ public class GameSupervisor {
         final UserActionsProcessor processor = new UserActionsProcessor(user);
         user.notifyJoining();
 
-        final Flux<WorldChange> onTerminate = processor.doOnTerminate(user::destroy);
-
-        return FluxProcessor.wrap(processor, onTerminate);
+        return FluxProcessor.wrap(processor, processor.doOnTerminate(user::destroy));
     }
 
 }

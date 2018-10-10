@@ -40,8 +40,6 @@ class DefaultMapChunkTest {
         final Coordinates newCoordinates = new Coordinates(42, 24);
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, newCoordinates)));
 
-        chunk.unregister(id0);
-
         final FluxProcessor<WorldChange, WorldChange> processor0 = user.getSubscriber();
         processor0.onComplete();
 
@@ -88,10 +86,6 @@ class DefaultMapChunkTest {
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates5)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id2, coordinates6)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates7)));
-
-        chunk.unregister(id0);
-        chunk.unregister(id1);
-        chunk.unregister(id2);
 
         final FluxProcessor<WorldChange, WorldChange> processor0 = user0.getSubscriber();
         final FluxProcessor<WorldChange, WorldChange> processor1 = user1.getSubscriber();

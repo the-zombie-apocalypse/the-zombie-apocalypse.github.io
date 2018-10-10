@@ -33,8 +33,6 @@ public class User extends UserSubscriber implements Destroyable {
     // exists for test purposes
     protected boolean movementNotifierEnabled = true;
 
-    private int visibleDistance = 50; // dummy value for now
-
     private volatile boolean isMovingNorth;
     private volatile boolean isMovingSouth;
     private volatile boolean isMovingWest;
@@ -56,7 +54,7 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     public void notifyJoining() {
-        usersCommunicator.register(this);
+        usersCommunicator.register(new UserSubscriber(this));
     }
 
     public void act(UserMoveCommand command) {

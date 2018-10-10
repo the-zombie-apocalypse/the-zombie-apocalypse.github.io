@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class GameSupervisorTest {
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration TIMEOUT = Duration.ofSeconds(3);
     private static final String SESSION_ID = "id";
 
     @MockBean
@@ -45,13 +45,14 @@ class GameSupervisorTest {
     @Autowired
     private GameSupervisor gameSupervisor;
 
+    private User user;
+
     @BeforeEach
     void setUp() {
-        BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(new User(SESSION_ID, usersCommunicator) {
-            {
-                movementNotifierEnabled = false;
-            }
-        });
+        user = new User(SESSION_ID, usersCommunicator);
+        user.setMovementNotifierEnabled(false);
+
+        BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(user);
     }
 
     @Test
@@ -64,6 +65,7 @@ class GameSupervisorTest {
     void createGameActionsProcessor_When_IdGiven_Expect_FirstMessageIsGreeting() {
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onComplete();
+        user.getSubscriber().onComplete();
 
         StepVerifier.create(processor)
                 .assertNext(getGreetingAssertion(SESSION_ID))
@@ -87,6 +89,7 @@ class GameSupervisorTest {
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
         processor.onComplete();
+        user.getSubscriber().onComplete();
 
         StepVerifier.create(processor)
                 .assertNext(getGreetingAssertion(SESSION_ID)).as("check greeting")
@@ -120,6 +123,7 @@ class GameSupervisorTest {
         processor.onNext(userMovingNorthCommand);
         processor.onNext(userStopMovingNorthCommand);
         processor.onComplete();
+        user.getSubscriber().onComplete();
 
         StepVerifier.create(processor)
                 .assertNext(getGreetingAssertion(SESSION_ID)).as("check greeting")
@@ -171,6 +175,7 @@ class GameSupervisorTest {
         processor.onNext(userStopMovingSouthCommand);
         processor.onNext(userStopMovingEastCommand);
         processor.onComplete();
+        user.getSubscriber().onComplete();
 
         StepVerifier.create(processor)
                 .assertNext(getGreetingAssertion(SESSION_ID)).as("check greeting")

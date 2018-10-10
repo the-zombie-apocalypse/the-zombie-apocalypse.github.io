@@ -23,9 +23,7 @@ public class DefaultMapChunk implements MapChunk {
     @Override
     public void unregister(String id) {
         userIdToUser.remove(id);
-
-        var change = new WorldChange<>(new UserLeftGameEvent(id));
-        userIdToUser.values().forEach(user -> user.getSubscriber().onNext(change));
+        notifyUsers(new WorldChange<>(new UserLeftGameEvent(id)));
     }
 
     @Override

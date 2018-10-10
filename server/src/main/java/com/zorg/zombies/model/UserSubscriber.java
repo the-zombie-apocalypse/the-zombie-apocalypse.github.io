@@ -1,18 +1,24 @@
 package com.zorg.zombies.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zorg.zombies.change.WorldChange;
 import lombok.Getter;
-import lombok.Setter;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.ReplayProcessor;
 
-@Getter
-@Setter
 public class UserSubscriber extends UserData {
 
-    protected final FluxProcessor<WorldChange, WorldChange> subscriber = ReplayProcessor.create(256);
+    @Getter
+    @JsonIgnore
+    private final FluxProcessor<WorldChange, WorldChange> subscriber;
+
+    public UserSubscriber(UserSubscriber from) {
+        super(from);
+        this.subscriber = from.getSubscriber();
+    }
 
     public UserSubscriber(String id, Coordinates coordinates) {
         super(id, coordinates);
+        subscriber = ReplayProcessor.create(256);
     }
 }
