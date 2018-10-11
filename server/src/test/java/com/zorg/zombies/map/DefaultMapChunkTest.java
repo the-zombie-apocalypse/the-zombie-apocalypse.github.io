@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class DefaultMapChunkTest {
 
-    private static final Duration TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration TIMEOUT = Duration.ofSeconds(3);
 
     @Test
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {

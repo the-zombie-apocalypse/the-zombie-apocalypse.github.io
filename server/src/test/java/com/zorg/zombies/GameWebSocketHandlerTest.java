@@ -31,7 +31,7 @@ import static org.mockito.BDDMockito.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GameWebSocketHandlerTest {
 
-    private static final Duration TIMEOUT = Duration.ofMillis(5000);
+    private static final Duration TIMEOUT = Duration.ofSeconds(3);
     private final WebSocketClient client = new StandardWebSocketClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
