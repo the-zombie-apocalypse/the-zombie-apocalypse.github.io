@@ -68,7 +68,10 @@ export default class GameServer {
 
         this._socket.onmessage = getHandler;
         this._socket.onerror = console.log;
-        if (this._onClose) this._socket.onclose = this._onClose;
+        this._socket.onclose = () => {
+            if (this._onClose) this._onClose();
+            alert("Connection closed!"); // todo: create pre-game mode and return user to it here
+        };
 
         return this
     }
