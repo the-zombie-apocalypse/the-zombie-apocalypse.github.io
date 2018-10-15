@@ -54,7 +54,7 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     public void notifyJoining() {
-        usersCommunicator.register(new UserSubscriber(this));
+        usersCommunicator.register(this);
     }
 
     public void act(UserMoveCommand command) {
