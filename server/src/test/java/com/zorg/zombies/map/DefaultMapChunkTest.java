@@ -5,9 +5,11 @@ import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.Coordinates;
-import com.zorg.zombies.model.UserSubscriber;
+import com.zorg.zombies.model.User;
+import com.zorg.zombies.service.UsersCommunicator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.FluxProcessor;
 import reactor.test.StepVerifier;
@@ -21,6 +23,8 @@ class DefaultMapChunkTest {
 
     private static final Duration TIMEOUT = Duration.ofSeconds(3);
 
+    private UsersCommunicator communicator = Mockito.mock(UsersCommunicator.class);
+
     @Test
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {
         final DefaultMapChunk chunk = new DefaultMapChunk();
@@ -33,7 +37,7 @@ class DefaultMapChunkTest {
         final DefaultMapChunk chunk = new DefaultMapChunk();
         final String id0 = "id-0";
 
-        final UserSubscriber user = new UserSubscriber(id0, new Coordinates());
+        var user = new User(id0, communicator);
 
         chunk.addObject(user);
 
@@ -58,7 +62,7 @@ class DefaultMapChunkTest {
         final String id1 = "id-1";
         final String id2 = "id-2";
 
-        final UserSubscriber user0 = new UserSubscriber(id0, new Coordinates());
+        var user0 = new User(id0, communicator);
         chunk.addObject(user0);
 
         final Coordinates coordinates0 = new Coordinates(42, 24);
@@ -73,13 +77,13 @@ class DefaultMapChunkTest {
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates0)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates2)));
 
-        final UserSubscriber user1 = new UserSubscriber(id1, new Coordinates());
+        var user1 = new User(id1, communicator);
         chunk.addObject(user1);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates1)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates4)));
 
-        final UserSubscriber user2 = new UserSubscriber(id2, new Coordinates());
+        var user2 = new User(id2, communicator);
         chunk.addObject(user2);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id2, coordinates3)));

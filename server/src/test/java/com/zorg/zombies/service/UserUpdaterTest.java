@@ -8,7 +8,7 @@ import com.zorg.zombies.model.MoveDirectionX;
 import com.zorg.zombies.model.MoveDirectionY;
 import com.zorg.zombies.model.MoveDirectionZ;
 import com.zorg.zombies.model.User;
-import javafx.util.Pair;
+import com.zorg.zombies.util.Pair;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

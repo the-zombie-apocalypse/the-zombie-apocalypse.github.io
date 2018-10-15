@@ -1,7 +1,7 @@
 package com.zorg.zombies.map;
 
 import com.zorg.zombies.change.WorldChange;
-import com.zorg.zombies.model.UserSubscriber;
+import com.zorg.zombies.model.User;
 
 import java.util.Collection;
 
@@ -10,7 +10,7 @@ public interface MapChunk {
 
     void unregister(String id);
 
-    void addObject(UserSubscriber userData);
+    void addObject(User userData);
 
-    Collection<UserSubscriber> getAllUsers();
+    Collection<User> getAllUsers();
 }
