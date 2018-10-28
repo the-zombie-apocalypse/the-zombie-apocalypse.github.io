@@ -1,0 +1,15 @@
+.game-menu {
+    top: 25%;
+    left: 40%;
+    width: 20%;
+    height: 40%;
+    position: absolute;
+    background-color: green;
+}
+
+.game-title {
+    line-height: 50px;
+    font-weight: bold;
+    font-size: xx-large;
+    text-align: center;
+}

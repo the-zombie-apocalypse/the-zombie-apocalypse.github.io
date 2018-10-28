@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Serg-Maximchuk/didactic-enigma#readme",
   "dependencies": {
+    "jquery": "^3.3.1",
     "three": "^0.97.0",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1"
