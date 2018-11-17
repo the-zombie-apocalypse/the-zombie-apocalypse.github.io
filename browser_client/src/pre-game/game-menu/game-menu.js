@@ -1,7 +1,7 @@
 import './game-menu.css'
 
 import $ from 'jquery';
-import playButon from "../play-button/play-button"
+import playButton from "../play-button/play-button"
 
 export default function () {
     return $('<div>', {
@@ -11,7 +11,7 @@ export default function () {
                 'class': 'game-title',
                 text: 'Zorg'
             }),
-            playButon(),
+            playButton(),
         ]
     })
 }
