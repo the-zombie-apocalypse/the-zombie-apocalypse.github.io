@@ -8,8 +8,14 @@ export default function () {
         text: 'Play!',
         'class': 'play-button',
         click: function () {
-            $('.game-menu-area').remove();
-            gameLoop();
+            const $gameMenu = $('.game-menu-area');
+            $gameMenu.hide();
+
+            try {
+                gameLoop();
+            } catch (e) {
+                $gameMenu.show();
+            }
         }
     })
 }

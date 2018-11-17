@@ -1,6 +1,8 @@
 import directions from './directions'
 import UserMoveCommand from "../entities/commands/user-move-command";
 import UserStopMoveCommand from "../entities/commands/user-stop-move-command";
+import gameMenu from "../pre-game/start-game-menu";
+import swal from "sweetalert";
 
 const serverCommands = {
     goUp: new UserMoveCommand(directions.up).toString(),
@@ -67,10 +69,18 @@ export default class GameServer {
         };
 
         this._socket.onmessage = getHandler;
-        this._socket.onerror = console.log;
+        this._socket.onerror = () => {
+            this._socket.close(1000, "Something wrong")
+        };
         this._socket.onclose = () => {
             if (this._onClose) this._onClose();
-            alert("Connection closed!"); // todo: create pre-game mode and return user to it here
+            gameMenu().show();
+            swal({
+                title: "Oops!",
+                text: "Connection closed!",
+                icon: "warning",
+                dangerMode: true,
+            });
         };
 
         return this
