@@ -1,5 +1,6 @@
 import detector from './detector';
-import StartGameMenu from "./pre-game/start-game-menu";
+import gameMenu from "./pre-game/start-game-menu";
+import $ from "jquery";
 
 window.onload = function () {
     if (!detector.webgl) {
@@ -8,5 +9,5 @@ window.onload = function () {
         return;
     }
 
-    StartGameMenu.build();
+    $('body').append(gameMenu());
 };

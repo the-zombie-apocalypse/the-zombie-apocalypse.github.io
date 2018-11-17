@@ -49,7 +49,7 @@ const gameActions = {
         }
     },
     onClose() {
-        this.keyListener.shutDown();
+        this.keyListener && this.keyListener.shutDown();
     }
 };
 
