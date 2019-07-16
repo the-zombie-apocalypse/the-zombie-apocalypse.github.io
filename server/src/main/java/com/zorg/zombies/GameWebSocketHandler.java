@@ -6,8 +6,7 @@ import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.factory.CommandFactory;
 import com.zorg.zombies.service.GameSupervisor;
 import lombok.SneakyThrows;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
@@ -16,10 +15,9 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @Component
 public class GameWebSocketHandler implements WebSocketHandler {
-
-    private final Logger logger = LoggerFactory.getLogger(GameWebSocketHandler.class);
 
     private final CommandFactory commandFactory;
     private final GameSupervisor gameSupervisor;
@@ -55,7 +53,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
     }
 
     private void onError(Throwable throwable) {
-        logger.error("Error : " + throwable);
+        log.error("Error : " + throwable);
         throwable.printStackTrace();
     }
 
