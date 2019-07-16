@@ -7,7 +7,9 @@ import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.socket.server.support.WebSocketHandlerAdapter;
 
-import java.util.Collections;
+import java.util.Map;
+
+import static utils.functions.Value.with;
 
 @SpringBootApplication
 public class ZombiesApplication {
@@ -25,10 +27,10 @@ public class ZombiesApplication {
 
     @Bean
     public HandlerMapping handlerMapping(GameWebSocketHandler gameWebSocketHandler) {
-        final SimpleUrlHandlerMapping handlerMapping = new SimpleUrlHandlerMapping();
-        handlerMapping.setUrlMap(Collections.singletonMap(ENTRY, gameWebSocketHandler));
-        handlerMapping.setOrder(1);
-        return handlerMapping;
+        return with(new SimpleUrlHandlerMapping(), handlerMapping -> {
+            handlerMapping.setUrlMap(Map.of(ENTRY, gameWebSocketHandler));
+            handlerMapping.setOrder(1);
+        });
     }
 
 }
