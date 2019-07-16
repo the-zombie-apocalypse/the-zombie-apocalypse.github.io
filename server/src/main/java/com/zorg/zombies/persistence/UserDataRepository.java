@@ -1,4 +1,4 @@
-package com.zorg.zombies.persistance;
+package com.zorg.zombies.persistence;
 
 import com.zorg.zombies.model.UserData;
 import org.springframework.stereotype.Repository;

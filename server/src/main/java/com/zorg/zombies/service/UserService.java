@@ -2,7 +2,7 @@ package com.zorg.zombies.service;
 
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.model.UserData;
-import com.zorg.zombies.persistance.UserDataRepository;
+import com.zorg.zombies.persistence.UserDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
