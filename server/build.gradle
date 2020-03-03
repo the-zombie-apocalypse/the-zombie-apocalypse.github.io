@@ -32,7 +32,6 @@ configurations {
 }
 
 dependencies {
-    compile('org.projectlombok:lombok')
     compile('io.github.serg-maximchuk:function-utils:1.1.0')
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-webflux')
@@ -40,8 +39,14 @@ dependencies {
     compile('org.springframework.boot:spring-boot-configuration-processor')
     compile group: 'javax.websocket', name: 'javax.websocket-api', version: '1.1', ext: 'pom'
     compile group: 'javax.websocket', name: 'javax.websocket-client-api', version: '1.1', ext: 'pom'
-    testCompile('org.glassfish.tyrus.bundles:tyrus-standalone-client:1.8.3')
+
     runtime('org.springframework.boot:spring-boot-devtools')
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testCompile('org.glassfish.tyrus.bundles:tyrus-standalone-client:1.8.3')
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('io.projectreactor:reactor-test')
     testImplementation('org.junit.jupiter:junit-jupiter-api')
