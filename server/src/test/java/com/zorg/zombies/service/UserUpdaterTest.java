@@ -9,7 +9,6 @@ import com.zorg.zombies.model.MoveDirectionY;
 import com.zorg.zombies.model.MoveDirectionZ;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.util.Pair;
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -199,7 +198,7 @@ class UserUpdaterTest {
 
     @Test
     void moveScenario() {
-        val user = new User("id", mock(UsersCommunicator.class));
+        User user = new User("id", mock(UsersCommunicator.class));
 
         BiFunction<User, MoveDirection, UserChange> updateMove = userUpdater::updateUserMove;
         BiFunction<User, MoveDirection, UserChange> updateStopMove = userUpdater::updateUserStopMove;
