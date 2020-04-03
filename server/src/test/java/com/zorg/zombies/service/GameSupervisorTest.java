@@ -8,9 +8,8 @@ import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
-import com.zorg.zombies.model.MoveDirection;
-import com.zorg.zombies.model.MoveDirectionY;
 import com.zorg.zombies.model.User;
+import com.zorg.zombies.model.geometry.Direction;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +24,13 @@ import reactor.test.StepVerifier;
 import java.time.Duration;
 import java.util.function.Consumer;
 
-import static com.zorg.zombies.model.MoveDirectionX.*;
-import static com.zorg.zombies.model.MoveDirectionY.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.zorg.zombies.model.geometry.Direction.EAST;
+import static com.zorg.zombies.model.geometry.Direction.NORTH;
+import static com.zorg.zombies.model.geometry.Direction.SOUTH;
+import static com.zorg.zombies.model.geometry.Direction.WEST;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -84,7 +87,7 @@ class GameSupervisorTest {
 
     @Test
     void reactionOnCommand_When_UserStartMovingUp_Expect_UserMovingUpResponse() {
-        final MoveDirectionY direction = NORTH;
+        final Direction direction = NORTH;
         final Command userMovingNorthCommand = new UserMoveCommand(direction);
         final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
@@ -100,7 +103,7 @@ class GameSupervisorTest {
                 .verify(TIMEOUT);
     }
 
-    private Consumer<? super WorldChange> getUserMovingChangeAssertion(final String userId, final MoveDirection direction) {
+    private Consumer<? super WorldChange> getUserMovingChangeAssertion(final String userId, final Direction direction) {
         return worldChange -> {
             System.out.println(worldChange);
             final UserChange userChange = worldChange.getUser();
@@ -108,14 +111,14 @@ class GameSupervisorTest {
 
             assertTrue(userChange instanceof UserMovingChange);
             final UserMovingChange userMovingChange = (UserMovingChange) userChange;
-            assertTrue(userMovingChange.isUpdated());
+            assertTrue(userMovingChange.isUpdate());
             assertEquals(userMovingChange.getMoveDirection(), direction);
         };
     }
 
     @Test
     void reactionOnCommand_When_UserStartMovingUpAndStopMovingUp_Expect_UserMovingUpThenUserStopMovingUpResponse() {
-        final MoveDirectionY direction = NORTH;
+        final Direction direction = NORTH;
         final Command userMovingNorthCommand = new UserMoveCommand(direction);
         final Command userStopMovingNorthCommand = new UserStopMoveCommand(direction);
 
@@ -135,7 +138,7 @@ class GameSupervisorTest {
                 .verify(TIMEOUT);
     }
 
-    private Consumer<? super WorldChange> getUserStopMovingChangeAssertion(final String userId, final MoveDirection direction) {
+    private Consumer<? super WorldChange> getUserStopMovingChangeAssertion(final String userId, final Direction direction) {
         return worldChange -> {
             System.out.println(worldChange);
             final UserChange userChange = worldChange.getUser();
@@ -144,7 +147,7 @@ class GameSupervisorTest {
             assertTrue(userChange instanceof UserStopMovingChange);
             final UserStopMovingChange stopMovingChange = (UserStopMovingChange) userChange;
 
-            assertTrue(stopMovingChange.isUpdated());
+            assertTrue(stopMovingChange.isUpdate());
             assertEquals(stopMovingChange.getStopMoveDirection(), direction);
         };
     }

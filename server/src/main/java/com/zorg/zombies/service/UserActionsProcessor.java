@@ -19,7 +19,7 @@ public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Comm
 
     @Override
     public void onNext(Command command) {
-        System.out.println("onNext: " + command);
+//        System.out.println("onNext: " + command);
 
         if (command.isMoveChangeCommand()) {
             if (command.isMoveStartCommand()) user.act((UserMoveCommand) command);

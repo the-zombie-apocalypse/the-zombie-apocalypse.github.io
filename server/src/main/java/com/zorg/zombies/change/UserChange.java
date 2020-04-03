@@ -7,9 +7,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserChange extends Change {
 
-    private String id;
+    private final String id;
+
+    protected UserChange(String id, boolean isUpdate) {
+        super(isUpdate);
+        this.id = id;
+    }
 
     protected UserChange(String id) {
+        super();
         this.id = id;
     }
 
@@ -18,6 +24,7 @@ public class UserChange extends Change {
      */
     @Deprecated
     public UserChange() {
+        this(null);
     }
 
 }

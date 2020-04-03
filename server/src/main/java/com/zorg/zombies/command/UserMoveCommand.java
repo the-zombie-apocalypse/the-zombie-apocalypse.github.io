@@ -1,10 +1,10 @@
 package com.zorg.zombies.command;
 
-import com.zorg.zombies.model.MoveDirection;
-import lombok.Data;
+import com.zorg.zombies.model.geometry.Direction;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@Data
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class UserMoveCommand extends MoveDirectionCommand {
 
@@ -12,7 +12,7 @@ public class UserMoveCommand extends MoveDirectionCommand {
         moveStartCommand = true;
     }
 
-    public UserMoveCommand(MoveDirection moveDirection) {
+    public UserMoveCommand(Direction moveDirection) {
         super(moveDirection);
     }
 }

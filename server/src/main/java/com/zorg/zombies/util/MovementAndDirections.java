@@ -1,58 +1,79 @@
 package com.zorg.zombies.util;
 
-import com.zorg.zombies.model.MoveDirection;
 import com.zorg.zombies.model.User;
+import com.zorg.zombies.model.geometry.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
-import static com.zorg.zombies.model.MoveDirectionX.*;
-import static com.zorg.zombies.model.MoveDirectionY.*;
-import static com.zorg.zombies.model.MoveDirectionZ.*;
+import static com.zorg.zombies.model.geometry.Direction.DOWN;
+import static com.zorg.zombies.model.geometry.Direction.EAST;
+import static com.zorg.zombies.model.geometry.Direction.NORTH;
+import static com.zorg.zombies.model.geometry.Direction.SOUTH;
+import static com.zorg.zombies.model.geometry.Direction.UP;
+import static com.zorg.zombies.model.geometry.Direction.WEST;
 
 public class MovementAndDirections {
 
     public static boolean isMoving(User user) {
-        return (user.isMovingNorth()
+        return user.isMovingNorth()
                 || user.isMovingSouth()
                 || user.isMovingWest()
                 || user.isMovingEast()
                 || user.isMovingUp()
-                || user.isMovingDown()
-        );
+                || user.isMovingDown();
     }
 
-    public static void setMoving(MoveDirection direction, User user) {
-        if (NORTH.equals(direction)) user.setMovingNorth(true);
-        else if (EAST.equals(direction)) user.setMovingEast(true);
-        else if (SOUTH.equals(direction)) user.setMovingSouth(true);
-        else if (WEST.equals(direction)) user.setMovingWest(true);
-        else if (UP.equals(direction)) user.setMovingUp(true);
-        else if (DOWN.equals(direction)) user.setMovingDown(true);
+    public static void setMoving(Direction direction, User user) {
+        getMovingToggle(direction, user).accept(true);
     }
 
-    public static boolean isMoving(MoveDirection direction, User user) {
-        if (NORTH.equals(direction)) return user.isMovingNorth();
-        else if (EAST.equals(direction)) return user.isMovingEast();
-        else if (SOUTH.equals(direction)) return user.isMovingSouth();
-        else if (WEST.equals(direction)) return user.isMovingWest();
-        else if (UP.equals(direction)) return user.isMovingUp();
-        else if (DOWN.equals(direction)) return user.isMovingDown();
-        else return false;
+    public static boolean isMoving(Direction direction, User user) {
+        switch (direction) {
+            case NORTH:
+                return user.isMovingNorth();
+            case EAST:
+                return user.isMovingEast();
+            case SOUTH:
+                return user.isMovingSouth();
+            case WEST:
+                return user.isMovingWest();
+            case UP:
+                return user.isMovingUp();
+            case DOWN:
+                return user.isMovingDown();
+            default:
+                throw new WrongDirectionException(direction);
+        }
     }
 
-    public static void setStopMoving(MoveDirection stopMoving, User user) {
-        if (NORTH.equals(stopMoving)) user.setMovingNorth(false);
-        else if (EAST.equals(stopMoving)) user.setMovingEast(false);
-        else if (SOUTH.equals(stopMoving)) user.setMovingSouth(false);
-        else if (WEST.equals(stopMoving)) user.setMovingWest(false);
-        else if (UP.equals(stopMoving)) user.setMovingUp(false);
-        else if (DOWN.equals(stopMoving)) user.setMovingDown(false);
+    public static void setStopMoving(Direction stopMoving, User user) {
+        getMovingToggle(stopMoving, user).accept(false);
     }
 
-    public static List<MoveDirection> collectMovingDirections(User user) {
-        final List<MoveDirection> directions = new ArrayList<>();
+    private static Consumer<Boolean> getMovingToggle(Direction stopMoving, User user) {
+        switch (stopMoving) {
+            case NORTH:
+                return user::setMovingNorth;
+            case EAST:
+                return user::setMovingEast;
+            case SOUTH:
+                return user::setMovingSouth;
+            case WEST:
+                return user::setMovingWest;
+            case UP:
+                return user::setMovingUp;
+            case DOWN:
+                return user::setMovingDown;
+            default:
+                throw new WrongDirectionException(stopMoving);
+        }
+    }
+
+    public static List<Direction> collectMovingDirections(User user) {
+        final List<Direction> directions = new ArrayList<>();
 
         if (user.isMovingNorth()) directions.add(NORTH);
         else if (user.isMovingSouth()) directions.add(SOUTH);
@@ -62,5 +83,11 @@ public class MovementAndDirections {
         else if (user.isMovingDown()) directions.add(DOWN);
 
         return Collections.unmodifiableList(directions);
+    }
+
+    public static class WrongDirectionException extends RuntimeException {
+        WrongDirectionException(Direction direction) {
+            super("Wrong direction " + direction);
+        }
     }
 }
