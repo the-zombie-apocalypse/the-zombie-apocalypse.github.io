@@ -1,12 +1,16 @@
 package com.zorg.zombies.model;
 
+import com.zorg.zombies.model.geometry.Direction;
 import lombok.Data;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.zorg.zombies.model.MoveDirectionX.*;
-import static com.zorg.zombies.model.MoveDirectionY.*;
-import static com.zorg.zombies.model.MoveDirectionZ.*;
+import static com.zorg.zombies.model.geometry.Direction.DOWN;
+import static com.zorg.zombies.model.geometry.Direction.EAST;
+import static com.zorg.zombies.model.geometry.Direction.NORTH;
+import static com.zorg.zombies.model.geometry.Direction.SOUTH;
+import static com.zorg.zombies.model.geometry.Direction.UP;
+import static com.zorg.zombies.model.geometry.Direction.WEST;
 
 @Data
 public class Coordinates {
@@ -41,7 +45,7 @@ public class Coordinates {
         return z.get();
     }
 
-    public void makeStep(MoveDirection direction) {
+    public void makeStep(Direction direction) {
         if (NORTH.equals(direction)) y.incrementAndGet();
         else if (EAST.equals(direction)) x.incrementAndGet();
         else if (SOUTH.equals(direction)) y.decrementAndGet();

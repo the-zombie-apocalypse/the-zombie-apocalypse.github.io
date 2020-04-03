@@ -7,8 +7,16 @@ import lombok.Data;
 public class Change {
 
     @JsonIgnore
-    protected boolean updated = true;
+    private final boolean update;
 
-    protected String name;
+    public Change(boolean update) {
+        this.update = update;
+    }
+
+    public Change() {
+        this(true);
+    }
+
+//    private final String name;
 
 }

@@ -1,6 +1,6 @@
 package com.zorg.zombies.change;
 
-import com.zorg.zombies.model.MoveDirection;
+import com.zorg.zombies.model.geometry.Direction;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,9 +9,9 @@ import lombok.EqualsAndHashCode;
 public class UserStopMovingChange extends UserChange {
 
     protected boolean stopMovingChange = true;
-    private final MoveDirection stopMoveDirection;
+    private final Direction stopMoveDirection;
 
-    public UserStopMovingChange(String id, MoveDirection stopMoveDirection) {
+    public UserStopMovingChange(String id, Direction stopMoveDirection) {
         super(id);
         this.stopMoveDirection = stopMoveDirection;
     }

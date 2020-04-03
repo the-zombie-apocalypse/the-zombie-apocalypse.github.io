@@ -1,50 +1,49 @@
 package com.zorg.zombies.command.factory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
-import com.zorg.zombies.model.MoveDirection;
-import com.zorg.zombies.model.factory.MoveDirectionFactory;
+import com.zorg.zombies.model.geometry.Direction;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-
 import static com.zorg.zombies.command.Command.MOVE_COMMAND_FIELD;
-import static com.zorg.zombies.command.MoveDirectionCommand.*;
+import static com.zorg.zombies.command.MoveDirectionCommand.DIRECTION_FIELD;
 import static com.zorg.zombies.command.MoveDirectionCommand.MOVE_STOP_COMMAND_FIELD;
 
 @Component
 public class CommandFactory {
 
-    private final MoveDirectionFactory moveDirectionFactory;
-
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public CommandFactory(MoveDirectionFactory moveDirectionFactory) {
-        this.moveDirectionFactory = moveDirectionFactory;
-    }
 
     @SneakyThrows
     public Command fromJson(String jsonCommand) {
 
         try {
-            final Map<String, String> jsonAsMap = mapper.readValue(jsonCommand, new TypeReference<Map<String, String>>() {
-            });
+            final JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
 
-            if ((jsonAsMap == null) || jsonAsMap.isEmpty()) throw new CommandToJsonParseException(jsonCommand);
+            if (jsonNode == null) {
+                throw new CommandToJsonParseException(jsonCommand);
+            }
 
-            final String moveDirection = jsonAsMap.get(DIRECTION_FIELD);
+            final String moveDirection = jsonNode.get(DIRECTION_FIELD).asText();
 
             if (moveDirection != null) {
-                final MoveDirection direction = moveDirectionFactory.parseMoveDirection(moveDirection);
+                final Direction direction = Direction.valueOf(moveDirection.toUpperCase());
 
-                if ("true".equals(jsonAsMap.get(MOVE_COMMAND_FIELD))) return new UserMoveCommand(direction);
-                if ("true".equals(jsonAsMap.get(MOVE_STOP_COMMAND_FIELD))) return new UserStopMoveCommand(direction);
+                JsonNode moveCommand = jsonNode.get(MOVE_COMMAND_FIELD);
+                if ((moveCommand != null) && moveCommand.asBoolean()) {
+                    return new UserMoveCommand(direction);
+                }
+                JsonNode moveStopCommand = jsonNode.get(MOVE_STOP_COMMAND_FIELD);
+                if ((moveStopCommand != null) && moveStopCommand.asBoolean()) {
+                    return new UserStopMoveCommand(direction);
+                }
             }
         } catch (Exception e) {
             return new ErrorCommand(e);

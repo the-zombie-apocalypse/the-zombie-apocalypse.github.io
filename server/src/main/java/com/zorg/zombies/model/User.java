@@ -5,11 +5,11 @@ import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
+import com.zorg.zombies.model.geometry.Direction;
 import com.zorg.zombies.service.UserUpdater;
 import com.zorg.zombies.service.UsersCommunicator;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 
 import javax.security.auth.Destroyable;
 import java.util.List;
@@ -19,8 +19,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static com.zorg.zombies.Constants.*;
-import static com.zorg.zombies.util.MovementAndDirections.*;
+import static com.zorg.zombies.Constants.HUMAN_WALK_DELAY_MS;
+import static com.zorg.zombies.util.MovementAndDirections.collectMovingDirections;
+import static com.zorg.zombies.util.MovementAndDirections.isMoving;
 
 @Getter
 @Setter
@@ -60,8 +61,8 @@ public class User extends UserSubscriber implements Destroyable {
     public void act(UserMoveCommand command) {
         final UserChange userChange = updater.updateUserMove(this, command.getDirection());
 
-        if (userChange.isUpdated()) {
-            val change = new WorldChange<>(userChange);
+        if (userChange.isUpdate()) {
+            var change = new WorldChange<>(userChange);
 
             if (movementNotifierEnabled) movementNotifier.start();
 
@@ -76,8 +77,8 @@ public class User extends UserSubscriber implements Destroyable {
     public void act(UserStopMoveCommand command) {
         final UserChange userChange = updater.updateUserStopMove(this, command.getDirection());
 
-        if (userChange.isUpdated()) {
-            val change = new WorldChange<>(userChange);
+        if (userChange.isUpdate()) {
+            var change = new WorldChange<>(userChange);
             notifyUsers(change);
         }
     }
@@ -89,9 +90,9 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     private void makeMove() {
-        final List<MoveDirection> moveDirections = collectMovingDirections(this);
+        final List<Direction> moveDirections = collectMovingDirections(this);
 
-        for (MoveDirection direction : moveDirections) {
+        for (Direction direction : moveDirections) {
             coordinates.makeStep(direction);
         }
 
@@ -104,12 +105,17 @@ public class User extends UserSubscriber implements Destroyable {
         private volatile Future<?> movementFuture = CompletableFuture.completedFuture(null);
 
         private void movementCommand() {
-            if (isMoving(User.this)) makeMove();
-            else movementFuture.cancel(false);
+            if (isMoving(User.this)) {
+                makeMove();
+            } else {
+                movementFuture.cancel(false);
+            }
         }
 
         void start() {
-            if (!movementFuture.isDone()) return;
+            if (!movementFuture.isDone()) {
+                return;
+            }
 
             movementFuture = scheduledExecutor.scheduleWithFixedDelay(
                     // todo: ensure the scheduleAtFixedRate isn't better
