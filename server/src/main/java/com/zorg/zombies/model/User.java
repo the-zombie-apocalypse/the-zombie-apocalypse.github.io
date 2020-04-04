@@ -38,7 +38,8 @@ public class User extends UserSubscriber implements Destroyable {
     private final UsersCommunicator usersCommunicator;
 
     // exists for test purposes
-    protected boolean movementNotifierEnabled = true;
+    @Setter
+    private boolean movementNotifierEnabled = true;
 
     @Setter
     private volatile boolean wantToMoveNorth;
