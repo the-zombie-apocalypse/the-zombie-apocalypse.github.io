@@ -21,8 +21,6 @@ import static com.zorg.zombies.model.geometry.Direction.NORTH;
 import static com.zorg.zombies.model.geometry.Direction.SOUTH;
 import static com.zorg.zombies.model.geometry.Direction.UP;
 import static com.zorg.zombies.model.geometry.Direction.WEST;
-import static com.zorg.zombies.util.MovementAndDirections.isMoving;
-import static com.zorg.zombies.util.MovementAndDirections.setMoving;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -146,7 +144,7 @@ class UserUpdaterTest {
     void updateUserMove_When_UserAlreadyMovingInThatDirection_Expect_NotUpdated() {
         var moveDirection = SOUTH;
         var user = new User("id", mock(UsersCommunicator.class));
-        user.setMovingSouth(true);
+        user.setWantToMoveSouth(true);
 
         var userChange = userUpdater.updateUserMove(user, moveDirection);
 
@@ -158,7 +156,7 @@ class UserUpdaterTest {
     void updateUserStopMove_When_UserAlreadyMovingInThatDirection_Expect_StoppedAndUpdated() {
         var moveDirection = SOUTH;
         var user = new User("id", mock(UsersCommunicator.class));
-        user.setMovingSouth(true);
+        user.setWantToMoveSouth(true);
 
         var userChange = userUpdater.updateUserStopMove(user, moveDirection);
 
@@ -188,12 +186,12 @@ class UserUpdaterTest {
         var userNextMove = EAST;
         var user = new User("id", mock(UsersCommunicator.class));
 
-        setMoving(userAlreadyMoves, user);
+        userUpdater.setMoving(userAlreadyMoves, user);
 
         var userChange = userUpdater.updateUserMove(user, userNextMove);
 
-        assertFalse(isMoving(userNextMove, user));
-        assertFalse(isMoving(userAlreadyMoves, user));
+        assertFalse(user.isMoving(userNextMove));
+        assertFalse(user.isMoving(userAlreadyMoves));
         assertTrue(userChange.isUpdate());
         assertTrue(userChange instanceof UserStopMovingChange);
 
@@ -221,7 +219,7 @@ class UserUpdaterTest {
         );
 
         final BiConsumer<UserChange, Direction> checkUserMoveChange = (userChange, moveDirection) -> {
-            assertTrue(isMoving(moveDirection, user));
+            assertTrue(user.isMoving(moveDirection));
             assertTrue(userChange.isUpdate());
             assertTrue(userChange instanceof UserMovingChange);
 
@@ -231,7 +229,7 @@ class UserUpdaterTest {
         };
 
         final BiConsumer<UserChange, Direction> checkUserStopMoveChange = (userChange, moveDirection) -> {
-            assertFalse(isMoving(moveDirection, user));
+            assertFalse(user.isMoving(moveDirection));
             assertTrue(userChange.isUpdate());
             assertTrue(userChange instanceof UserStopMovingChange);
 
