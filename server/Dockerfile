@@ -10,7 +10,7 @@ RUN apt-get install curl -y
 
 CMD ["java", "-Xmx1g", "-jar", "/app/zombies-app.jar"]
 
-HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:8080/actuator/health || exit 1
+HEALTHCHECK --interval=10s --timeout=3s CMD curl -f http://localhost:8000/actuator/health || exit 1
 
-EXPOSE 8080
+EXPOSE 8000
 
