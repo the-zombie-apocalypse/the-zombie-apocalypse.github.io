@@ -1,0 +1,10 @@
+/.gradle
+/gradle
+/src
+/out
+build/generated
+build/resources
+build/tmp
+build/test-results
+build/classes
+build/reports

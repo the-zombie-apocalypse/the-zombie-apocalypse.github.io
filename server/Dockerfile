@@ -1,4 +1,4 @@
-# registry.gitlab.com/profit-2018/bitcobit/liquidity-provider
+# 736762908522.dkr.ecr.us-east-1.amazonaws.com/zombies
 
 FROM openjdk:11-jdk-slim
 MAINTAINER Serhii Maksymchuk <serg.maximchuk@gmail.com>
