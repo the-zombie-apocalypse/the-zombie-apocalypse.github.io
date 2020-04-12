@@ -1,3 +1,4 @@
 .idea/
-browser_client/browser_client.iml
-node_modules/
+*.iml
+browser_client/node_modules/
+browser_client/dist/
