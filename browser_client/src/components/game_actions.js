@@ -24,7 +24,7 @@ const gameActions = {
 
         this._server = new GameServer(process.env.WS_URL || (process.env.NODE_ENV === 'development'
             ? "ws://localhost:8080/conn"
-            : "ws://3.84.157.11:8080/conn"))
+            : "ws://18.195.34.86:8080/conn"))
             .onGreeting(this.onGreeting.bind(this))
             .onMessage(this.onMessage.bind(this))
             .onClose(this.onClose.bind(this))
