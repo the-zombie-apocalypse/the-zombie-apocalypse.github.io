@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --watch",
     "build": "webpack",
-    "build:prod": "cross-env WS_URL=ws://3.84.157.11:8080/conn webpack --config webpack.prod.config.js"
+    "build:prod": "cross-env WS_URL=ws://18.195.34.86:8080/conn webpack --config webpack.prod.config.js"
   },
   "repository": {
     "type": "git",
