@@ -1,12 +1,10 @@
 package com.zorg.zombies.change;
 
-import com.zorg.zombies.model.Coordinates;
 import com.zorg.zombies.model.UserData;
 import com.zorg.zombies.model.UserSubscriber;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -26,9 +24,5 @@ public class WorldOnLoad extends WorldChange<UserPositionChange> {
     public WorldOnLoad(UserPositionChange user, Collection<UserSubscriber> users) {
         super(user);
         this.users = users.stream().map(UserData::new).collect(Collectors.toList());
-    }
-
-    public static WorldOnLoad forTest(String id, Coordinates coordinates) {
-        return new WorldOnLoad(new UserPositionChange(id, coordinates), new ArrayList<>());
     }
 }

@@ -3,16 +3,15 @@ package com.zorg.zombies.map;
 import com.zorg.zombies.change.UserLeftGameEvent;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Log4j2
 public class DefaultMapChunk implements MapChunk {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultMapChunk.class);
     public static final int DEFAULT_WIDTH = 1024;
     public static final int DEFAULT_HEIGHT = 1024;
 
@@ -24,7 +23,7 @@ public class DefaultMapChunk implements MapChunk {
             try {
                 user.getSubscriber().onNext(change);
             } catch (Exception e) {
-                logger.error("Looks like user " + user.getId() + " disconnected.", e);
+                log.error("Session " + user.getId() + " ended.", e);
                 user.destroy();
 
                 var processor = user.getSubscriber();

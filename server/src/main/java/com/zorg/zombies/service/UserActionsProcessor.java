@@ -7,7 +7,9 @@ import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.exception.WrongMoveCommandException;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Command, WorldChange> {
 
     private final User user;
@@ -29,7 +31,7 @@ public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Comm
             }
         } else if (command.isErrorCommand()) {
             ErrorCommand errorCommand = (ErrorCommand) command;
-            errorCommand.getError().printStackTrace(); // todo: log!
+            log.error("Received error command", errorCommand.getError());
         }
     }
 

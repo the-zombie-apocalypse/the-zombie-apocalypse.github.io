@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zorg.zombies.change.WorldChange;
 import lombok.Getter;
 import reactor.core.publisher.FluxProcessor;
-import reactor.core.publisher.ReplayProcessor;
+import reactor.extra.processor.TopicProcessor;
 
 public class UserSubscriber extends UserData {
 
@@ -19,6 +19,6 @@ public class UserSubscriber extends UserData {
 
     public UserSubscriber(String id, Coordinates coordinates) {
         super(id, coordinates);
-        subscriber = ReplayProcessor.create(256);
+        subscriber = TopicProcessor.share(id, 8);
     }
 }
