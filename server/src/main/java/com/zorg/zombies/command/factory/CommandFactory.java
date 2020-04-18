@@ -25,16 +25,16 @@ public class CommandFactory {
     public Command fromJson(String jsonCommand) {
 
         try {
-            final JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
+             JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
 
             if (jsonNode == null) {
                 throw new CommandToJsonParseException(jsonCommand);
             }
 
-            final String moveDirection = jsonNode.get(DIRECTION_FIELD).asText();
+            String moveDirection = jsonNode.get(DIRECTION_FIELD).asText();
 
             if (moveDirection != null) {
-                final Direction direction = Direction.valueOf(moveDirection.toUpperCase());
+                Direction direction = Direction.valueOf(moveDirection.toUpperCase());
 
                 JsonNode moveCommand = jsonNode.get(MOVE_COMMAND_FIELD);
                 if ((moveCommand != null) && moveCommand.asBoolean()) {

@@ -27,14 +27,14 @@ public class UsersCommunicator {
     }
 
     public void notifyUsers(WorldChange change) {
-        final UserChange userChange = change.getUser();
+        UserChange userChange = change.getUser();
 
-        final String userChangeId = userChange.getId();
-        final MapChunk chunk = mapChunkSupervisor.getChunkFor(userChangeId);
+        String userChangeId = userChange.getId();
+        MapChunk chunk = mapChunkSupervisor.getChunkFor(userChangeId);
 
 //        if (userChange.isPositionChange()) {
-//            final UserPositionChange userPositionChange = (UserPositionChange) userChange;
-//            final Coordinates changeCoordinates = userPositionChange.getCoordinates();
+//             UserPositionChange userPositionChange = (UserPositionChange) userChange;
+//             Coordinates changeCoordinates = userPositionChange.getCoordinates();
 //            // todo: implement reaction on user's step
 //        }
 
@@ -42,12 +42,12 @@ public class UsersCommunicator {
     }
 
     public void register(User user) {
-        final MapChunk chunk = mapChunkSupervisor.getChunkFor(user.getCoordinates());
+        MapChunk chunk = mapChunkSupervisor.getChunkFor(user.getCoordinates());
 
-        final FluxProcessor<WorldChange, WorldChange> subscriber = user.getSubscriber();
+        FluxProcessor<WorldChange, WorldChange> subscriber = user.getSubscriber();
 
-        final UserPositionChange userPositionChange = new UserPositionChange(user);
-        final Collection<UserSubscriber> allUsers = chunk.getAllUsers()
+        UserPositionChange userPositionChange = new UserPositionChange(user);
+        Collection<UserSubscriber> allUsers = chunk.getAllUsers()
                 .stream()
                 .map(UserSubscriber::new)
                 .collect(Collectors.toSet());

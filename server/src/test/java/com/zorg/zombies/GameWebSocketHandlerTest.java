@@ -54,10 +54,10 @@ class GameWebSocketHandlerTest {
 
     @Test
     void testGreeting() throws Exception {
-        final String id = "session-id";
-        final User user = new User(id, usersCommunicator);
-        final Flux<String> producer = Flux.empty();
-        final ReplayProcessor<String> output = ReplayProcessor.create(1);
+        String id = "session-id";
+        User user = new User(id, usersCommunicator);
+        Flux<String> producer = Flux.empty();
+        ReplayProcessor<String> output = ReplayProcessor.create(1);
 
         given(userIdDefiner.getUserId(anyString())).willReturn(id);
 
@@ -68,15 +68,15 @@ class GameWebSocketHandlerTest {
                 .then())
                 .block(TIMEOUT);
 
-        final List<String> received = output.collectList().log().block(TIMEOUT);
+        List<String> received = output.collectList().log().block(TIMEOUT);
 
         assertNotNull(received);
         assertEquals(received.size(), 1);
 
-        final String greetingJson = received.get(0);
-        final WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
+        String greetingJson = received.get(0);
+        WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
 
-        final WorldOnLoad greetingCommand = new WorldOnLoad(
+        WorldOnLoad greetingCommand = new WorldOnLoad(
                 new UserPositionChange(user.getId(), user.getCoordinates()), new ArrayList<>()
         );
         assertEquals(worldOnLoad, greetingCommand);

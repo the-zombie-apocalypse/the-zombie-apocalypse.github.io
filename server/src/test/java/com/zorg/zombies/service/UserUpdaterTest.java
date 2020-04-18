@@ -207,18 +207,18 @@ class UserUpdaterTest {
         BiFunction<User, Direction, UserChange> updateMove = userUpdater::updateUserMove;
         BiFunction<User, Direction, UserChange> updateStopMove = userUpdater::updateUserStopMove;
 
-        final List<Pair<BiFunction<User, Direction, UserChange>, Direction>> scenario = List.of(
-                new Pair<>(updateMove, WEST),
-                new Pair<>(updateMove, SOUTH),
-                new Pair<>(updateStopMove, WEST),
-                new Pair<>(updateMove, EAST),
-                new Pair<>(updateStopMove, SOUTH),
-                new Pair<>(updateMove, NORTH),
-                new Pair<>(updateStopMove, EAST),
-                new Pair<>(updateStopMove, NORTH)
-        );
+         List<Pair<BiFunction<User, Direction, UserChange>, Direction>> scenario = List.of(
+                 new Pair<>(updateMove, WEST),
+                 new Pair<>(updateMove, SOUTH),
+                 new Pair<>(updateStopMove, WEST),
+                 new Pair<>(updateMove, EAST),
+                 new Pair<>(updateStopMove, SOUTH),
+                 new Pair<>(updateMove, NORTH),
+                 new Pair<>(updateStopMove, EAST),
+                 new Pair<>(updateStopMove, NORTH)
+         );
 
-        final BiConsumer<UserChange, Direction> checkUserMoveChange = (userChange, moveDirection) -> {
+        BiConsumer<UserChange, Direction> checkUserMoveChange = (userChange, moveDirection) -> {
             assertTrue(user.isMoving(moveDirection));
             assertTrue(userChange.isUpdate());
             assertTrue(userChange instanceof UserMovingChange);
@@ -228,7 +228,7 @@ class UserUpdaterTest {
             assertEquals(userMovingChange.getMoveDirection(), moveDirection);
         };
 
-        final BiConsumer<UserChange, Direction> checkUserStopMoveChange = (userChange, moveDirection) -> {
+        BiConsumer<UserChange, Direction> checkUserStopMoveChange = (userChange, moveDirection) -> {
             assertFalse(user.isMoving(moveDirection));
             assertTrue(userChange.isUpdate());
             assertTrue(userChange instanceof UserStopMovingChange);
@@ -238,7 +238,7 @@ class UserUpdaterTest {
             assertEquals(userStopMovingChange.getStopMoveDirection(), moveDirection);
         };
 
-        final List<BiConsumer<UserChange, Direction>> expects = List.of(
+        List<BiConsumer<UserChange, Direction>> expects = List.of(
                 checkUserMoveChange,
                 checkUserMoveChange,
                 checkUserStopMoveChange,
@@ -250,12 +250,12 @@ class UserUpdaterTest {
         );
 
         for (int i = 0; i < scenario.size(); i++) {
-            final Pair<BiFunction<User, Direction, UserChange>, Direction> entry = scenario.get(i);
-            final BiFunction<User, Direction, UserChange> changeBiFunction = entry.getKey();
-            final Direction direction = entry.getValue();
+            Pair<BiFunction<User, Direction, UserChange>, Direction> entry = scenario.get(i);
+            BiFunction<User, Direction, UserChange> changeBiFunction = entry.getKey();
+            Direction direction = entry.getValue();
 
-            final BiConsumer<UserChange, Direction> directionBiConsumer = expects.get(i);
-            final UserChange userChange = changeBiFunction.apply(user, direction);
+            BiConsumer<UserChange, Direction> directionBiConsumer = expects.get(i);
+            UserChange userChange = changeBiFunction.apply(user, direction);
 
             directionBiConsumer.accept(userChange, direction);
         }

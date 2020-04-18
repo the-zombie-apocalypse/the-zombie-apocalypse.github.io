@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 public class UserUpdater {
 
     public UserChange updateUserMove(User user, Direction move) {
-        final String userId = user.getId();
+         String userId = user.getId();
 
         if (user.isMoving(move)) {
             return new NoUserChange(userId);
@@ -34,7 +34,7 @@ public class UserUpdater {
     }
 
     public UserChange updateUserStopMove(User user, Direction userStopMoveDirection) {
-        final String userId = user.getId();
+        String userId = user.getId();
 
 //        if ((NORTH.equals(userStopMoveDirection) && !user.isMovingNorth())
 //                || (EAST.equals(userStopMoveDirection) && !user.isMovingEast())

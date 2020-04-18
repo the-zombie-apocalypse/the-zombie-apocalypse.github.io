@@ -22,13 +22,13 @@ class CommandFactoryTest {
     @Test
     void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_WrongMoveDirectionThrown() throws Exception {
 
-        final UserMoveCommand command = new UserMoveCommand(null);
-        final String commandAsJson = mapper.writeValueAsString(command);
-        final Command parsed = commandFactory.fromJson(commandAsJson);
+        UserMoveCommand command = new UserMoveCommand(null);
+        String commandAsJson = mapper.writeValueAsString(command);
+        Command parsed = commandFactory.fromJson(commandAsJson);
 
         assertTrue(parsed instanceof ErrorCommand);
 
-        final ErrorCommand errorCommand = (ErrorCommand) parsed;
+        ErrorCommand errorCommand = (ErrorCommand) parsed;
 
         assertTrue(errorCommand.getError() instanceof WrongMoveDirectionException);
     }
@@ -36,10 +36,10 @@ class CommandFactoryTest {
     @Test
     void commandParse_When_ValidMoveCommandSent_Expect_Parsed() throws Exception {
 
-        final UserMoveCommand command = new UserMoveCommand(Direction.WEST);
-        final String commandAsJson = mapper.writeValueAsString(command);
+        UserMoveCommand command = new UserMoveCommand(Direction.WEST);
+        String commandAsJson = mapper.writeValueAsString(command);
 
-        final Command parsed = commandFactory.fromJson(commandAsJson);
+        Command parsed = commandFactory.fromJson(commandAsJson);
 
         assertEquals(command, parsed);
     }

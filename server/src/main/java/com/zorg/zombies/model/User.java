@@ -73,7 +73,7 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     public void act(UserMoveCommand command) {
-        final UserChange userChange = updater.updateUserMove(this, command.getDirection());
+        UserChange userChange = updater.updateUserMove(this, command.getDirection());
 
         if (userChange.isUpdate()) {
             var change = new WorldChange<>(userChange);
@@ -89,7 +89,7 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     public void act(UserStopMoveCommand command) {
-        final UserChange userChange = updater.updateUserStopMove(this, command.getDirection());
+        UserChange userChange = updater.updateUserStopMove(this, command.getDirection());
 
         if (userChange.isUpdate()) {
             var change = new WorldChange<>(userChange);
@@ -112,7 +112,7 @@ public class User extends UserSubscriber implements Destroyable {
     }
 
     List<Direction> collectMovingDirections() {
-        final List<Direction> directions = new ArrayList<>();
+        List<Direction> directions = new ArrayList<>();
 
         if (isMovingNorth()) directions.add(NORTH);
         else if (isMovingSouth()) directions.add(SOUTH);

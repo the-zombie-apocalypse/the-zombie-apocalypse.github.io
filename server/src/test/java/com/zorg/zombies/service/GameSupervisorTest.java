@@ -60,13 +60,13 @@ class GameSupervisorTest {
 
     @Test
     void createGameActionsProcessor_When_SomeId_Expect_NotNullReturned() {
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         assertNotNull(processor);
     }
 
     @Test
     void createGameActionsProcessor_When_IdGiven_Expect_FirstMessageIsGreeting() {
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onComplete();
         user.getSubscriber().onComplete();
 
@@ -87,9 +87,9 @@ class GameSupervisorTest {
 
     @Test
     void reactionOnCommand_When_UserStartMovingUp_Expect_UserMovingUpResponse() {
-        final Direction direction = NORTH;
-        final Command userMovingNorthCommand = new UserMoveCommand(direction);
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        Direction direction = NORTH;
+        Command userMovingNorthCommand = new UserMoveCommand(direction);
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
         processor.onComplete();
         user.getSubscriber().onComplete();
@@ -106,11 +106,11 @@ class GameSupervisorTest {
     private Consumer<? super WorldChange> getUserMovingChangeAssertion(final String userId, final Direction direction) {
         return worldChange -> {
             System.out.println(worldChange);
-            final UserChange userChange = worldChange.getUser();
+            UserChange userChange = worldChange.getUser();
             assertEquals(userChange.getId(), userId);
 
             assertTrue(userChange instanceof UserMovingChange);
-            final UserMovingChange userMovingChange = (UserMovingChange) userChange;
+            UserMovingChange userMovingChange = (UserMovingChange) userChange;
             assertTrue(userMovingChange.isUpdate());
             assertEquals(userMovingChange.getMoveDirection(), direction);
         };
@@ -118,11 +118,11 @@ class GameSupervisorTest {
 
     @Test
     void reactionOnCommand_When_UserStartMovingUpAndStopMovingUp_Expect_UserMovingUpThenUserStopMovingUpResponse() {
-        final Direction direction = NORTH;
-        final Command userMovingNorthCommand = new UserMoveCommand(direction);
-        final Command userStopMovingNorthCommand = new UserStopMoveCommand(direction);
+        Direction direction = NORTH;
+        Command userMovingNorthCommand = new UserMoveCommand(direction);
+        Command userStopMovingNorthCommand = new UserStopMoveCommand(direction);
 
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
         processor.onNext(userStopMovingNorthCommand);
         processor.onComplete();
@@ -141,11 +141,11 @@ class GameSupervisorTest {
     private Consumer<? super WorldChange> getUserStopMovingChangeAssertion(final String userId, final Direction direction) {
         return worldChange -> {
             System.out.println(worldChange);
-            final UserChange userChange = worldChange.getUser();
+            UserChange userChange = worldChange.getUser();
             assertEquals(userChange.getId(), userId);
 
             assertTrue(userChange instanceof UserStopMovingChange);
-            final UserStopMovingChange stopMovingChange = (UserStopMovingChange) userChange;
+            UserStopMovingChange stopMovingChange = (UserStopMovingChange) userChange;
 
             assertTrue(stopMovingChange.isUpdate());
             assertEquals(stopMovingChange.getStopMoveDirection(), direction);
@@ -154,19 +154,19 @@ class GameSupervisorTest {
 
     @Test
     void reactionOnCommand_When_UserIsMovingAndStoppingManyTimes_Expect_CorrectWorldChanges() {
-        final Command userMovingNorthCommand = new UserMoveCommand(NORTH);
-        final Command userStopMovingNorthCommand = new UserStopMoveCommand(NORTH);
+        Command userMovingNorthCommand = new UserMoveCommand(NORTH);
+        Command userStopMovingNorthCommand = new UserStopMoveCommand(NORTH);
 
-        final Command userMovingSouthCommand = new UserMoveCommand(SOUTH);
-        final Command userStopMovingSouthCommand = new UserStopMoveCommand(SOUTH);
+        Command userMovingSouthCommand = new UserMoveCommand(SOUTH);
+        Command userStopMovingSouthCommand = new UserStopMoveCommand(SOUTH);
 
-        final Command userMovingWestCommand = new UserMoveCommand(WEST);
-        final Command userStopMovingWestCommand = new UserStopMoveCommand(WEST);
+        Command userMovingWestCommand = new UserMoveCommand(WEST);
+        Command userStopMovingWestCommand = new UserStopMoveCommand(WEST);
 
-        final Command userMovingEastCommand = new UserMoveCommand(EAST);
-        final Command userStopMovingEastCommand = new UserStopMoveCommand(EAST);
+        Command userMovingEastCommand = new UserMoveCommand(EAST);
+        Command userStopMovingEastCommand = new UserStopMoveCommand(EAST);
 
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         processor.onNext(userMovingNorthCommand);
         processor.onNext(userMovingWestCommand);
         processor.onNext(userStopMovingNorthCommand);
