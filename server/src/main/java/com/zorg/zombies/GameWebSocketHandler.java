@@ -53,8 +53,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
     }
 
     private void onError(Throwable throwable) {
-        log.error("Error : " + throwable);
-        throwable.printStackTrace();
+        log.error("Socket handler received error", throwable);
     }
 
     @SneakyThrows

@@ -15,8 +15,10 @@ import reactor.core.publisher.FluxProcessor;
 import reactor.test.StepVerifier;
 
 import java.time.Duration;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 class DefaultMapChunkTest {
@@ -29,7 +31,9 @@ class DefaultMapChunkTest {
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {
         final DefaultMapChunk chunk = new DefaultMapChunk();
 
-        chunk.notifyUsers(WorldOnLoad.forTest("id", new Coordinates()));
+        chunk.notifyUsers(new WorldOnLoad(
+                new UserPositionChange("id", new Coordinates()), new ArrayList<>()
+        ));
     }
 
     @Test

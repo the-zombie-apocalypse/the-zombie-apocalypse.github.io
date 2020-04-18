@@ -1,6 +1,7 @@
 package com.zorg.zombies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.UserIdDefiner;
@@ -21,11 +22,14 @@ import reactor.core.publisher.ReplayProcessor;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.zorg.zombies.ZombiesApplication.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static com.zorg.zombies.ZombiesApplication.ENTRY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.BDDMockito.anyString;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,7 +76,9 @@ class GameWebSocketHandlerTest {
         final String greetingJson = received.get(0);
         final WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
 
-        final WorldOnLoad greetingCommand = WorldOnLoad.forTest(user.getId(), user.getCoordinates());
+        final WorldOnLoad greetingCommand = new WorldOnLoad(
+                new UserPositionChange(user.getId(), user.getCoordinates()), new ArrayList<>()
+        );
         assertEquals(worldOnLoad, greetingCommand);
     }
 }
