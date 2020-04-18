@@ -15,7 +15,7 @@ import java.util.function.Consumer;
 public class UserUpdater {
 
     public UserChange updateUserMove(User user, Direction move) {
-         String userId = user.getId();
+        String userId = user.getId();
 
         if (user.isMoving(move)) {
             return new NoUserChange(userId);

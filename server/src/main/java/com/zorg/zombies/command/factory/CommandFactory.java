@@ -25,7 +25,7 @@ public class CommandFactory {
     public Command fromJson(String jsonCommand) {
 
         try {
-             JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
+            JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
 
             if (jsonNode == null) {
                 throw new CommandToJsonParseException(jsonCommand);
