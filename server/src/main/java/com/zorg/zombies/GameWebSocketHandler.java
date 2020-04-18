@@ -31,9 +31,9 @@ public class GameWebSocketHandler implements WebSocketHandler {
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {
-        final FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(session.getId());
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(session.getId());
 
-        final Mono<Void> webSocketMessage = session.receive()
+        Mono<Void> webSocketMessage = session.receive()
                 .map(this::webSocketMessageToCommand)
                 .doOnError(this::onError)
                 .doOnNext(processor::onNext)
@@ -45,7 +45,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
                 .log()
                 .then();
 
-        final Mono<Void> send = session.send(processor.map(
+        Mono<Void> send = session.send(processor.map(
                 worldChange -> session.textMessage(toJson(worldChange))
         ));
 

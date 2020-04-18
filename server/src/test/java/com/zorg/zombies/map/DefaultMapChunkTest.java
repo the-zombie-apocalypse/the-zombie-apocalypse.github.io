@@ -29,7 +29,7 @@ class DefaultMapChunkTest {
 
     @Test
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {
-        final DefaultMapChunk chunk = new DefaultMapChunk();
+         DefaultMapChunk chunk = new DefaultMapChunk();
 
         chunk.notifyUsers(new WorldOnLoad(
                 new UserPositionChange("id", new Coordinates()), new ArrayList<>()
@@ -38,17 +38,17 @@ class DefaultMapChunkTest {
 
     @Test
     void publishCheck_When_OneSubscriberAndOneChangePublished_Expect_Received() {
-        final DefaultMapChunk chunk = new DefaultMapChunk();
-        final String id0 = "id-0";
+        DefaultMapChunk chunk = new DefaultMapChunk();
+        String id0 = "id-0";
 
         var user = new User(id0, communicator);
 
         chunk.addObject(user);
 
-        final Coordinates newCoordinates = new Coordinates(42, 24);
+        Coordinates newCoordinates = new Coordinates(42, 24);
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, newCoordinates)));
 
-        final FluxProcessor<WorldChange, WorldChange> processor0 = user.getSubscriber();
+        FluxProcessor<WorldChange, WorldChange> processor0 = user.getSubscriber();
         processor0.onComplete();
 
         StepVerifier.create(processor0).as("proc-0 connection...")
@@ -61,22 +61,22 @@ class DefaultMapChunkTest {
 
     @Test
     void publishCheck_When_FewConsumersAndFewChanges_Expect_OnlyCorrectChangesReceived() {
-        final DefaultMapChunk chunk = new DefaultMapChunk();
-        final String id0 = "id-0";
-        final String id1 = "id-1";
-        final String id2 = "id-2";
+        DefaultMapChunk chunk = new DefaultMapChunk();
+        String id0 = "id-0";
+        String id1 = "id-1";
+        String id2 = "id-2";
 
         var user0 = new User(id0, communicator);
         chunk.addObject(user0);
 
-        final Coordinates coordinates0 = new Coordinates(42, 24);
-        final Coordinates coordinates1 = new Coordinates(43, 23);
-        final Coordinates coordinates2 = new Coordinates(44, 24);
-        final Coordinates coordinates3 = new Coordinates(43, 23);
-        final Coordinates coordinates4 = new Coordinates(43, 22);
-        final Coordinates coordinates5 = new Coordinates(42, 21);
-        final Coordinates coordinates6 = new Coordinates(41, 20);
-        final Coordinates coordinates7 = new Coordinates(40, 20);
+        Coordinates coordinates0 = new Coordinates(42, 24);
+        Coordinates coordinates1 = new Coordinates(43, 23);
+        Coordinates coordinates2 = new Coordinates(44, 24);
+        Coordinates coordinates3 = new Coordinates(43, 23);
+        Coordinates coordinates4 = new Coordinates(43, 22);
+        Coordinates coordinates5 = new Coordinates(42, 21);
+        Coordinates coordinates6 = new Coordinates(41, 20);
+        Coordinates coordinates7 = new Coordinates(40, 20);
 
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates0)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id0, coordinates2)));
@@ -95,9 +95,9 @@ class DefaultMapChunkTest {
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id2, coordinates6)));
         chunk.notifyUsers(new WorldChange<>(new UserPositionChange(id1, coordinates7)));
 
-        final FluxProcessor<WorldChange, WorldChange> processor0 = user0.getSubscriber();
-        final FluxProcessor<WorldChange, WorldChange> processor1 = user1.getSubscriber();
-        final FluxProcessor<WorldChange, WorldChange> processor2 = user2.getSubscriber();
+        FluxProcessor<WorldChange, WorldChange> processor0 = user0.getSubscriber();
+        FluxProcessor<WorldChange, WorldChange> processor1 = user1.getSubscriber();
+        FluxProcessor<WorldChange, WorldChange> processor2 = user2.getSubscriber();
 
         processor0.onComplete();
         processor1.onComplete();
@@ -156,12 +156,12 @@ class DefaultMapChunkTest {
     }
 
     private void verifyChange(String userId, Coordinates coordinates, WorldChange worldChange) {
-        final UserChange userChange = worldChange.getUser();
+        UserChange userChange = worldChange.getUser();
 
         assertEquals(userId, userChange.getId());
         assertTrue(userChange instanceof UserPositionChange);
 
-        final UserPositionChange userPositionChange = (UserPositionChange) userChange;
+        UserPositionChange userPositionChange = (UserPositionChange) userChange;
 
         assertEquals(coordinates, userPositionChange.getCoordinates());
     }

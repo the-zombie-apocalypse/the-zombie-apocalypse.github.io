@@ -24,8 +24,8 @@ public class UserService {
     }
 
     public User createUser(String sessionId) {
-        final String id = userIdDefiner.getUserId(sessionId);
-        final UserData user = new UserData(id);
+        String id = userIdDefiner.getUserId(sessionId);
+        UserData user = new UserData(id);
         return new User(userDataRepository.save(user), usersCommunicator);
     }
 }
