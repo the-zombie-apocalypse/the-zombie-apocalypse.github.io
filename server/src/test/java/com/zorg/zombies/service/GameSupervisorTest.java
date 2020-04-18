@@ -60,7 +60,7 @@ class GameSupervisorTest {
 
     @Test
     void createGameActionsProcessor_When_SomeId_Expect_NotNullReturned() {
-         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
         assertNotNull(processor);
     }
 

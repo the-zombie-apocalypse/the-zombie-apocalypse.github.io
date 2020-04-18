@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class UserStopMovingChange extends UserChange {
 
-    protected boolean stopMovingChange = true;
     private final Direction stopMoveDirection;
+    protected boolean stopMovingChange = true;
 
     public UserStopMovingChange(String id, Direction stopMoveDirection) {
         super(id);

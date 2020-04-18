@@ -207,16 +207,16 @@ class UserUpdaterTest {
         BiFunction<User, Direction, UserChange> updateMove = userUpdater::updateUserMove;
         BiFunction<User, Direction, UserChange> updateStopMove = userUpdater::updateUserStopMove;
 
-         List<Pair<BiFunction<User, Direction, UserChange>, Direction>> scenario = List.of(
-                 new Pair<>(updateMove, WEST),
-                 new Pair<>(updateMove, SOUTH),
-                 new Pair<>(updateStopMove, WEST),
-                 new Pair<>(updateMove, EAST),
-                 new Pair<>(updateStopMove, SOUTH),
-                 new Pair<>(updateMove, NORTH),
-                 new Pair<>(updateStopMove, EAST),
-                 new Pair<>(updateStopMove, NORTH)
-         );
+        List<Pair<BiFunction<User, Direction, UserChange>, Direction>> scenario = List.of(
+                new Pair<>(updateMove, WEST),
+                new Pair<>(updateMove, SOUTH),
+                new Pair<>(updateStopMove, WEST),
+                new Pair<>(updateMove, EAST),
+                new Pair<>(updateStopMove, SOUTH),
+                new Pair<>(updateMove, NORTH),
+                new Pair<>(updateStopMove, EAST),
+                new Pair<>(updateStopMove, NORTH)
+        );
 
         BiConsumer<UserChange, Direction> checkUserMoveChange = (userChange, moveDirection) -> {
             assertTrue(user.isMoving(moveDirection));
