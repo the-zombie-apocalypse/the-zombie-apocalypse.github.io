@@ -40,7 +40,7 @@ export default class Player extends SceneObject {
         });
 
         const nicknameGeometry = new TextBufferGeometry(name, {
-            font: fonts.helvetikerRegular,
+            font: fonts.ubuntuBold,
             size: 2,
             height: 0,
         });
