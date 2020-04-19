@@ -23,8 +23,8 @@ export default {
         (visibleArea[id] = visibleArea[id] || {}).position = coordinates;
     },
 
-    spawnNewUser(id, coordinates) {
-        const player = new OtherPlayer(id, coordinates);
+    spawnNewUser({id, coordinates, nickname}) {
+        const player = new OtherPlayer(id, coordinates, nickname);
 
         visibleArea[id] = player;
 

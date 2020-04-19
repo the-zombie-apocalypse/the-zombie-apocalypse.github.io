@@ -4,14 +4,14 @@ import graphon from './graphics/graphon'
 import gameActions from './components/game_actions'
 import MainPlayer from "./entities/main-player";
 
-export default function gameLoop() {
+export default function gameLoop(nickname) {
 
-    gameActions.connectToServer(window.document);
+    gameActions.connectToServer(window.document, nickname);
 
     graphon.initGraph();
 
     // todo: move player creation after greeting from server
-    const player = new MainPlayer();
+    const player = new MainPlayer(null, null, nickname);
     graphon.addDynamic(player);
 
     const axesHelper = new AxesHelper(150);

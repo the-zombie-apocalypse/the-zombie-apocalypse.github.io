@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CommandFactoryTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final CommandFactory commandFactory = new CommandFactory();
+    private final CommandFactory commandFactory = new CommandFactory(mapper);
 
     @Test
     void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_WrongMoveDirectionThrown() throws Exception {

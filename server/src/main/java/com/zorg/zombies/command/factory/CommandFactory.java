@@ -5,20 +5,25 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
+import com.zorg.zombies.command.UserStartGameCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
 import com.zorg.zombies.model.geometry.Direction;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 import static com.zorg.zombies.command.Command.MOVE_COMMAND_FIELD;
 import static com.zorg.zombies.command.MoveDirectionCommand.DIRECTION_FIELD;
 import static com.zorg.zombies.command.MoveDirectionCommand.MOVE_STOP_COMMAND_FIELD;
+import static com.zorg.zombies.command.UserStartGameCommand.NICKNAME_FIELD;
+import static com.zorg.zombies.command.UserStartGameCommand.START_GAME_COMMAND_FIELD;
 
 @Component
+@RequiredArgsConstructor
 public class CommandFactory {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper;
 
 
     @SneakyThrows
@@ -31,9 +36,10 @@ public class CommandFactory {
                 throw new CommandToJsonParseException(jsonCommand);
             }
 
-            String moveDirection = jsonNode.get(DIRECTION_FIELD).asText();
+            JsonNode directionField = jsonNode.get(DIRECTION_FIELD);
+            String moveDirection;
 
-            if (moveDirection != null) {
+            if ((directionField != null) && ((moveDirection = directionField.asText()) != null)) {
                 Direction direction = Direction.valueOf(moveDirection.toUpperCase());
 
                 JsonNode moveCommand = jsonNode.get(MOVE_COMMAND_FIELD);
@@ -44,6 +50,12 @@ public class CommandFactory {
                 if ((moveStopCommand != null) && moveStopCommand.asBoolean()) {
                     return new UserStopMoveCommand(direction);
                 }
+            }
+
+            JsonNode startGameField = jsonNode.get(START_GAME_COMMAND_FIELD);
+
+            if (startGameField != null && startGameField.asBoolean(false)) {
+                return new UserStartGameCommand(jsonNode.get(NICKNAME_FIELD).asText());
             }
         } catch (Exception e) {
             return new ErrorCommand(e);

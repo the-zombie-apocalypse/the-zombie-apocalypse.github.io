@@ -12,7 +12,7 @@ public class ErrorCommand extends Command {
     private transient Throwable error;
 
     {
-        isErrorCommand = true;
+        errorCommand = true;
     }
 
     public ErrorCommand(Exception e) {

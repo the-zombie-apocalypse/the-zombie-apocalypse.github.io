@@ -54,12 +54,19 @@ public class User extends UserSubscriber implements Destroyable {
     @Setter
     private volatile boolean wantToMoveDown;
 
+    public User(String id, Coordinates coordinates, String nickname, UsersCommunicator usersCommunicator) {
+        super(id, coordinates, nickname);
+        this.usersCommunicator = usersCommunicator;
+    }
 
     public User(String id, Coordinates coordinates, UsersCommunicator usersCommunicator) {
         super(id, coordinates);
         this.usersCommunicator = usersCommunicator;
     }
 
+    /**
+     * looks like used for test purposes only
+     */
     public User(String id, UsersCommunicator usersCommunicator) {
         this(id, new Coordinates(0, 0), usersCommunicator);
     }

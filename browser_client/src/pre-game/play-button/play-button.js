@@ -12,7 +12,8 @@ export default function () {
             $gameMenu.hide();
 
             try {
-                gameLoop();
+                const nickname = $('#nickname-field-input').val() || 'noname';
+                gameLoop(nickname);
             } catch (e) {
                 $gameMenu.show();
             }
