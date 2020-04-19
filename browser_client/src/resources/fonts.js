@@ -1,8 +1,8 @@
-import font from './../resources/helvetiker_regular'
+import ubuntu_bold from './../resources/ubuntu_bold'
 import {FontLoader} from "three";
 
 export default {
-    get helvetikerRegular() {
-        return new FontLoader().parse(font)
+    get ubuntuBold() {
+        return new FontLoader().parse(ubuntu_bold)
     }
 }
