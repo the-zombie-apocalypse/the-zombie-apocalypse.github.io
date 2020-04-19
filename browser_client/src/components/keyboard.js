@@ -1,33 +1,25 @@
-const ARROW_LEFT = 'ArrowLeft';
-const ARROW_UP = 'ArrowUp';
-const ARROW_RIGHT = 'ArrowRight';
-const ARROW_DOWN = 'ArrowDown';
-const KEY_A = 'a';
-const KEY_W = 'w';
-const KEY_D = 'd';
-const KEY_S = 's';
-const BIG_KEY_A = 'A';
-const BIG_KEY_W = 'W';
-const BIG_KEY_D = 'D';
-const BIG_KEY_S = 'S';
+const W_KEY_CODE = 87;
+const A_KEY_CODE = 65;
+const S_KEY_CODE = 83;
+const D_KEY_CODE = 68;
+const ARROW_LEFT_KEY_CODE = 37;
+const ARROW_UP_KEY_CODE = 38;
+const ARROW_RIGHT_KEY_CODE = 39;
+const ARROW_DOWN_KEY_CODE = 40;
 
-function getKeyDownAction(key, server) {
-    switch (key) {
-        case ARROW_UP:
-        case KEY_W:
-        case BIG_KEY_W:
+function getKeyDownAction(keyCode, server) {
+    switch (keyCode) {
+        case ARROW_UP_KEY_CODE:
+        case W_KEY_CODE:
             return server.sendPlayerMoveNorth;
-        case ARROW_DOWN:
-        case KEY_S:
-        case BIG_KEY_S:
+        case ARROW_DOWN_KEY_CODE:
+        case S_KEY_CODE:
             return server.sendPlayerMoveSouth;
-        case ARROW_LEFT:
-        case KEY_A:
-        case BIG_KEY_A:
+        case ARROW_LEFT_KEY_CODE:
+        case A_KEY_CODE:
             return server.sendPlayerMoveWest;
-        case ARROW_RIGHT:
-        case KEY_D:
-        case BIG_KEY_D:
+        case ARROW_RIGHT_KEY_CODE:
+        case D_KEY_CODE:
             return server.sendPlayerMoveEast;
         default:
             return new Function();
@@ -36,21 +28,17 @@ function getKeyDownAction(key, server) {
 
 function getKeyUpAction(key, server) {
     switch (key) {
-        case ARROW_UP:
-        case KEY_W:
-        case BIG_KEY_W:
+        case ARROW_UP_KEY_CODE:
+        case W_KEY_CODE:
             return server.sendPlayerStopMoveNorth;
-        case ARROW_DOWN:
-        case KEY_S:
-        case BIG_KEY_S:
+        case ARROW_DOWN_KEY_CODE:
+        case S_KEY_CODE:
             return server.sendPlayerStopMoveSouth;
-        case ARROW_LEFT:
-        case KEY_A:
-        case BIG_KEY_A:
+        case ARROW_LEFT_KEY_CODE:
+        case A_KEY_CODE:
             return server.sendPlayerStopMoveWest;
-        case ARROW_RIGHT:
-        case KEY_D:
-        case BIG_KEY_D:
+        case ARROW_RIGHT_KEY_CODE:
+        case D_KEY_CODE:
             return server.sendPlayerStopMoveEast;
         default:
             return new Function();
@@ -69,16 +57,16 @@ export default class KeyboardListener {
         this.initKeyUp();
     }
 
-    _onKeyDown({key}) {
-        if (keysDown[key]) return;
-        keysDown[key] = key;
+    _onKeyDown({keyCode}) {
+        if (keysDown[keyCode]) return;
+        keysDown[keyCode] = keyCode;
 
-        getKeyDownAction(key, this._server).call(this._server);
+        getKeyDownAction(keyCode, this._server).call(this._server);
     }
 
-    _onKeyUp({key}) {
-        delete keysDown[key];
-        getKeyUpAction(key, this._server).call(this._server);
+    _onKeyUp({keyCode}) {
+        delete keysDown[keyCode];
+        getKeyUpAction(keyCode, this._server).call(this._server);
     }
 
     initKeyDown() {
