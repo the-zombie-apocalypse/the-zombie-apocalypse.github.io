@@ -4,7 +4,9 @@ import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.ErrorCommand;
 import com.zorg.zombies.command.UserMoveCommand;
+import com.zorg.zombies.command.UserStartGameCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
+import com.zorg.zombies.model.Coordinates;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.exception.WrongMoveCommandException;
 import lombok.extern.log4j.Log4j2;
@@ -29,6 +31,12 @@ public class UserActionsProcessor extends FluxProcessorDelegatingSubscriber<Comm
             } else {
                 throw new WrongMoveCommandException(command);
             }
+        } else if (command.isStartGameCommand()) {
+            UserStartGameCommand startGameCommand = (UserStartGameCommand) command;
+            user.setNickname(startGameCommand.getNickname());
+            user.setPosition(new Coordinates());
+            user.notifyJoining();
+
         } else if (command.isErrorCommand()) {
             ErrorCommand errorCommand = (ErrorCommand) command;
             log.error("Received error command", errorCommand.getError());

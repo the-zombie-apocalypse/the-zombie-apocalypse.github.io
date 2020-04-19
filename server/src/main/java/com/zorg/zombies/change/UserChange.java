@@ -8,10 +8,17 @@ import lombok.EqualsAndHashCode;
 public class UserChange extends Change {
 
     private final String id;
+    protected volatile String nickname;
 
     protected UserChange(String id, boolean isUpdate) {
         super(isUpdate);
         this.id = id;
+    }
+
+    public UserChange(String id, String nickname) {
+        super(true);
+        this.id = id;
+        this.nickname = nickname;
     }
 
     protected UserChange(String id) {

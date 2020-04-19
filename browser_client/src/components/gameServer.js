@@ -3,6 +3,7 @@ import UserMoveCommand from "../entities/commands/user-move-command";
 import UserStopMoveCommand from "../entities/commands/user-stop-move-command";
 import gameMenu from "../pre-game/start-game-menu";
 import swal from "sweetalert";
+import UserStartGameCommand from "../entities/commands/UserStartGameCommand";
 
 const serverCommands = {
     goUp: new UserMoveCommand(directions.up).toString(),
@@ -23,6 +24,11 @@ export default class GameServer {
 
     constructor(connectionURL) {
         this.connectionURL = connectionURL;
+    }
+
+    userData({nickname}) {
+        this._nickname = nickname;
+        return this;
     }
 
     onGreeting(onGreeting) {
@@ -83,7 +89,13 @@ export default class GameServer {
             });
         };
 
+        this._socket.onopen = ev => this.send(new UserStartGameCommand({nickname: this._nickname}));
+
         return this
+    }
+
+    send(command) {
+        this._socket.send(command.toString());
     }
 
     sendPlayerMoveUp() {

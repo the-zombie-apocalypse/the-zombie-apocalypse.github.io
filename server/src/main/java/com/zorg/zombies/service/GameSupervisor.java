@@ -20,7 +20,6 @@ public class GameSupervisor {
     public FluxProcessor<Command, WorldChange> createGameActionsProcessor(String sessionId) {
         User user = userService.createUser(sessionId);
         UserActionsProcessor processor = new UserActionsProcessor(user);
-        user.notifyJoining();
 
         return FluxProcessor.wrap(processor, processor.doOnTerminate(user::destroy));
     }

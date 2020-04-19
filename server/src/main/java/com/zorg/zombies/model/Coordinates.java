@@ -54,4 +54,10 @@ public class Coordinates {
         else if (DOWN.equals(direction)) z.decrementAndGet();
     }
 
+    public void set(Coordinates coordinates) {
+        x.set(coordinates.x.get());
+        y.set(coordinates.y.get());
+        z.set(coordinates.z.get());
+    }
+
 }

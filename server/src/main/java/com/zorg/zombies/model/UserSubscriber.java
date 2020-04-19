@@ -17,6 +17,11 @@ public class UserSubscriber extends UserData {
         this.subscriber = from.getSubscriber();
     }
 
+    public UserSubscriber(String id, Coordinates coordinates, String nickname) {
+        super(id, coordinates, nickname);
+        subscriber = TopicProcessor.share(id, 8);
+    }
+
     public UserSubscriber(String id, Coordinates coordinates) {
         super(id, coordinates);
         subscriber = TopicProcessor.share(id, 8);

@@ -1,20 +1,16 @@
-import {BoxGeometry, Mesh, MeshLambertMaterial} from "three"
+import {BoxGeometry, Group, Mesh, MeshLambertMaterial, TextBufferGeometry} from "three"
 import SceneObject from './scene_object'
+import fonts from './../resources/fonts'
 
 export default class Player extends SceneObject {
 
-    constructor(id, coordinates) {
-        super(Player.buildSceneObject());
-        id && (this.id = id);
+    constructor(id, coordinates, name) {
+        super(Player.buildSceneObject(name));
+        if (id) {
+            this.id = id;
+        }
+        this.name = name || 'noname';
         coordinates && (this.position = coordinates)
-    }
-
-    get id() {
-        return this._id
-    }
-
-    set id(id) {
-        this._id = id
     }
 
     get position() {
@@ -30,9 +26,33 @@ export default class Player extends SceneObject {
         return this._sceneObject.rotation
     }
 
-    static buildSceneObject() {
+    static buildSceneObject(name) {
+        let scale = 1;
+        let userGroup = new Group();
         let geometry = new BoxGeometry(4, 4, 4);
-        let material = new MeshLambertMaterial({color: 0x00ff00});
-        return new Mesh(geometry, material);
+        let userMaterial = new MeshLambertMaterial({
+            color: 0xF4FFFC,
+            // emissive: 0x00FF03
+        });
+        let nameMaterial = new MeshLambertMaterial({
+            color: 0x000400,
+            // emissive: 0xFFFFFF
+        });
+
+        const nicknameGeometry = new TextBufferGeometry(name, {
+            font: fonts.helvetikerRegular,
+            size: 2,
+            height: 0,
+        });
+
+        let textMesh = new Mesh(nicknameGeometry, nameMaterial);
+        textMesh.scale.set(scale, scale, scale);
+        textMesh.position.z = 4;
+        textMesh.position.y = 2;
+        textMesh.position.x = 2;
+
+        userGroup.add(textMesh);
+        userGroup.add(new Mesh(geometry, userMaterial));
+        return userGroup;
     }
 }

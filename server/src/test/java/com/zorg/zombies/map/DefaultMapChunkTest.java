@@ -1,5 +1,6 @@
 package com.zorg.zombies.map;
 
+import com.zorg.zombies.change.OnLoadUserChange;
 import com.zorg.zombies.change.UserChange;
 import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
@@ -29,10 +30,10 @@ class DefaultMapChunkTest {
 
     @Test
     void notifyUsers_When_NoUsersSubscribedYet_Expect_SilentConsumingByChunk() {
-         DefaultMapChunk chunk = new DefaultMapChunk();
+        DefaultMapChunk chunk = new DefaultMapChunk();
 
         chunk.notifyUsers(new WorldOnLoad(
-                new UserPositionChange("id", new Coordinates()), new ArrayList<>()
+                new OnLoadUserChange("id", "nickname", new Coordinates()), new ArrayList<>()
         ));
     }
 

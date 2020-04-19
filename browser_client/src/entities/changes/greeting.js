@@ -6,11 +6,10 @@ export default class Greeting {
             throw Error('Invalid greeting message!')
         }
 
-        console.log(greetingData);
-
         this.id = greetingData.user.id;
         this.coordinates = greetingData.user.coordinates;
         this.users = greetingData.users;
+        this.nickname = greetingData.user.nickname;
     }
 
 }

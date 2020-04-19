@@ -1,8 +1,9 @@
 package com.zorg.zombies;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldOnLoad;
+import com.zorg.zombies.command.UserStartGameCommand;
+import com.zorg.zombies.model.Coordinates;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.service.UserIdDefiner;
 import com.zorg.zombies.service.UsersCommunicator;
@@ -18,6 +19,7 @@ import org.springframework.web.reactive.socket.client.StandardWebSocketClient;
 import org.springframework.web.reactive.socket.client.WebSocketClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.ReplayProcessor;
+import utils.functions.ThrowingFunction;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,8 +57,10 @@ class GameWebSocketHandlerTest {
     @Test
     void testGreeting() throws Exception {
         String id = "session-id";
-        User user = new User(id, usersCommunicator);
-        Flux<String> producer = Flux.empty();
+        String nickname = "nickname";
+        User user = new User(id, new Coordinates(0, 0), nickname, usersCommunicator);
+        Flux<String> producer = Flux.just(new UserStartGameCommand(nickname))
+                .map(ThrowingFunction.map(mapper::writeValueAsString));
         ReplayProcessor<String> output = ReplayProcessor.create(1);
 
         given(userIdDefiner.getUserId(anyString())).willReturn(id);
@@ -76,9 +80,7 @@ class GameWebSocketHandlerTest {
         String greetingJson = received.get(0);
         WorldOnLoad worldOnLoad = mapper.readValue(greetingJson, WorldOnLoad.class);
 
-        WorldOnLoad greetingCommand = new WorldOnLoad(
-                new UserPositionChange(user.getId(), user.getCoordinates()), new ArrayList<>()
-        );
+        WorldOnLoad greetingCommand = new WorldOnLoad(user, new ArrayList<>());
         assertEquals(worldOnLoad, greetingCommand);
     }
 }

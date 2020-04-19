@@ -5,9 +5,9 @@ import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.factory.CommandFactory;
 import com.zorg.zombies.service.GameSupervisor;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.WebSocketMessage;
@@ -15,19 +15,14 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.Mono;
 
-@Slf4j
+@Log4j2
 @Component
+@RequiredArgsConstructor
 public class GameWebSocketHandler implements WebSocketHandler {
 
     private final CommandFactory commandFactory;
     private final GameSupervisor gameSupervisor;
-    private ObjectMapper mapper = new ObjectMapper();
-
-    @Autowired
-    public GameWebSocketHandler(CommandFactory commandFactory, GameSupervisor gameSupervisor) {
-        this.commandFactory = commandFactory;
-        this.gameSupervisor = gameSupervisor;
-    }
+    private final ObjectMapper mapper;
 
     @Override
     public Mono<Void> handle(WebSocketSession session) {

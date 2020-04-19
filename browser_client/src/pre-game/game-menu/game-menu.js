@@ -11,6 +11,18 @@ export default function () {
                 'class': 'game-title',
                 text: 'Zorg'
             }),
+            $('<div>', {
+                'class': 'nickname-input-wrapper',
+                html: $('<input>', {
+                    id: 'nickname-field-input',
+                    'class': 'nickname-field',
+                    type: 'text',
+                    placeholder: 'nickname',
+                    onload: function () {
+                        setTimeout(() => $(this).focus(), 200)
+                    }
+                })
+            }),
             playButton(),
         ]
     })

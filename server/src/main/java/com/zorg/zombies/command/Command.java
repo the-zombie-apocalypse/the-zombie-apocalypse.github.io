@@ -10,7 +10,8 @@ public class Command {
 
     protected boolean moveStartCommand;
     protected boolean moveStopCommand;
-    protected boolean isErrorCommand;
+    protected boolean errorCommand;
+    protected boolean startGameCommand;
 
     public Command() {
     }

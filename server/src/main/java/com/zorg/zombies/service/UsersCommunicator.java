@@ -2,7 +2,6 @@ package com.zorg.zombies.service;
 
 import com.zorg.zombies.change.NewUserJoined;
 import com.zorg.zombies.change.UserChange;
-import com.zorg.zombies.change.UserPositionChange;
 import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.map.MapChunk;
@@ -11,7 +10,6 @@ import com.zorg.zombies.model.User;
 import com.zorg.zombies.model.UserSubscriber;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.FluxProcessor;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -44,16 +42,13 @@ public class UsersCommunicator {
     public void register(User user) {
         MapChunk chunk = mapChunkSupervisor.getChunkFor(user.getCoordinates());
 
-        FluxProcessor<WorldChange, WorldChange> subscriber = user.getSubscriber();
-
-        UserPositionChange userPositionChange = new UserPositionChange(user);
         Collection<UserSubscriber> allUsers = chunk.getAllUsers()
                 .stream()
                 .map(UserSubscriber::new)
                 .collect(Collectors.toSet());
 
-        subscriber.onNext(new WorldOnLoad(userPositionChange, allUsers));
-        notifyUsers(new NewUserJoined(userPositionChange));
+        user.getSubscriber().onNext(new WorldOnLoad(user, allUsers));
+        notifyUsers(new NewUserJoined(user));
 
         chunk.addObject(user);
     }
