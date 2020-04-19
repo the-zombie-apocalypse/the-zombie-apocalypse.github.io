@@ -12,7 +12,7 @@ export default function () {
             $gameMenu.hide();
 
             try {
-                const nickname = $('#nickname-field-input').val() || 'noname';
+                const nickname = ($('#nickname-field-input').val() || 'noname').slice(0, 32);
                 gameLoop(nickname);
             } catch (e) {
                 $gameMenu.show();
