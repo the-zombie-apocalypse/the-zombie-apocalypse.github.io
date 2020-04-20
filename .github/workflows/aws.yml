@@ -26,87 +26,130 @@
 on:
   push:
     branches:
-    - master
-    - pipeline_creation
+      - master
+      - pipeline_creation
 
 name: Deploy to Amazon ECS
 
 jobs:
-  deploy:
-    name: Deploy
+  build backend:
+    name: build backend
+    runs-on: openjdk:11-jdk-slim
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: cd ./server
+      - run: sh gradlew bootJar
+      - uses: actions/upload-artifact@v1
+        with:
+          name: backend-build
+          path: ./build/libs
+
+  deploy backend:
+    name: deploy backend
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: cd ./server
+      - uses: actions/download-artifact@v1
+        with:
+          name: backend-build
+          path: ./build/libs
+      - name: Build, tag, and push backend image to Amazon ECR
+        id: backend-build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: zombies
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-central-1
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: backend-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: back-task-definition.json
+          container-name: zombies-back
+          image: ${{ steps.backend-build-image.outputs.image }}
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
+          service: zombies-back
+          cluster: zombies
+          wait-for-service-stability: true
 
-    - name: Build, tag, and push frontend image to Amazon ECR
-      id: frontend-build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: zombies-front
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./browser_client
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: frontend-task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: front-task-definition.json
-        container-name: zombies-front
-        image: ${{ steps.frontend-build-image.outputs.image }}
+  build front:
+    name: build frontend
+    runs-on: node:10-alpine
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
-        service: zombies-front
-        cluster: zombies
-        wait-for-service-stability: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: cd ./browser_client
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@v1
+        with:
+          name: front-build
+          path: ./dist
 
-    - name: Build, tag, and push backend image to Amazon ECR
-      id: backend-build-image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: zombies
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+  deploy front:
+    name: deploy frontend
+    runs-on: ubuntu-latest
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
-      id: backend-task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: back-task-definition.json
-        container-name: zombies-back
-        image: ${{ steps.backend-build-image.outputs.image }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.backend-task-def.outputs.task-definition }}
-        service: zombies-back
-        cluster: zombies
-        wait-for-service-stability: true
+      - run: cd ./browser_client
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: front-build
+          path: ./dist
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push frontend image to Amazon ECR
+        id: frontend-build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: zombies-front
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: frontend-task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: front-task-definition.json
+          container-name: zombies-front
+          image: ${{ steps.frontend-build-image.outputs.image }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.frontend-task-def.outputs.task-definition }}
+          service: zombies-front
+          cluster: zombies
+          wait-for-service-stability: true
