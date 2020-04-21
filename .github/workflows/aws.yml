@@ -34,13 +34,14 @@ name: Deploy to Amazon ECS
 jobs:
   build-backend:
     name: build backend
-    runs-on: openjdk:11-jdk-slim
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - run: docker run -it --rm -v $(pwd)/server:/root/server openjdk:11-jdk-slim -e 'sh gradlew bootJar'
       - run: cd ./server
-      - run: sh gradlew bootJar
+      - run: ls -la ./build/libs
       - uses: actions/upload-artifact@v1
         with:
           name: backend-build
@@ -49,11 +50,13 @@ jobs:
   deploy-backend:
     name: deploy backend
     runs-on: ubuntu-latest
+    needs: build-backend
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - run: cd ./server
+#      - run: docker
       - uses: actions/download-artifact@v1
         with:
           name: backend-build
@@ -104,6 +107,7 @@ jobs:
   deploy-front:
     name: deploy frontend
     runs-on: ubuntu-latest
+    needs: build-front
 
     steps:
       - name: Checkout
