@@ -39,6 +39,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - run: pwd
+      - run: ls -la ./server
       - run: docker run -i --rm -v $(pwd)/server:/root/server openjdk:11-jdk-slim bash 'mkdir /root/server && ls -la /root/server && cd /root/server && sh gradlew bootJar'
       - run: cd ./server
       - run: ls -la ./build/libs
