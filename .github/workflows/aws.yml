@@ -42,19 +42,16 @@ jobs:
       - run: pwd
       - run: ls -la ./server
       - run: docker run -i --rm -v $(pwd)/server:/root/server -w /root/server gradle:6.3-jdk11 gradle bootJar
-      - run: ls -la ./server
-      - run: ls -la ./server/build
       - run: ls -la ./server/build/libs
-      - run: cd ./server
-      - run: pwd
       - name: Build, tag, and push backend image to Amazon ECR
         id: backend-build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: zombies
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: latest
+#          IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
