@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - run: docker run -it --rm -v $(pwd)/server:/root/server openjdk:11-jdk-slim bash -e 'cd /root/server && sh gradlew bootJar'
+      - run: docker run -i --rm -v $(pwd)/server:/root/server openjdk:11-jdk-slim -e 'cd /root/server && sh gradlew bootJar'
       - run: cd ./server
       - run: ls -la ./build/libs
       - uses: actions/upload-artifact@v1
