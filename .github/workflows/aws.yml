@@ -61,7 +61,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: zombies
           IMAGE_TAG: latest
-#          IMAGE_TAG: ${{ github.sha }}
+          #IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -94,7 +94,7 @@ jobs:
 
       - run: pwd
       - run: ls -la ./browser_client
-      - run: docker run -i --rm -v $(pwd)/browser_client:/root/browser_client -w /root/browser_client node:10-alpine npm install run build
+      - run: docker run -i --rm -v $(pwd)/browser_client:/root/browser_client -w /root/browser_client node:10-alpine npm run build:prod
       - run: ls -la ./browser_client/
 
       - name: Configure AWS credentials
@@ -113,7 +113,8 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: zombies-front
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: latest
+          #IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./browser_client
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
