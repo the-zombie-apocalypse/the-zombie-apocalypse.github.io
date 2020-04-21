@@ -42,8 +42,11 @@ jobs:
       - run: pwd
       - run: ls -la ./server
       - run: docker run -i --rm -v $(pwd)/server:/root/server -w /root/server gradle:6.3-jdk11 gradle bootJar
+      - run: ls -la ./server
+      - run: ls -la ./server/build
+      - run: ls -la ./server/build/libs
       - run: cd ./server
-      - run: ls -la ./build/libs
+      - run: pwd
       - name: Build, tag, and push backend image to Amazon ECR
         id: backend-build-image
         env:
