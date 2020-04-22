@@ -47,7 +47,7 @@ export default class Player extends SceneObject {
 
         let textMesh = new Mesh(nicknameGeometry, nameMaterial);
         textMesh.scale.set(scale, scale, scale);
-        textMesh.position.z = 4;
+        textMesh.position.z = 2;
         textMesh.position.y = 2;
         textMesh.position.x = 2;
 

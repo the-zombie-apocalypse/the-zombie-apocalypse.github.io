@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.ErrorCommand;
+import com.zorg.zombies.command.NoActionCommand;
 import com.zorg.zombies.command.UserMoveCommand;
 import com.zorg.zombies.command.UserStartGameCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.command.exception.CommandToJsonParseException;
+import com.zorg.zombies.model.exception.WrongDirectionException;
 import com.zorg.zombies.model.geometry.Direction;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,7 +30,6 @@ public class CommandFactory {
 
     @SneakyThrows
     public Command fromJson(String jsonCommand) {
-
         try {
             JsonNode jsonNode = mapper.readValue(jsonCommand, JsonNode.class);
 
@@ -39,8 +40,16 @@ public class CommandFactory {
             JsonNode directionField = jsonNode.get(DIRECTION_FIELD);
             String moveDirection;
 
-            if ((directionField != null) && ((moveDirection = directionField.asText()) != null)) {
-                Direction direction = Direction.valueOf(moveDirection.toUpperCase());
+            if ((directionField != null)
+                    && ((moveDirection = directionField.asText()) != null)
+                    && !"null".equalsIgnoreCase(moveDirection)
+            ) {
+                Direction direction;
+                try {
+                    direction = Direction.valueOf(moveDirection.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    throw new WrongDirectionException(moveDirection);
+                }
 
                 JsonNode moveCommand = jsonNode.get(MOVE_COMMAND_FIELD);
                 if ((moveCommand != null) && moveCommand.asBoolean()) {
@@ -61,6 +70,6 @@ public class CommandFactory {
             return new ErrorCommand(e);
         }
 
-        throw new RuntimeException("Continue implementation");
+        return new NoActionCommand();
     }
 }

@@ -170,34 +170,41 @@ class UserUpdaterTest {
     }
 
     @Test
-    void updateUserStopMove_When_UserNotMovingInThatDirection_Expect_NotStoppedAndNotUpdated() {
+    void updateUserStopMove_When_UserNotMovingInThatDirection_Expect_NotStopped() {
         var moveDirection = SOUTH;
         var user = new User("id", mock(UsersCommunicator.class));
 
         var userChange = userUpdater.updateUserStopMove(user, moveDirection);
 
-        assertFalse(user.isMovingSouth());
-        assertFalse(userChange.isUpdate());
-    }
-
-    @Test
-    void updateUserMove_When_UserAlreadyMovesWestAndThenMovingEast_Expect_UserStopMovingWestAndNotMovingEast() {
-        var userAlreadyMoves = WEST;
-        var userNextMove = EAST;
-        var user = new User("id", mock(UsersCommunicator.class));
-
-        userUpdater.setMoving(userAlreadyMoves, user);
-
-        var userChange = userUpdater.updateUserMove(user, userNextMove);
-
-        assertFalse(user.isMoving(userNextMove));
-        assertFalse(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(moveDirection));
         assertTrue(userChange.isUpdate());
         assertTrue(userChange instanceof UserStopMovingChange);
 
         var userStopMovingChange = (UserStopMovingChange) userChange;
 
-        assertEquals(userStopMovingChange.getStopMoveDirection(), userAlreadyMoves);
+        assertEquals(userStopMovingChange.getStopMoveDirection(), moveDirection);
+    }
+
+    @Test
+    void updateUserMove_When_UserMoves_AD_StopMoves_DA_Expect_UserStopped() {
+        var userAlreadyMoves = WEST;
+        var userNextMove = EAST;
+        var user = new User("id", mock(UsersCommunicator.class));
+
+        assertFalse(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(userNextMove));
+        userUpdater.setMoving(userAlreadyMoves, user);
+        assertTrue(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(userNextMove));
+        userUpdater.updateUserMove(user, userNextMove);
+        assertFalse(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(userNextMove));
+        userUpdater.updateUserStopMove(user, userNextMove);
+        assertTrue(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(userNextMove));
+        userUpdater.updateUserStopMove(user, userAlreadyMoves);
+        assertFalse(user.isMoving(userAlreadyMoves));
+        assertFalse(user.isMoving(userNextMove));
     }
 
     @Test

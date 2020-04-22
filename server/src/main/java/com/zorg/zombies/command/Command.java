@@ -12,6 +12,7 @@ public class Command {
     protected boolean moveStopCommand;
     protected boolean errorCommand;
     protected boolean startGameCommand;
+    protected boolean noActionCommand;
 
     public Command() {
     }
