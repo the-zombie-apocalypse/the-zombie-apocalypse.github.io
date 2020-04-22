@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open --watch",
-    "start:prod": "cross-env WS_URL=ws://18.195.34.86:8080/conn webpack-dev-server --open --watch --config webpack.prod.config.js",
-    "build": "webpack",
-    "build:prod": "cross-env WS_URL=ws://18.195.34.86:8080/conn webpack --config webpack.prod.config.js"
+    "start": "webpack-dev-server --open --watch --progress --display-error-details",
+    "start:prod": "cross-env WS_URL=ws://18.195.34.86:8080/conn webpack-dev-server --open --watch --config webpack.prod.config.js --progress --display-error-details",
+    "build": "webpack --progress --display-error-details",
+    "build:prod": "cross-env WS_URL=ws://18.195.34.86:8080/conn webpack --config webpack.prod.config.js --progress --display-error-details"
   },
   "repository": {
     "type": "git",
