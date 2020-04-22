@@ -15,6 +15,8 @@ import org.springframework.web.reactive.socket.WebSocketSession;
 import reactor.core.publisher.FluxProcessor;
 import reactor.core.publisher.Mono;
 
+import java.util.function.Predicate;
+
 @Log4j2
 @Component
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class GameWebSocketHandler implements WebSocketHandler {
 
         Mono<Void> webSocketMessage = session.receive()
                 .map(this::webSocketMessageToCommand)
+                .filter(Predicate.not(Command::isNoActionCommand))
                 .doOnError(this::onError)
                 .doOnNext(processor::onNext)
                 .doOnError(this::onError)
