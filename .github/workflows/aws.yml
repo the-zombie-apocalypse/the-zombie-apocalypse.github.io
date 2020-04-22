@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - run: docker run -i --rm -v $(pwd)/server:/root/server -w /root/server gradle:6.3-jdk11 gradle clean test
+      - run: docker run -it --rm -v $(pwd)/server:/root/server -w /root/server gradle:6.3-jdk11 gradle clean test
       - uses: actions/upload-artifact@v1
         if: failure()
         with:
