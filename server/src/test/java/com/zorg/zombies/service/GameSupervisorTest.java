@@ -7,6 +7,7 @@ import com.zorg.zombies.change.WorldChange;
 import com.zorg.zombies.change.WorldOnLoad;
 import com.zorg.zombies.command.Command;
 import com.zorg.zombies.command.UserMoveCommand;
+import com.zorg.zombies.command.UserStartGameCommand;
 import com.zorg.zombies.command.UserStopMoveCommand;
 import com.zorg.zombies.model.User;
 import com.zorg.zombies.model.geometry.Direction;
@@ -58,6 +59,11 @@ class GameSupervisorTest {
         BDDMockito.given(userService.createUser(SESSION_ID)).willReturn(user);
     }
 
+//    @AfterEach
+//    void tearDown() {
+//        user.getSubscriber().onComplete();
+//    }
+
     @Test
     void createGameActionsProcessor_When_SomeId_Expect_NotNullReturned() {
         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
@@ -67,6 +73,7 @@ class GameSupervisorTest {
     @Test
     void createGameActionsProcessor_When_IdGiven_Expect_FirstMessageIsGreeting() {
         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        processor.onNext(new UserStartGameCommand("nickname"));
         processor.onComplete();
         user.getSubscriber().onComplete();
 
@@ -90,6 +97,7 @@ class GameSupervisorTest {
         Direction direction = NORTH;
         Command userMovingNorthCommand = new UserMoveCommand(direction);
         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        processor.onNext(new UserStartGameCommand("nickname"));
         processor.onNext(userMovingNorthCommand);
         processor.onComplete();
         user.getSubscriber().onComplete();
@@ -123,6 +131,7 @@ class GameSupervisorTest {
         Command userStopMovingNorthCommand = new UserStopMoveCommand(direction);
 
         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
+        processor.onNext(new UserStartGameCommand("nickname"));
         processor.onNext(userMovingNorthCommand);
         processor.onNext(userStopMovingNorthCommand);
         processor.onComplete();
@@ -167,41 +176,44 @@ class GameSupervisorTest {
         Command userStopMovingEastCommand = new UserStopMoveCommand(EAST);
 
         FluxProcessor<Command, WorldChange> processor = gameSupervisor.createGameActionsProcessor(SESSION_ID);
-        processor.onNext(userMovingNorthCommand);
-        processor.onNext(userMovingWestCommand);
-        processor.onNext(userStopMovingNorthCommand);
-        processor.onNext(userMovingNorthCommand);
-        processor.onNext(userStopMovingNorthCommand);
-        processor.onNext(userStopMovingWestCommand);
-        processor.onNext(userMovingEastCommand);
-        processor.onNext(userMovingSouthCommand);
-        processor.onNext(userStopMovingSouthCommand);
-        processor.onNext(userStopMovingEastCommand);
-        processor.onComplete();
-        user.getSubscriber().onComplete();
 
         StepVerifier.create(processor)
+                .then(() -> processor.onNext(new UserStartGameCommand("nickname")))
                 .assertNext(getGreetingAssertion(SESSION_ID)).as("check greeting")
+                .then(() -> processor.onNext(userMovingNorthCommand))
                 .assertNext(getUserMovingChangeAssertion(SESSION_ID, NORTH))
                 .as("check user move north command")
+                .then(() -> processor.onNext(userMovingWestCommand))
                 .assertNext(getUserMovingChangeAssertion(SESSION_ID, WEST))
                 .as("check user move west command")
+                .then(() -> processor.onNext(userStopMovingNorthCommand))
                 .assertNext(getUserStopMovingChangeAssertion(SESSION_ID, NORTH))
                 .as("check user stop move north command")
+                .then(() -> processor.onNext(userMovingNorthCommand))
                 .assertNext(getUserMovingChangeAssertion(SESSION_ID, NORTH))
                 .as("check user move north command")
+                .then(() -> processor.onNext(userStopMovingNorthCommand))
                 .assertNext(getUserStopMovingChangeAssertion(SESSION_ID, NORTH))
                 .as("check user stop move north command")
+                .then(() -> processor.onNext(userStopMovingWestCommand))
                 .assertNext(getUserStopMovingChangeAssertion(SESSION_ID, WEST))
                 .as("check user stop move west command")
+                .then(() -> processor.onNext(userMovingEastCommand))
                 .assertNext(getUserMovingChangeAssertion(SESSION_ID, EAST))
                 .as("check user move east command")
+                .then(() -> processor.onNext(userMovingSouthCommand))
                 .assertNext(getUserMovingChangeAssertion(SESSION_ID, SOUTH))
                 .as("check user move south command")
+                .then(() -> processor.onNext(userStopMovingSouthCommand))
                 .assertNext(getUserStopMovingChangeAssertion(SESSION_ID, SOUTH))
                 .as("check user stop move south command")
+                .then(() -> processor.onNext(userStopMovingEastCommand))
                 .assertNext(getUserStopMovingChangeAssertion(SESSION_ID, EAST))
                 .as("check user stop move east command")
+                .then(() -> {
+                    processor.onComplete();
+                    user.getSubscriber().onComplete();
+                })
                 .expectComplete()
                 .log()
                 .verify(TIMEOUT);

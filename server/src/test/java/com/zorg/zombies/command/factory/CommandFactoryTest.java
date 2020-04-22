@@ -2,9 +2,8 @@ package com.zorg.zombies.command.factory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zorg.zombies.command.Command;
-import com.zorg.zombies.command.ErrorCommand;
+import com.zorg.zombies.command.NoActionCommand;
 import com.zorg.zombies.command.UserMoveCommand;
-import com.zorg.zombies.model.factory.WrongMoveDirectionException;
 import com.zorg.zombies.model.geometry.Direction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,17 +19,12 @@ class CommandFactoryTest {
     private final CommandFactory commandFactory = new CommandFactory(mapper);
 
     @Test
-    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_WrongMoveDirectionThrown() throws Exception {
-
+    void commandParse_When_InvalidMoveDirectionInMoveCommandSent_Expect_NoActionCommandReturned() throws Exception {
         UserMoveCommand command = new UserMoveCommand(null);
         String commandAsJson = mapper.writeValueAsString(command);
         Command parsed = commandFactory.fromJson(commandAsJson);
 
-        assertTrue(parsed instanceof ErrorCommand);
-
-        ErrorCommand errorCommand = (ErrorCommand) parsed;
-
-        assertTrue(errorCommand.getError() instanceof WrongMoveDirectionException);
+        assertTrue(parsed instanceof NoActionCommand);
     }
 
     @Test
