@@ -19,13 +19,15 @@ function dismissUser(userId) {
     objectsWarehouse.dismissUser(userId);
 }
 
+const localSocket = "ws://localhost:8080/conn";
+const globalSocket = "ws://18.184.23.62:8080/conn";
+
 const gameActions = {
     connectToServer: function (document, nickname) {
         this._document = document;
-
-        this._server = new GameServer(process.env.WS_URL || (process.env.NODE_ENV === 'development'
-            ? "ws://localhost:8000/conn"
-            : "ws://18.195.34.86:8080/conn"))
+        const connectionURL = process.env.WS_URL || ((process.env.NODE_ENV === 'development')
+            ? localSocket : globalSocket);
+        this._server = new GameServer(connectionURL)
             .userData({nickname})
             .onGreeting(this.onGreeting.bind(this))
             .onMessage(this.onMessage.bind(this))

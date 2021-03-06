@@ -5,6 +5,7 @@ const global = {
         y: 0,
         isMovingX: false,
         isMovingY: false,
+        nickname: 'noname',
     },
     visibleArea: {} // entityId to entity
 };
