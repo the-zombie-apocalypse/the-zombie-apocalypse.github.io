@@ -1,9 +1,0 @@
-version: '3.1'
-
-services:
-
-  zombies:
-    image: 736762908522.dkr.ecr.us-east-1.amazonaws.com/zombies:latest
-    ports:
-      - 8000:8000
-
