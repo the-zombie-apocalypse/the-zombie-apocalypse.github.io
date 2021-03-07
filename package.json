@@ -1,6 +1,6 @@
 {
   "name": "zombies",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "browser zombie post-apocalyptic game",
   "private": true,
   "scripts": {
