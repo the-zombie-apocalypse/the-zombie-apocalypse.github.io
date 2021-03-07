@@ -24,7 +24,7 @@
     "cross-env": "^5.2.1",
     "jquery": "^3.5.0",
     "sweetalert": "^2.1.2",
-    "three": "^0.115.0",
+    "three": "^0.125.0",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "webpack-merge": "^4.2.2"
