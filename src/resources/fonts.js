@@ -1,4 +1,4 @@
-import ubuntu_bold from './../resources/ubuntu_bold'
+import ubuntu_bold from './ubuntu_bold.json'
 import {FontLoader} from "three";
 
 export default {

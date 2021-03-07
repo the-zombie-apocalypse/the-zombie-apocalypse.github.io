@@ -1,6 +1,6 @@
 import {BoxGeometry, Group, Mesh, MeshLambertMaterial, TextBufferGeometry} from "three"
 import SceneObject from './scene_object'
-import fonts from './../resources/fonts'
+import fonts from '../resources/fonts'
 
 export default class Player extends SceneObject {
 
