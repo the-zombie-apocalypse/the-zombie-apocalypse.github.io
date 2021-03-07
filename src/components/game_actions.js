@@ -20,7 +20,7 @@ function dismissUser(userId) {
 }
 
 const localSocket = "ws://localhost:8080/conn";
-const globalSocket = "ws://18.184.23.62:8080/conn";
+const globalSocket = "wss://zombieapocalypse.world/conn";
 
 const gameActions = {
     connectToServer: function (document, nickname) {

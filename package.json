@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node_modules/.bin/webpack-dev-server --open --watch --progress --display-error-details",
-    "start:prod": "node_modules/.bin/cross-env WS_URL=ws://18.184.23.62:8080/conn webpack-dev-server --open --watch --config webpack.prod.config.js --progress --display-error-details",
+    "start:prod": "node_modules/.bin/cross-env WS_URL=wss://zombieapocalypse.world/conn webpack-dev-server --open --watch --config webpack.prod.config.js --progress --display-error-details",
     "build": "node_modules/.bin/webpack --progress --display-error-details",
-    "build:prod": "node_modules/.bin/cross-env WS_URL=ws://18.184.23.62:8080/conn webpack --config webpack.prod.config.js --progress --display-error-details"
+    "build:prod": "node_modules/.bin/cross-env WS_URL=wss://zombieapocalypse.world/conn webpack --config webpack.prod.config.js --progress --display-error-details"
   },
   "repository": {
     "type": "git",
