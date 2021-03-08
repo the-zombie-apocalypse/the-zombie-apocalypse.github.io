@@ -7,7 +7,8 @@ const global = {
         isMovingY: false,
         nickname: 'noname',
     },
-    visibleArea: {} // entityId to entity
+    visibleArea: {}, // entityId to entity
+    moveControlsBlocked: false,
 };
 
 export default global;

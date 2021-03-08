@@ -1,3 +1,5 @@
+import global from "../entities/global";
+
 const W_KEY_CODE = 87;
 const A_KEY_CODE = 65;
 const S_KEY_CODE = 83;
@@ -58,6 +60,7 @@ export default class KeyboardListener {
     }
 
     _onKeyDown({keyCode}) {
+        if (global.moveControlsBlocked) return;
         if (keysDown[keyCode]) return;
         keysDown[keyCode] = keyCode;
 
@@ -65,6 +68,7 @@ export default class KeyboardListener {
     }
 
     _onKeyUp({keyCode}) {
+        if (global.moveControlsBlocked) return;
         delete keysDown[keyCode];
         getKeyUpAction(keyCode, this._server).call(this._server);
     }

@@ -3,6 +3,7 @@ import GameServer from './gameServer'
 import global from '../entities/global'
 import Greeting from '../entities/changes/greeting'
 import objectsWarehouse from './objects-warehouse';
+import ChatPlugin, {ChatSetting} from "../addons/chat/chat";
 
 const playerSettings = global.playerSettings;
 
@@ -19,7 +20,12 @@ function dismissUser(userId) {
     objectsWarehouse.dismissUser(userId);
 }
 
-const localSocket = "ws://localhost:8080/conn";
+function loadAddons(settings) {
+    const chatPlugin = new ChatPlugin(settings);
+    chatPlugin.init();
+}
+
+const localSocket = "ws://localhost:8000/conn";
 const globalSocket = "wss://zombieapocalypse.world/conn";
 
 const gameActions = {
@@ -39,10 +45,16 @@ const gameActions = {
         const greeting = new Greeting(response);
         this.keyListener = new KeyboardListener(this._document, this._server);
         playerSettings.id = greeting.id;
+        playerSettings.nickname = greeting.nickname;
 
         processUserChange(greeting);
 
         greeting.users.forEach(spawnNewUser);
+
+        loadAddons(new ChatSetting({
+            userId: playerSettings.id,
+            userNickname: playerSettings.nickname,
+        }));
     },
     onMessage: function (response) {
         const message = JSON.parse(response.data);
