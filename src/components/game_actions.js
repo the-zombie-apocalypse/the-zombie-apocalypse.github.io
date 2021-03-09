@@ -3,6 +3,7 @@ import GameServer from './gameServer'
 import global from '../entities/global'
 import Greeting from '../entities/changes/greeting'
 import objectsWarehouse from './objects-warehouse';
+import ChatPlugin, {chatMessagesRepository, ChatSetting} from "../addons/chat/chat";
 
 const playerSettings = global.playerSettings;
 
@@ -19,7 +20,16 @@ function dismissUser(userId) {
     objectsWarehouse.dismissUser(userId);
 }
 
-const localSocket = "ws://localhost:8080/conn";
+function userMessage(userChange) {
+    chatMessagesRepository.addMessage(userChange.nickname, userChange.chatMessage);
+}
+
+function loadAddons(settings, server) {
+    const chatPlugin = new ChatPlugin(settings, server);
+    chatPlugin.init();
+}
+
+const localSocket = "ws://localhost:8000/conn";
 const globalSocket = "wss://zombieapocalypse.world/conn";
 
 const gameActions = {
@@ -39,10 +49,16 @@ const gameActions = {
         const greeting = new Greeting(response);
         this.keyListener = new KeyboardListener(this._document, this._server);
         playerSettings.id = greeting.id;
+        playerSettings.nickname = greeting.nickname;
 
         processUserChange(greeting);
 
         greeting.users.forEach(spawnNewUser);
+
+        loadAddons(new ChatSetting({
+            userId: playerSettings.id,
+            userNickname: playerSettings.nickname,
+        }), this._server);
     },
     onMessage: function (response) {
         const message = JSON.parse(response.data);
@@ -53,6 +69,7 @@ const gameActions = {
             if (message.greeting) spawnNewUser(userChange);
             if (userChange.positionChange) processUserChange(userChange);
             if (userChange.leavingGameEvent) dismissUser(userChange.id);
+            if (userChange.chatMessageCommand) userMessage(userChange);
         }
     },
     onClose() {
