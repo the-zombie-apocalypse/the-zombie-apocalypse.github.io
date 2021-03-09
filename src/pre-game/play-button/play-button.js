@@ -5,6 +5,7 @@ import gameLoop from "../../client";
 
 export default function () {
     return $('<button>', {
+        id: 'play-game-button',
         text: 'Play!',
         'class': 'play-button',
         click: function () {

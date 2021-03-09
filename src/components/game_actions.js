@@ -3,7 +3,7 @@ import GameServer from './gameServer'
 import global from '../entities/global'
 import Greeting from '../entities/changes/greeting'
 import objectsWarehouse from './objects-warehouse';
-import ChatPlugin, {ChatSetting} from "../addons/chat/chat";
+import ChatPlugin, {chatMessagesRepository, ChatSetting} from "../addons/chat/chat";
 
 const playerSettings = global.playerSettings;
 
@@ -20,8 +20,12 @@ function dismissUser(userId) {
     objectsWarehouse.dismissUser(userId);
 }
 
-function loadAddons(settings) {
-    const chatPlugin = new ChatPlugin(settings);
+function userMessage(userChange) {
+    chatMessagesRepository.addMessage(userChange.nickname, userChange.chatMessage);
+}
+
+function loadAddons(settings, server) {
+    const chatPlugin = new ChatPlugin(settings, server);
     chatPlugin.init();
 }
 
@@ -54,7 +58,7 @@ const gameActions = {
         loadAddons(new ChatSetting({
             userId: playerSettings.id,
             userNickname: playerSettings.nickname,
-        }));
+        }), this._server);
     },
     onMessage: function (response) {
         const message = JSON.parse(response.data);
@@ -65,6 +69,7 @@ const gameActions = {
             if (message.greeting) spawnNewUser(userChange);
             if (userChange.positionChange) processUserChange(userChange);
             if (userChange.leavingGameEvent) dismissUser(userChange.id);
+            if (userChange.chatMessageCommand) userMessage(userChange);
         }
     },
     onClose() {

@@ -1,8 +1,27 @@
 import global from './../../entities/global'
+import ChatCommunicator from './chatCommunicator'
+
+let chatMessageConsumer = () => {
+};
+
+function buildChatMessage(nickname, text) {
+    const now = new Date();
+    let hours = now.getHours();
+    if (hours <= 9) {
+        hours = `0${hours}`
+    }
+    let minutes = now.getMinutes();
+    if (minutes <= 9) {
+        minutes = `0${minutes}`
+    }
+    const time = `${hours}:${minutes}`;
+    return `[${time}] ${nickname}: ${text}`;
+}
 
 class Chat {
-    constructor(settings) {
+    constructor(settings, chatCommunicator) {
         this.settings = settings;
+        this.chatCommunicator = chatCommunicator;
     }
 
     init() {
@@ -27,19 +46,32 @@ class Chat {
         message.addEventListener('focusout', ev => {
             global.moveControlsBlocked = false;
         })
+        const sendMessage = () => {
+            const messageText = message.value || "";
+            if (!messageText) {
+                return
+            }
+            message.value = "";
+            this.chatCommunicator.sendMessage(messageText);
+        }
+        message.addEventListener('keypress', ev => {
+            if (ev.key === "Enter") {
+                sendMessage();
+                message.blur();
+            }
+        })
         messageRow.appendChild(message);
         const sendMessageButton = document.createElement("button");
         sendMessageButton.className = "chat-send-message";
         sendMessageButton.textContent = "Send";
-        sendMessageButton.addEventListener("click", ev => {
+        chatMessageConsumer = (nickname, message) => {
             const messageRow = document.createElement("div");
             messageRow.className = "chat-messages-board-message-row";
-            const now = new Date();
-            const time = `${now.getHours()}:${now.getMinutes()}`;
-            const messageText = message.value || "";
-            messageRow.textContent = `[${time}] ${this.settings.userNickname}: ${messageText}`;
+            messageRow.textContent = buildChatMessage(nickname, message);
             messagesBoard.appendChild(messageRow);
-            message.value = "";
+        }
+        sendMessageButton.addEventListener("click", ev => {
+            sendMessage();
         })
         messageRow.appendChild(sendMessageButton);
         return chatFrame;
@@ -54,15 +86,20 @@ export class ChatSetting {
 }
 
 export default class ChatPlugin {
-
-    constructor(settings) {
+    constructor(settings, server) {
         this.settings = settings;
+        this.server = server;
     }
 
     init() {
-        const chat = new Chat(this.settings);
-        document.body.appendChild(chat.build())
-        // $('body').append();
+        const chat = new Chat(this.settings, new ChatCommunicator(this.settings, this.server));
+        document.body.appendChild(chat.build());
         chat.init();
+    }
+}
+
+export const chatMessagesRepository = {
+    addMessage(nickname, message) {
+        chatMessageConsumer && chatMessageConsumer(nickname, message)
     }
 }

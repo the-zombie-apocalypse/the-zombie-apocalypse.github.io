@@ -20,6 +20,11 @@ export default function () {
                     placeholder: 'nickname',
                     onload: function () {
                         setTimeout(() => $(this).focus(), 200)
+                    },
+                    keypress: ev => {
+                        if (ev.key === "Enter") {
+                            $("#play-game-button").click();
+                        }
                     }
                 })
             }),
